@@ -1,2 +1,2 @@
 
-import AuthIdleChecker from './auth-idle-checker';
+import AuthIdleChecker from './authenticated/auth-idle-checker';
