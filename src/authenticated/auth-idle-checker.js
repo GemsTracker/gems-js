@@ -1,4 +1,6 @@
-class AuthIdleChecker {
+import url from "../general/functions";
+
+export default class AuthIdleChecker {
     constructor() {
         this.requestTime = new Date();
         const body = document.getElementsByTagName('body')[0];
@@ -14,7 +16,7 @@ class AuthIdleChecker {
     init() {
         const buttonAlive = document.getElementById('authIdleCheckerWarningAlive');
         buttonAlive?.addEventListener('click', () => {
-            fetch('/auth/idle-alive', {method: 'post'})
+            fetch(url('/auth/idle-alive'), {method: 'post'})
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error();
@@ -47,7 +49,7 @@ class AuthIdleChecker {
     };
 
     check() {
-        fetch('/auth/idle-poll')
+        fetch(url('/auth/idle-poll'))
             .then((response) => {
                 if (!response.ok) {
                     throw new Error();
@@ -67,7 +69,7 @@ class AuthIdleChecker {
             .catch(() => {
                 // Fallback in case of e.g. network failure
                 if ((+ new Date()) - (+this.requestTime) > this.maxIdleTime * 1000) {
-                    window.location.href = '/';
+                    window.location.href = url('/');
                 }
             });
     };
