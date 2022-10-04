@@ -1,5 +1,5 @@
 
-export default function url(path) {
+export function url(path) {
     const base = document.getElementsByTagName('base')[0];
 
     if (!base) {

@@ -1,4 +1,4 @@
 
-import Functions from './general/functions';
+import './general/functions';
 
 export default {};

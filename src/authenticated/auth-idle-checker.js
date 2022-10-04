@@ -1,4 +1,4 @@
-import url from "../general/functions";
+import {url} from "../general/functions";
 
 export default class AuthIdleChecker {
     constructor() {

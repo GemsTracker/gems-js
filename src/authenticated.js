@@ -1,4 +1,4 @@
 
-import AuthIdleChecker from './authenticated/auth-idle-checker';
+import './authenticated/auth-idle-checker';
 
 export default {};
