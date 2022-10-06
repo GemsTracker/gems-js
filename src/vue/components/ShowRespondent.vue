@@ -11,6 +11,7 @@
 import { onMounted, ref } from 'vue';
 import useGetModelRepository from '../functions/modelRepository';
 import useBasePropStorer from '../functions/basePropStorer';
+import useTokenRepository from '../functions/tokenRepository';
 
 export default {
   props: {
@@ -46,8 +47,10 @@ export default {
     });
 
     const getTokens = (async () => {
-      const tokenModel = modelRepository.getModel('Tokens');
-      tokenData.value = await tokenModel.all();
+      const tokenRepository = useTokenRepository();
+      const tokens = await tokenRepository.getAllTokens();
+      console.log(tokens);
+      tokenData.value = tokenRepository.groupByCareplanRound(tokens);
     });
 
     onMounted(() => {
