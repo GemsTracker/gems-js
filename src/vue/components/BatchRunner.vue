@@ -15,12 +15,12 @@
     </button>
     <div v-if="messages.length" class="alert alert-info" role="alert">
       <ul>
-        <li v-for="index, message in messages" :key="index">{{ message }}</li>
+        <li v-for="message, index in messages" :key="index">{{ message }}</li>
       </ul>
     </div>
     <div v-if="info.length" class="panel panel-default">
       <div class="panel-body">
-        <p v-for="index, message in info" :key="index" class="info">
+        <p v-for="message, index in info" :key="index" class="info">
           {{ message }}
         </p>
       </div>
