@@ -1,8 +1,11 @@
 <template>
   <div>
     <h3 v-if="title">{{ title }}</h3>
+    <div v-if="batchCount === 0" class="alert alert-info">
+      {{ translations.empty }}
+    </div>
     <button v-if="!finished && !emergencyStop" @click="start"
-      class="btn btn-primary" :disabled="running || !initialized">
+      class="btn btn-primary" :disabled="running || !initialized || batchCount === 0">
       <template v-if="initialized">{{ translations.start }}</template>
       <template v-if="!initialized">Loading...</template>
     </button>
@@ -15,12 +18,12 @@
     </button>
     <div v-if="messages.length" class="alert alert-info" role="alert">
       <ul>
-        <li v-for="index, message in messages" :key="index">{{ message }}</li>
+        <li v-for="message, index in messages" :key="index">{{ message }}</li>
       </ul>
     </div>
-    <div v-if="info.length" class="panel panel-default">
-      <div class="panel-body">
-        <p v-for="index, message in info" :key="index" class="info">
+    <div v-if="info.length" class="card text-bg-light">
+      <div class="card-body">
+        <p v-for="message, index in info" :key="index" class="info">
           {{ message }}
         </p>
       </div>
@@ -48,6 +51,7 @@ export default {
     ProgressBar,
   },
   setup(props) {
+    const batchCount = ref(0);
     const currentUrl = window.location.pathname;
     const finished = ref(false);
     const info = ref([]);
@@ -98,10 +102,13 @@ export default {
       const result = await axios.get(initUrl);
       if ('data' in result) {
         initialized.value = true;
+        if ('count' in result.data) {
+          batchCount.value = result.data.count;
+        }
         if ('translations' in result.data) {
           translations.value = result.data.translations;
         }
-        if ('info' in result.data) {
+        if ('info' in result.data && result.data.info !== null) {
           let infoArray = result.data.info;
           if (!Array.isArray(infoArray)) {
             infoArray = [infoArray];
@@ -131,6 +138,7 @@ export default {
 
     return {
       abort,
+      batchCount,
       emergencyStop,
       finished,
       info,

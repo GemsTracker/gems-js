@@ -1,10 +1,10 @@
 <template>
-  <div class="progress" style="position: relative">
-    <div class="progress-bar progress-bar-success" role="progressbar" :aria-valuenow="progress"
+  <div class="progress">
+    <div class="progress-bar bg-success" role="progressbar" :aria-valuenow="progress"
       aria-valuemin="0" aria-valuemax="100" :style="progressWidth">
-    </div>
-    <div class="progress-text">
+      <div class="progress-text">
       {{ progress.toFixed(2) }}%
+      </div>
     </div>
   </div>
 </template>
