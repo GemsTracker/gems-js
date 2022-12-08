@@ -1,17 +1,16 @@
 <template>
   <div>
-    show respondent!!
-    {{ patientData }}
-    <ul>
-      <li v-for="(token, index) in tokenData" :key="index">{{ token.id }}</li>
-    </ul>
+    <respondent-info></respondent-info>
+    <token-timeline></token-timeline>
+    <round-tabs />
   </div>
 </template>
 <script>
-import { onMounted, ref } from 'vue';
-import useGetModelRepository from '../functions/modelRepository';
+import { useI18n } from 'vue-i18n';
 import useBasePropStorer from '../functions/basePropStorer';
-import useTokenRepository from '../functions/tokenRepository';
+import RespondentInfo from './ShowRespondent/RespondentInfo.vue';
+import RoundTabs from './ShowRespondent/RoundTabs.vue';
+import TokenTimeline from './ShowRespondent/TokenTimeline.vue';
 
 export default {
   props: {
@@ -33,35 +32,14 @@ export default {
       default: 'en',
     },
   },
+  components: {
+    RespondentInfo, RoundTabs, TokenTimeline,
+  },
   setup(props) {
+    const { locale } = useI18n({ useScope: 'global' });
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    locale.value = props.locale;
     useBasePropStorer(props);
-    const patientData = ref(null);
-    const tokenData = ref(null);
-
-    const { getModelRepository } = useGetModelRepository();
-    const modelRepository = getModelRepository();
-
-    const getPatientData = (async () => {
-      const patientModel = modelRepository.getModel('Patient');
-      patientData.value = await patientModel.find();
-    });
-
-    const getTokens = (async () => {
-      const tokenRepository = useTokenRepository();
-      const tokens = await tokenRepository.getAllTokens();
-      console.log(tokens);
-      tokenData.value = tokenRepository.groupByCareplanRound(tokens);
-    });
-
-    onMounted(() => {
-      getPatientData();
-      getTokens();
-    });
-
-    return {
-      patientData,
-      tokenData,
-    };
   },
 };
 </script>
