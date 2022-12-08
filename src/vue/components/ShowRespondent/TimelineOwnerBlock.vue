@@ -5,13 +5,13 @@
       <span v-if="opened">-</span>
       {{ owner.type }}
     </h6>
-    <div v-if="!opened" @click="toggleOpened" class="zplegenda">
+    <div v-if="!opened" @click="toggleOpened" class="item-legenda row">
       <div v-for="statusGroup, index in tokensByStatus" :key="index"
-        :class="getStatusClass(statusGroup.status)">
+        :class="getStatusClass(statusGroup.status)" class="legenda-item col card">
         {{ statusGroup.tokens.length }}
       </div>
     </div>
-    <div v-if="opened" class="zpitems">
+    <div v-if="opened" class="token-items">
       <timeline-token v-for="token, index in owner.tokens" :key="index" :token="token">
       </timeline-token>
     </div>

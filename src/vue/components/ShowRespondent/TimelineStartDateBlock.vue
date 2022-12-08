@@ -1,6 +1,6 @@
 <template>
   <div class="start-date-block">
-    <h6>{{ displayDate }}</h6>
+    <h6 class="start-date">{{ displayDate }}</h6>
     <timeline-owner-block v-for="owner, index in tokens"
       :key="index" :owner="owner" />
   </div>
