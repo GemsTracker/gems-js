@@ -3,17 +3,17 @@
     <div class="card-header header" @click="toggleExpand">
       <h4 class="card-title row">
         <div class="col">
-          <tool-tip content="Edit">
+          <tool-tip content="Edit" class="action-icon">
             <font-awesome-icon icon="pencil" />
           </tool-tip>
           &nbsp;
           <span class="title">{{ carePlan.title }}</span>
           &nbsp;
-          <font-awesome-icon v-if="!expanded" icon="chevron-right" />
-          <font-awesome-icon v-if="expanded" icon="chevron-down" />
+          <font-awesome-icon v-if="!expanded" icon="chevron-right" class="title-collapse" />
+          <font-awesome-icon v-if="expanded" icon="chevron-down" class="title-collapse" />
         </div>
         <div class="col-3 text-end">
-          <tool-tip content="Delete item!">
+          <tool-tip content="Delete item!" class="action-icon">
             <font-awesome-icon icon="trash-can" />
           </tool-tip>
         </div>
@@ -62,7 +62,12 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronDown, faChevronRight, faPencil, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronRight,
+  faPencil,
+  faTrashCan,
+} from '@fortawesome/free-solid-svg-icons';
 import useTokenRepository from '../../functions/tokenRepository';
 import useModelStore from '../../stores/modelRepository';
 import TimelineMeasureMomentBlock from './TimelineMeasureMomentBlock.vue';
@@ -76,6 +81,10 @@ export default {
       type: Object,
       required: true,
     },
+    open: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     FontAwesomeIcon, TimelineMeasureMomentBlock, ToolTip,
@@ -83,7 +92,7 @@ export default {
   setup(props) {
     const modelStore = useModelStore();
     const currentLocale = computed(() => modelStore.locale);
-    const expanded = ref(false);
+    const expanded = ref(props.open);
 
     const { t } = useI18n();
 

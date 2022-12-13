@@ -1,9 +1,9 @@
 <template>
   <div class="round-tabs" v-if="groupedTokens">
     <ul class="nav nav-tabs">
-      <li role="presentation" v-for="momentInfo, index in groupedTokens" :key="index"
-        @click="changeTab(index)" :class="{active: (index === currentTab)}">
-        <a>{{momentInfo.name}}</a>
+      <li v-for="momentInfo, index in groupedTokens" :key="index"
+        @click="changeTab(index)" class="nav-item">
+        <a class="nav-link" :class="{active: (index === currentTab)}">{{momentInfo.name}}</a>
       </li>
     </ul>
      <div class="tab-content">

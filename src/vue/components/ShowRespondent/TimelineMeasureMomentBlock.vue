@@ -6,6 +6,7 @@
   </div>
 </template>
 <script>
+
 import { computed } from 'vue';
 import useTokenRepository from '../../functions/tokenRepository';
 import TimelineStartDateBlock from './TimelineStartDateBlock.vue';

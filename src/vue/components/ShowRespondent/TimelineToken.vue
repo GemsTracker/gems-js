@@ -6,10 +6,13 @@
           <a v-if="tokenLink !== null" :href="tokenLink">{{ token.focus.display }}</a>
         </tool-tip>
         <span v-if="tokenLink === null">{{ token.focus.display }}</span>
+        <span class="token-display" ref="tokenDisplay">{{ token.id }}</span>
       </div>
       <div class="token-utils col-4">
-        <tool-tip data-bs-toggle="tooltip" data-bs-title="Copy" class="icon">
-          <font-awesome-icon icon="fa-regular fa-clipboard" />
+        <tool-tip @click="copyToken" data-bs-toggle="tooltip"
+          :data-bs-title="copyTokenTooltip" class="icon">
+          <!-- <font-awesome-icon  icon="fa-regular fa-clipboard" /> -->
+          <copy-to-clipboard-icon></copy-to-clipboard-icon>
         </tool-tip>
         <tool-tip content="Details" class="icon">
           <font-awesome-icon icon="fa-solid fa-ellipsis" />
@@ -19,13 +22,15 @@
   </div>
 </template>
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import CopyToClipboardIcon from '../Util/CopyToClipboardIcon.vue';
 import ToolTip from '../Util/ToolTip.vue';
 import useTimelineTokens from '../../functions/useTimelineTokens';
+import useCopyToClipboard from '../../functions/ClipboardFunctions';
 import useModelStore from '../../stores/modelRepository';
 
 library.add(faClipboard, faEllipsis);
@@ -38,12 +43,14 @@ export default {
     },
   },
   components: {
-    FontAwesomeIcon, ToolTip,
+    CopyToClipboardIcon, FontAwesomeIcon, ToolTip,
   },
   setup(props) {
     const { getStatusClass } = useTimelineTokens();
     const modelStore = useModelStore();
     const currentLocale = computed(() => modelStore.locale);
+    const tokenDisplay = ref(null);
+    const copyTokenTooltip = ref('Copy');
 
     const tokenLink = computed(() => {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
@@ -65,8 +72,20 @@ export default {
 
     const statusClass = computed(() => getStatusClass(props.token.status));
 
+    const { copyValueToClipboard } = useCopyToClipboard();
+
+    const copyToken = (() => {
+      copyValueToClipboard(tokenDisplay.value);
+
+      // const oldValue = copyTokenTooltip.value;
+      copyTokenTooltip.value = `Copied token ${props.token.id}`;
+    });
+
     return {
+      copyToken,
+      copyTokenTooltip,
       statusClass,
+      tokenDisplay,
       tokenLink,
       tokenTooltip,
     };
