@@ -28,7 +28,7 @@ export default class Datepicker {
     datepickers.forEach((datepicker) => {
       const locale = this.getLocaleObject(datepicker);
 
-      const options = {
+      let options = {
         locale,
         position({
           $datepicker,
@@ -68,14 +68,35 @@ export default class Datepicker {
         },
       };
 
-      const selectedDate = this.getCurrentDate(datepicker);
-      if (selectedDate instanceof Date) {
-        options.selectedDates = [selectedDate];
+      if (datepicker.getAttribute('data-date-picker-settings')) {
+        try {
+          const elementSettings = JSON.parse(datepicker.getAttribute('data-date-picker-settings'));
+          options = { ...options, ...elementSettings };
+        } catch (error) {
+          // do nothing
+        }
       }
 
-      const dateFormat = this.getDateFormat(datepicker);
-      if (dateFormat !== null) {
-        options.dateFormat = dateFormat;
+      if (!('selectedDates' in options)) {
+        const selectedDate = this.getCurrentDate(datepicker);
+        if (selectedDate instanceof Date) {
+          options.selectedDates = [selectedDate];
+        }
+      }
+
+      if (!('dateFormat' in options)) {
+        const dateFormat = this.getDateFormat(datepicker);
+        if (dateFormat !== null) {
+          options.dateFormat = dateFormat;
+        }
+      }
+
+      if (!('timeFormat' in options)) {
+        const timeFormat = this.getTimeFormat(datepicker);
+        if (timeFormat !== null) {
+          options.timepicker = true;
+          options.timeFormat = timeFormat;
+        }
       }
 
       console.log(options);
@@ -89,20 +110,51 @@ export default class Datepicker {
     if (currentDate === '') {
       return null;
     }
-    const format = this.getDateFormat(element);
+    const format = this.getFullFormat(element);
     console.log(currentDate, format);
     console.log(parse(currentDate, format, new Date()));
     return parse(currentDate, format, new Date());
   }
 
   getDateFormat(element) {
-    if (element.getAttribute('dateformat') === null) {
+    if (element.getAttribute('data-date-format') === null) {
       return null;
     }
-    return element.getAttribute('dateformat')
-      .replace('d', 'dd')
+    console.log(element.getAttribute('data-date-format').replace(/[^dMy/-]/gi, ''));
+    const format = this.formatDateFormat(element.getAttribute('data-date-format').replace(/[^dmY/-]/gi, ''));
+    if (format !== '') {
+      return format;
+    }
+    return null;
+  }
+
+  getFullFormat(element) {
+    if (element.getAttribute('data-date-format') === null) {
+      return null;
+    }
+    return this.formatDateFormat(this.formatTimeFormat(element.getAttribute('data-date-format')));
+  }
+
+  formatDateFormat(dateFormat) {
+    return dateFormat.replace('d', 'dd')
       .replace('m', 'MM')
       .replace('Y', 'yyyy');
+  }
+
+  getTimeFormat(element) {
+    if (element.getAttribute('data-date-format') === null) {
+      return null;
+    }
+    const format = this.formatTimeFormat(element.getAttribute('data-date-format').replace(/[^Hi:]/gi, ''));
+    if (format !== '') {
+      return format;
+    }
+    return null;
+  }
+
+  formatTimeFormat(dateFormat) {
+    return dateFormat.replace('H', 'HH')
+      .replace('i', 'mm');
   }
 
   getLocaleObject(element) {
