@@ -1,11 +1,12 @@
 <template>
-  <div class="measure-moment object">
+  <div class="measure-moment object card">
     <h5>{{ measureMoment.name }}</h5>
     <timeline-start-date-block v-for="startDate, index in tokens"
       :key="index" :start-date="startDate" />
   </div>
 </template>
 <script>
+
 import { computed } from 'vue';
 import useTokenRepository from '../../functions/tokenRepository';
 import TimelineStartDateBlock from './TimelineStartDateBlock.vue';
