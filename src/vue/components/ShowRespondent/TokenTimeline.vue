@@ -1,5 +1,6 @@
 <template>
   <div class="token-timeline">
+    <loading-screen v-if="loading === true"></loading-screen>
     <careplan-timeline-block v-for="carePlan, index in carePlans" :key="index"
     :care-plan="carePlan" :open="index === 0" />
   </div>
@@ -8,15 +9,16 @@
 import { onMounted, ref } from 'vue';
 import useCarePlanRepository from '../../functions/carePlanRepository';
 import CareplanTimelineBlock from './CareplanTimelineBlock.vue';
+import LoadingScreen from '../Util/LoadingScreen.vue';
 
 export default {
   components: {
-    CareplanTimelineBlock,
+    CareplanTimelineBlock, LoadingScreen,
   },
   setup() {
     const carePlans = ref(null);
 
-    const { getAllCarePlans } = useCarePlanRepository();
+    const { getAllCarePlans, loading } = useCarePlanRepository();
 
     const getCarePlans = (async () => {
       carePlans.value = await getAllCarePlans();
@@ -28,6 +30,7 @@ export default {
 
     return {
       carePlans,
+      loading,
     };
   },
 };
@@ -39,8 +42,11 @@ export default {
     .card-title {
       .action-icon {
         cursor: pointer;
-        &:hover {
-          color: rgb(128,128,128);
+        a {
+          color: rgb(33, 37, 41);
+          &:hover {
+            color: rgb(128,128,128);
+          }
         }
       }
       .title-collapse {
@@ -83,7 +89,7 @@ export default {
           .token-utils {
             padding-top: 0.2rem;
             text-align: right;
-            .icon {
+            .icon, .icon a {
               cursor: pointer;
               margin: .2rem;
               color: rgba(49, 112, 143, 0.2);

@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import useArrayObjectFunctions from './ArrayObject';
 import useGetModelRepository from './modelRepository';
 
@@ -7,6 +8,8 @@ const useTokenRepository = (() => {
   const tokenModel = modelRepository.getModel('Tokens');
 
   const { sortFieldsFunction } = useArrayObjectFunctions();
+
+  const loading = ref(null);
 
   const getTokenInfo = ((token) => {
     let roundDescription = null;
@@ -68,10 +71,11 @@ const useTokenRepository = (() => {
   }));
 
   const getAllTokens = (async () => {
+    loading.value = true;
     const rawTokens = await tokenModel.all();
     const tokenArray = Object.values(rawTokens);
     const augmentedTokens = addTokenInfoFields(tokenArray);
-
+    loading.value = false;
     return augmentedTokens.sort(sortFieldsFunction(['roundOrder']));
   });
 
@@ -179,6 +183,7 @@ const useTokenRepository = (() => {
     groupByMeasureMoment,
     groupByOwner,
     groupByStatus,
+    loading,
   };
 });
 
