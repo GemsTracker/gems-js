@@ -11,14 +11,17 @@ const usePatientRepository = (() => {
 
   console.log('hi!');
 
+  const loading = ref(null);
   const patientNr = computed(() => patientStore.patientNr);
 
   const patientData = ref(null);
 
   const getPatientData = (async () => {
     if (patientData.value === null) {
+      loading.value = true;
       patientData.value = await patientModel.find();
     }
+    loading.value = false;
     return patientData.value;
   });
 
@@ -158,6 +161,7 @@ const usePatientRepository = (() => {
     gender,
     givenName,
     getPatientData,
+    loading,
     organization,
     patientNr,
     phoneNumber,

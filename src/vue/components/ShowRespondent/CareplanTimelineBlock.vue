@@ -4,7 +4,9 @@
       <h4 class="card-title row">
         <div class="col">
           <tool-tip content="Edit" class="action-icon">
-            <font-awesome-icon icon="pencil" />
+            <a :href="carePlanEditUrl">
+              <font-awesome-icon icon="pencil" />
+            </a>
           </tool-tip>
           &nbsp;
           <span class="title">{{ carePlan.title }}</span>
@@ -14,7 +16,9 @@
         </div>
         <div class="col-3 text-end">
           <tool-tip content="Delete item!" class="action-icon">
-            <font-awesome-icon icon="trash-can" />
+            <a :href="carePlanDeleteUrl">
+              <font-awesome-icon icon="trash-can" />
+            </a>
           </tool-tip>
         </div>
       </h4>
@@ -24,19 +28,21 @@
         </div>
         <div class="token-status-bar col-3 align-self-end">
           <div v-if="tokenStatusCounts !== null" class="progress">
-            <div v-if="'rejected' in tokenStatusCounts" class="progress-bar missed"
+            <tool-tip content="nyan" v-if="'rejected' in tokenStatusCounts"
+              class="tooltip-container progress-bar missed"
               :style="`width:${tokenStatusPercentages.rejected}%`">
               {{ tokenStatusCounts.rejected }}
-            </div>
+            </tool-tip>
             <div v-if="'completed' in tokenStatusCounts"  class="progress-bar answered"
               :style="`width:${tokenStatusPercentages.completed}%`">
               {{ tokenStatusCounts.completed }}
             </div>
-            <div v-if="'in-progress' in tokenStatusCounts"
+            <tool-tip :content="`${tokenStatusCounts['in-progress']} in progress`"
+              v-if="'in-progress' in tokenStatusCounts"
               class="progress-bar open progress-bar-striped"
               :style="`width:${tokenStatusPercentages['in-progress']}%`">
               {{ tokenStatusCounts['in-progress'] }}
-            </div>
+            </tool-tip>
             <div v-if="'requested' in tokenStatusCounts" class="progress-bar open"
               :style="`width:${tokenStatusPercentages.requested}%`">
               {{ tokenStatusCounts.requested }}
@@ -50,6 +56,7 @@
       </div>
     </div>
     <div v-if="expanded" class="card-body">
+      <loading-screen v-if="loading === true"></loading-screen>
       <div v-if="carePlanTokens !== null" class="objecten">
         <timeline-measure-moment-block v-for="measureMoment, index in carePlanTokens" :key="index"
           :measure-moment="measureMoment" />
@@ -69,8 +76,10 @@ import {
   faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
 import useTokenRepository from '../../functions/tokenRepository';
+import useUrlHelper from '../../functions/urlHelper';
 import useModelStore from '../../stores/modelRepository';
 import TimelineMeasureMomentBlock from './TimelineMeasureMomentBlock.vue';
+import LoadingScreen from '../Util/LoadingScreen.vue';
 import ToolTip from '../Util/ToolTip.vue';
 
 library.add(faChevronDown, faChevronRight, faPencil, faTrashCan);
@@ -87,12 +96,17 @@ export default {
     },
   },
   components: {
-    FontAwesomeIcon, TimelineMeasureMomentBlock, ToolTip,
+    FontAwesomeIcon, LoadingScreen, TimelineMeasureMomentBlock, ToolTip,
   },
   setup(props) {
     const modelStore = useModelStore();
     const currentLocale = computed(() => modelStore.locale);
     const expanded = ref(props.open);
+
+    const { getCarePlanDeleteUrl, getCarePlanEditUrl } = useUrlHelper();
+
+    const carePlanDeleteUrl = getCarePlanDeleteUrl(props.carePlan.id);
+    const carePlanEditUrl = getCarePlanEditUrl(props.carePlan.id);
 
     const { t } = useI18n();
 
@@ -100,14 +114,14 @@ export default {
       expanded.value = !expanded.value;
     });
 
-    const tokenRepository = useTokenRepository();
+    const { getCarePlanTokens, groupByMeasureMoment, loading } = useTokenRepository();
 
     const ungroupedTokens = ref(null);
     const carePlanTokens = ref(null);
 
-    const getCarePlanTokens = (async () => {
-      ungroupedTokens.value = await tokenRepository.getCarePlanTokens(props.carePlan.id);
-      carePlanTokens.value = tokenRepository.groupByMeasureMoment(ungroupedTokens.value);
+    const getGroupedCarePlanTokens = (async () => {
+      ungroupedTokens.value = await getCarePlanTokens(props.carePlan.id);
+      carePlanTokens.value = groupByMeasureMoment(ungroupedTokens.value);
     });
 
     const tokenStatusCounts = computed(() => {
@@ -142,12 +156,15 @@ export default {
     });
 
     onMounted(() => {
-      getCarePlanTokens();
+      getGroupedCarePlanTokens();
     });
 
     return {
       carePlanTokens,
+      carePlanDeleteUrl,
+      carePlanEditUrl,
       expanded,
+      loading,
       startDate,
       t,
       toggleExpand,

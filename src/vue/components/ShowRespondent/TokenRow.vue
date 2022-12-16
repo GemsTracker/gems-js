@@ -5,18 +5,19 @@
     <td>{{ token.owner.type }}</td>
     <td>{{ measuredOn }}</td>
     <td>
-      <button v-if="answerable" @click="toSurvey" class="btn btn-sm btn-primary">Answer</button>
-      <button v-if="continuable" @click="toSurvey" class="btn btn-sm btn-primary">Continue</button>
-      <button v-if="hasAnswers" @click="toAnswers" class="btn btn-sm btn-primary">Answers</button>
+      <a v-if="answerable" :href="tokenAskUrl" class="btn btn-sm btn-primary">Answer</a>
+      <a v-if="continuable" :href="tokenAskUrl" class="btn btn-sm btn-primary">Continue</a>
+      <a v-if="hasAnswers" :href="tokenAnswerUrl" class="btn btn-sm btn-primary">Answers</a>
     </td>
     <td>
-      <button @click="toTokenInfo" class="btn btn-sm btn-primary">+</button>
+      <a :href="tokenShowUrl" class="btn btn-sm btn-primary">+</a>
     </td>
   </tr>
 </template>
 <script>
 import { computed } from 'vue';
 import useModelStore from '../../stores/modelRepository';
+import useUrlHelper from '../../functions/urlHelper';
 
 export default {
   props: {
@@ -75,6 +76,12 @@ export default {
       console.log('Forward to surevy', url);
     });
 
+    const { getTokenAnswerUrl, getTokenAskUrl, getTokenShowUrl } = useUrlHelper();
+
+    const tokenAnswerUrl = getTokenAnswerUrl(props.token.id);
+    const tokenAskUrl = getTokenAskUrl(props.token.id);
+    const tokenShowUrl = getTokenShowUrl(props.token.id);
+
     const toTokenInfo = (() => {
       console.log('Show token info');
     });
@@ -83,6 +90,9 @@ export default {
       answerable,
       continuable,
       currentLocale,
+      tokenAnswerUrl,
+      tokenAskUrl,
+      tokenShowUrl,
       hasAnswers,
       measuredOn,
       toAnswers,

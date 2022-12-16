@@ -1,14 +1,18 @@
+import { ref } from 'vue';
 import useArrayObjectFunctions from './ArrayObject';
 import useGetModelRepository from './modelRepository';
 
-const useTokenRepository = (() => {
+const useCarePlanRepository = (() => {
   const { getModelRepository } = useGetModelRepository();
   const modelRepository = getModelRepository();
   const carePlanModel = modelRepository.getModel('CarePlan');
 
   const { sortFieldsFunction } = useArrayObjectFunctions();
 
+  const loading = ref(null);
+
   const getAllCarePlans = (async () => {
+    loading.value = true;
     const rawCarePlans = await carePlanModel.all({ per_page: 200 });
     const carePlanArray = Object.values(rawCarePlans);
     console.log(carePlanArray);
@@ -19,12 +23,14 @@ const useTokenRepository = (() => {
       return augmentedCarePlan;
     });
     console.log(augmentedCarePlans);
+    loading.value = false;
     return augmentedCarePlans.sort(sortFieldsFunction(['-start']));
   });
 
   return {
+    loading,
     getAllCarePlans,
   };
 });
 
-export default useTokenRepository;
+export default useCarePlanRepository;

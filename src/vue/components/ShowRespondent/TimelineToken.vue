@@ -15,7 +15,9 @@
           <copy-to-clipboard-icon></copy-to-clipboard-icon>
         </tool-tip>
         <tool-tip content="Details" class="icon">
-          <font-awesome-icon icon="fa-solid fa-ellipsis" />
+          <a :href="tokenShowUrl">
+            <font-awesome-icon icon="fa-solid fa-ellipsis" />
+          </a>
         </tool-tip>
       </div>
     </div>
@@ -27,6 +29,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import useUrlHelper from '../../functions/urlHelper';
 import CopyToClipboardIcon from '../Util/CopyToClipboardIcon.vue';
 import ToolTip from '../Util/ToolTip.vue';
 import useTimelineTokens from '../../functions/useTimelineTokens';
@@ -51,6 +54,9 @@ export default {
     const currentLocale = computed(() => modelStore.locale);
     const tokenDisplay = ref(null);
     const copyTokenTooltip = ref('Copy');
+
+    const { getTokenShowUrl } = useUrlHelper();
+    const tokenShowUrl = getTokenShowUrl(props.token.id);
 
     const tokenLink = computed(() => {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
@@ -87,6 +93,7 @@ export default {
       statusClass,
       tokenDisplay,
       tokenLink,
+      tokenShowUrl,
       tokenTooltip,
     };
   },
