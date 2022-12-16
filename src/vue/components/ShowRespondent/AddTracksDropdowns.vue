@@ -4,7 +4,7 @@
       <strong>Add&nbsp;</strong>
       <drop-down label="Tracks">
         <li v-for="track, index in tracks" :key="index">
-          <a class="dropdown-item" :href="getTrackUrl(track)">{{ track.name }}</a>
+          <a class="dropdown-item" :href="getTrackCreateUrl(track.id)">{{ track.name }}</a>
         </li>
       </drop-down>
       &nbsp;
@@ -26,7 +26,7 @@
 <script>
 import { onMounted, ref } from 'vue';
 import useTrackRepository from '../../functions/TrackRepository';
-import useBaseStore from '../../stores/baseStore';
+import useUrlHelper from '../../functions/urlHelper';
 import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
@@ -38,7 +38,6 @@ export default {
   setup() {
     const tracks = ref(null);
 
-    const baseStore = useBaseStore();
     const patientStore = usePatientStore();
 
     const { getTracksForOrganization, loading } = useTrackRepository();
@@ -47,7 +46,7 @@ export default {
       tracks.value = await getTracksForOrganization(patientStore.organizationId);
     });
 
-    const getTrackUrl = ((track) => `${baseStore.baseUrl}/respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${track.id}`);
+    const { getTrackCreateUrl } = useUrlHelper();
 
     onMounted(() => {
       getTracks();
@@ -55,7 +54,7 @@ export default {
 
     return {
       loading,
-      getTrackUrl,
+      getTrackCreateUrl,
       tracks,
     };
   },

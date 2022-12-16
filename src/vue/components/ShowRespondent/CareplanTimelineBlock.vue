@@ -4,7 +4,7 @@
       <h4 class="card-title row">
         <div class="col">
           <tool-tip content="Edit" class="action-icon">
-            <a :href="editUrl">
+            <a :href="carePlanEditUrl">
               <font-awesome-icon icon="pencil" />
             </a>
           </tool-tip>
@@ -16,7 +16,7 @@
         </div>
         <div class="col-3 text-end">
           <tool-tip content="Delete item!" class="action-icon">
-            <a :href="deleteUrl">
+            <a :href="carePlanDeleteUrl">
               <font-awesome-icon icon="trash-can" />
             </a>
           </tool-tip>
@@ -76,8 +76,7 @@ import {
   faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
 import useTokenRepository from '../../functions/tokenRepository';
-import useBaseStore from '../../stores/baseStore';
-import usePatientStore from '../../stores/patientStore';
+import useUrlHelper from '../../functions/urlHelper';
 import useModelStore from '../../stores/modelRepository';
 import TimelineMeasureMomentBlock from './TimelineMeasureMomentBlock.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
@@ -104,11 +103,10 @@ export default {
     const currentLocale = computed(() => modelStore.locale);
     const expanded = ref(props.open);
 
-    const baseStore = useBaseStore();
-    const patientStore = usePatientStore();
+    const { getCarePlanDeleteUrl, getCarePlanEditUrl } = useUrlHelper();
 
-    const deleteUrl = computed(() => `${baseStore.baseUrl}/respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit-track/${props.carePlan.id}`);
-    const editUrl = computed(() => `${baseStore.baseUrl}/respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/delete-track/${props.carePlan.id}`);
+    const carePlanDeleteUrl = getCarePlanDeleteUrl(props.carePlan.id);
+    const carePlanEditUrl = getCarePlanEditUrl(props.carePlan.id);
 
     const { t } = useI18n();
 
@@ -163,8 +161,8 @@ export default {
 
     return {
       carePlanTokens,
-      deleteUrl,
-      editUrl,
+      carePlanDeleteUrl,
+      carePlanEditUrl,
       expanded,
       loading,
       startDate,

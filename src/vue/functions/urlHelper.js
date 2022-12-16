@@ -6,7 +6,11 @@ const useUrlHelper = (() => {
   const patientStore = usePatientStore();
 
   const getCarePlanDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/delete-track/${carePlanId}`);
-  const getCarePlanEditUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit-track/${carePlanId}`);
+  const getCarePlanEditUrl = ((carePlanId) => {
+    console.log(baseStore.baseUrl);
+    console.log(`${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit-track/${carePlanId}`);
+    return `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit-track/${carePlanId}`;
+  });
 
   const getTokenAnswerUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/answer/${tokenId}`);
   const getTokenAskUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${tokenId}`);
