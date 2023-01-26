@@ -1,8 +1,9 @@
 <template>
   <div class="start-date-block">
     <h6 class="start-date">{{ displayDate }}</h6>
-    <timeline-owner-block v-for="owner, index in tokens"
-      :key="index" :owner="owner" />
+    <template v-for="owner, index in tokens" :key="index">
+      <timeline-owner-block  v-if="'tokens' in owner && owner.tokens.length" :owner="owner" />
+    </template>
   </div>
 </template>
 <script>

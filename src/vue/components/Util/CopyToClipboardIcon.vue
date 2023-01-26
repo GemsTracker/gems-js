@@ -57,8 +57,6 @@ export default {
     const { copyValueToClipboard } = useCopyToClipboard();
 
     const copyToClipboard = (async () => {
-      // Vue 2!! use function refs in vue3!
-
       const element = props.targetElement;
 
       if (element) {

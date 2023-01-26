@@ -5,7 +5,7 @@ const useTimelineTokens = (() => {
       case 'requested':
         return 'open';
       case 'rejected':
-        return 'open';
+        return 'missed';
       case 'completed':
         return 'answered';
       case 'draft':

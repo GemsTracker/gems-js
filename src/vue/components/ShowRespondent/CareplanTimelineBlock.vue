@@ -28,29 +28,36 @@
         </div>
         <div class="token-status-bar col-3 align-self-end">
           <div v-if="tokenStatusCounts !== null" class="progress">
-            <tool-tip content="nyan" v-if="'rejected' in tokenStatusCounts"
-              class="tooltip-container progress-bar missed"
+            <tool-tip :content="`${tokenStatusCounts.rejected} rejected`"
+              v-if="'rejected' in tokenStatusCounts"
+              class="tooltip-container progress-bar bg-danger missed"
               :style="`width:${tokenStatusPercentages.rejected}%`">
               {{ tokenStatusCounts.rejected }}
             </tool-tip>
-            <div v-if="'completed' in tokenStatusCounts"  class="progress-bar answered"
+            <tool-tip :content="`${tokenStatusCounts.completed} answered`"
+              v-if="'completed' in tokenStatusCounts"
+              class="tooltip-container progress-bar bg-success answered"
               :style="`width:${tokenStatusPercentages.completed}%`">
               {{ tokenStatusCounts.completed }}
-            </div>
+            </tool-tip>
             <tool-tip :content="`${tokenStatusCounts['in-progress']} in progress`"
               v-if="'in-progress' in tokenStatusCounts"
-              class="progress-bar open progress-bar-striped"
+              class="progress-bar bg-warning open progress-bar-striped"
               :style="`width:${tokenStatusPercentages['in-progress']}%`">
               {{ tokenStatusCounts['in-progress'] }}
             </tool-tip>
-            <div v-if="'requested' in tokenStatusCounts" class="progress-bar open"
+            <tool-tip :content="`${tokenStatusCounts.requested} open`"
+              v-if="'requested' in tokenStatusCounts"
+              class="tooltip-container progress-bar bg-warning open"
               :style="`width:${tokenStatusPercentages.requested}%`">
               {{ tokenStatusCounts.requested }}
-            </div>
-            <div v-if="'draft' in tokenStatusCounts" class="progress-bar waiting"
+            </tool-tip>
+            <tool-tip :content="`${tokenStatusCounts.draft} not yet open`"
+              v-if="'draft' in tokenStatusCounts"
+              class="tooltip-container progress-bar bg-info waiting"
               :style="`width:${tokenStatusPercentages.draft}%`">
               {{ tokenStatusCounts.draft }}
-            </div>
+            </tool-tip>
           </div>
         </div>
       </div>
@@ -120,7 +127,9 @@ export default {
     const carePlanTokens = ref(null);
 
     const getGroupedCarePlanTokens = (async () => {
-      ungroupedTokens.value = await getCarePlanTokens(props.carePlan.id);
+      const rawCarePlanTokens = await getCarePlanTokens(props.carePlan.id);
+      // remove tokens with status unknown
+      ungroupedTokens.value = rawCarePlanTokens.filter((token) => token.status !== 'unknown');
       carePlanTokens.value = groupByMeasureMoment(ungroupedTokens.value);
     });
 

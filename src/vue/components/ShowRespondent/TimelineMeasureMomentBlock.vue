@@ -1,8 +1,10 @@
 <template>
   <div class="measure-moment object card">
     <h5>{{ measureMoment.name }}</h5>
-    <timeline-start-date-block v-for="startDate, index in tokens"
-      :key="index" :start-date="startDate" />
+    <template v-for="startDate, index in tokens" :key="index">
+      <timeline-start-date-block  v-if="'tokens' in startDate && startDate.tokens.length"
+       :start-date="startDate" />
+    </template>
   </div>
 </template>
 <script>
