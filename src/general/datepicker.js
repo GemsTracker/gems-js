@@ -4,14 +4,12 @@ import localeNl from 'air-datepicker/locale/nl';
 import localeDe from 'air-datepicker/locale/de';
 import localeFr from 'air-datepicker/locale/fr';
 import { createPopper } from '@popperjs/core';
-import { parse } from 'date-fns';
+import { isValid, parse } from 'date-fns';
 
 import 'air-datepicker/air-datepicker.css';
 
 export default class Datepicker {
   constructor() {
-    console.log(4);
-
     this.localeObjects = {
       de: localeDe,
       en: localeEn,
@@ -99,9 +97,15 @@ export default class Datepicker {
         }
       }
 
-      console.log(options);
-
       const element = new AirDatepicker(datepicker, options);
+
+      datepicker.addEventListener('input', () => {
+        const inputDate = this.getCurrentDate(datepicker);
+        if (isValid(inputDate)) {
+          element.selectDate(inputDate);
+          element.setViewDate(inputDate);
+        }
+      });
     });
   }
 
@@ -111,8 +115,6 @@ export default class Datepicker {
       return null;
     }
     const format = this.getFullFormat(element);
-    console.log(currentDate, format);
-    console.log(parse(currentDate, format, new Date()));
     return parse(currentDate, format, new Date());
   }
 
@@ -120,7 +122,6 @@ export default class Datepicker {
     if (element.getAttribute('data-date-format') === null) {
       return null;
     }
-    console.log(element.getAttribute('data-date-format').replace(/[^dMy/-]/gi, ''));
     const format = this.formatDateFormat(element.getAttribute('data-date-format').replace(/[^dmY/-]/gi, ''));
     if (format !== '') {
       return format;
