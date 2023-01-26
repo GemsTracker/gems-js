@@ -124,12 +124,12 @@ const useTokenRepository = (() => {
 
   const groupByDate = ((tokens) => {
     const groupedTokens = [];
+    const foundStarts = [];
     tokens.sort(sortFieldsFunction(['-start', 'roundOrder'])).forEach((token) => {
       let { start } = token;
       if (start === null) {
         start = 0;
       }
-      const foundStarts = [];
       if (!foundStarts.includes(token.start)) {
         foundStarts.push(token.start);
         groupedTokens.push({ start: token.start, tokens: [] });
@@ -143,9 +143,9 @@ const useTokenRepository = (() => {
 
   const groupByOwner = ((tokens) => {
     const groupedTokens = [];
+    const foundOwners = [];
     tokens.sort(sortFieldsFunction(['ownerType', 'roundOrder'])).forEach((token) => {
       if (token.ownerType !== null) {
-        const foundOwners = [];
         if (!foundOwners.includes(token.ownerType)) {
           foundOwners.push(token.ownerType);
           groupedTokens.push({ type: token.ownerType, tokens: [] });
@@ -160,9 +160,9 @@ const useTokenRepository = (() => {
 
   const groupByStatus = ((tokens) => {
     const groupedTokens = [];
+    const foundStatus = [];
     tokens.sort(sortFieldsFunction(['status', 'roundOrder'])).forEach((token) => {
       if (token.status !== null) {
-        const foundStatus = [];
         if (!foundStatus.includes(token.status)) {
           foundStatus.push(token.status);
           groupedTokens.push({ status: token.status, tokens: [] });

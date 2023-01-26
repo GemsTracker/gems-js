@@ -16,12 +16,20 @@ const useArrayObjectFunctions = (() => {
       let i = 0;
       let result = 0;
       while (i < fieldsInfo.length && result === 0) {
-        if (typeof a[fieldsInfo[i].field] === 'number' && typeof b[fieldsInfo[i].field] === 'number') {
+        const fieldA = a[fieldsInfo[i].field];
+        const fieldB = b[fieldsInfo[i].field];
+        if (fieldA === null && fieldB === null) {
+          result = 0;
+        } else if (fieldA === null) {
+          result = 1 * fieldsInfo[i].direction;
+        } else if (fieldB === null) {
+          result = -1 * fieldsInfo[i].direction;
+        } else if (typeof fieldA === 'number' && typeof fieldB === 'number') {
           result = fieldsInfo[i].direction
-            * (a[fieldsInfo[i].field] - b[fieldsInfo[i].field]);
+            * (fieldA - fieldB);
         } else {
           result = fieldsInfo[i].direction
-            * (a[fieldsInfo[i].field].toString().localeCompare(b[fieldsInfo[i].field].toString()));
+            * (fieldA.toString().localeCompare(fieldB.toString()));
         }
         i += 1;
       }

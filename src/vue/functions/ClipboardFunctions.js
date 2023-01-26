@@ -2,10 +2,10 @@ const useCopyToClipboard = (() => {
   const copy = ((element) => {
     console.log(element);
     if (navigator.clipboard) {
-      console.log('Copied using navigator clipboard');
-      return navigator.clipboard.writeText(element.innerHtml);
+      console.log('Copied using navigator clipboard', element.innerHTML);
+      return navigator.clipboard.writeText(element.innerHTML);
     }
-    console.log('Copied using exec command');
+    console.log('Copied using exec command', element.innerHTML);
     window.getSelection().selectAllChildren(element);
     document.execCommand('copy');
     window.getSelection().removeAllRanges();

@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import BatchRunner from './vue/components/BatchRunner.vue';
+import GemsForm from './vue/components/GemsForm.vue';
 import ShowRespondent from './vue/components/ShowRespondent.vue';
 import nlTranslations from './locales/nl.json';
 import enTranslations from './locales/en.json';
@@ -9,6 +10,7 @@ import enTranslations from './locales/en.json';
 const appSettings = {
   components: {
     BatchRunner,
+    GemsForm,
     ShowRespondent,
   },
 };

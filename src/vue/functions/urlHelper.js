@@ -13,8 +13,8 @@ const useUrlHelper = (() => {
   });
 
   const getTokenAnswerUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/answer/${tokenId}`);
-  const getTokenAskUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${tokenId}`);
-  const getTokenShowUrl = ((tokenId) => `${baseStore.baseUrl}ask/to-survey/${tokenId}`);
+  const getTokenAskUrl = ((tokenId) => `${baseStore.baseUrl}ask/to-survey/${tokenId}`);
+  const getTokenShowUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${tokenId}`);
 
   const getTrackCreateUrl = ((trackId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/create/${trackId}`);
 
