@@ -1,5 +1,5 @@
 <template>
-  <div class="careplan-timeline-block card">
+  <div class="careplan-timeline-block card traject">
     <div class="card-header header" @click="toggleExpand">
       <h4 class="card-title row">
         <div class="col">
