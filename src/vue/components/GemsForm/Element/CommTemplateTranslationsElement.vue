@@ -71,6 +71,7 @@ import TextElement from './TextElement.vue';
 import LoadingScreen from '../../Util/LoadingScreen.vue';
 import ValidatorMessages from '../ValidatorMessages.vue';
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
+import useGemsFormFunctions from '../../../functions/gemsFormFunctions';
 import CommFieldsRepository from '../../../functions/CommFieldsRepository';
 
 library.add(faEye, faEyeSlash, faSquareCaretLeft, faSquareCaretDown);
@@ -187,8 +188,28 @@ export default {
       commFieldsEmpty.value = true;
     });
 
+    const initValues = (() => {
+      if ('name' in props.options && props.options.name !== null && props.options.name in parentFormData.value && parentFormData.value[props.options.name] === null) {
+        const newData = [];
+        const { getInitialFormValues } = useGemsFormFunctions(
+          structure,
+          currentTabData,
+        );
+
+        Object.keys(tabs.value).forEach((language) => {
+          const newRow = getInitialFormValues();
+          newRow.language = language;
+          newData.push(newRow);
+        });
+
+        parentFormData.value[props.options.name] = newData;
+      }
+    });
+
     onMounted(() => {
       getCommFields(commTarget.value);
+
+      initValues();
     });
 
     watch(commTarget, (newTarget) => {

@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 export default {
   props: {
@@ -21,10 +21,10 @@ export default {
     },
   },
   setup(props) {
-    let Twig = null;
+    const Twig = ref(null);
 
     onMounted(async () => {
-      Twig = await import('twig/twig.min');
+      Twig.value = await import('twig/twig.min');
     });
 
     const manualVariableRender = ((text) => {
@@ -37,14 +37,14 @@ export default {
     });
 
     const twigRender = ((text) => {
-      const template = Twig.twig({
+      const template = Twig.value.twig({
         data: text,
       });
       return template.render(props.commFields);
     });
 
     const renderText = ((text) => {
-      if (text === null || Twig === null) {
+      if (text === null || Twig.value === null) {
         return null;
       }
 
@@ -59,15 +59,22 @@ export default {
       return renderedText;
     });
 
-    const body = computed(() => {
+    const bodyTest = computed(() => {
       if ('body' in props.formData) {
+        return props.formData.body;
+      }
+      return null;
+    });
+
+    const body = computed(() => {
+      if (Twig.value !== null && 'body' in props.formData) {
         return renderText(props.formData.body);
       }
       return null;
     });
 
     const subject = computed(() => {
-      if ('subject' in props.formData) {
+      if (Twig.value !== null && 'subject' in props.formData) {
         return renderText(props.formData.subject);
       }
       return null;
@@ -75,6 +82,7 @@ export default {
 
     return {
       body,
+      bodyTest,
       subject,
     };
   },

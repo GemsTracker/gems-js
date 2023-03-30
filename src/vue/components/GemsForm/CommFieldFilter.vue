@@ -1,5 +1,5 @@
 <template>
-  <div class="input-group input-group-sm mt-3 mb-3">
+  <div class="comm-field-filter input-group input-group-sm mt-3 mb-3">
     <span class="input-group-text">{{ idLabel }}</span>
     <input class="form-control form-control-sm" type="text" v-model="id" />
     <template v-if="showOrganizationIdField">
@@ -10,7 +10,7 @@
       <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
     </button>
     <button type="button" class="btn" @click="clearFilter">Clear</button>
-
+    <div class="form-text">Insert an existing {{ idLabel }} to use those values in the preview</div>
   </div>
 </template>
 <script>
@@ -89,3 +89,13 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.comm-field-filter {
+  > .form-control {
+    flex-grow: 0;
+  }
+  .form-text {
+    padding-left: 1rem;
+  }
+}
+</style>
