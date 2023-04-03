@@ -3,17 +3,24 @@ import { url } from '../general/functions';
 export default class AuthIdleChecker {
   constructor() {
     this.requestTime = new Date();
+  }
+
+  init(root) {
+    if (root.tagName !== 'BODY') {
+      return;
+    }
+
     const body = document.getElementsByTagName('body')[0];
 
     this.maxIdleTime = parseInt(body?.getAttribute('data-max-idle-time'), 10) || 1200;
     this.authPollInterval = parseInt(body?.getAttribute('data-auth-poll-interval'), 10) || 60;
 
-    this.init();
+    this.initEvents();
 
     this.schedule();
   }
 
-  init() {
+  initEvents() {
     const buttonAlive = document.getElementById('authIdleCheckerWarningAlive');
     buttonAlive?.addEventListener('click', () => {
       fetch(url('/auth/idle-alive'), { method: 'post' })
@@ -89,7 +96,3 @@ export default class AuthIdleChecker {
     }
   }
 }
-
-window.addEventListener('load', () => {
-  new AuthIdleChecker();
-});

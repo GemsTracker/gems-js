@@ -1,10 +1,6 @@
 export default class Menu {
-  constructor() {
-    this.init();
-  }
-
-  init() {
-    const menuContainers = document.querySelectorAll('#menu .container-link-item');
+  init(root) {
+    const menuContainers = root.querySelectorAll('#menu .container-link-item');
 
     menuContainers.forEach((container) => {
       container.addEventListener('click', (event) => {
@@ -34,6 +30,3 @@ export default class Menu {
     });
   }
 }
-window.addEventListener('load', () => {
-  const menu = new Menu();
-});

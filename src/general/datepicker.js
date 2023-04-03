@@ -16,12 +16,10 @@ export default class Datepicker {
       fr: localeFr,
       nl: localeNl,
     };
-
-    this.init();
   }
 
-  init() {
-    const datepickers = document.querySelectorAll('input.date-picker');
+  init(root) {
+    const datepickers = root.querySelectorAll('input.date-picker');
 
     datepickers.forEach((datepicker) => {
       const locale = this.getLocaleObject(datepicker);
@@ -166,7 +164,3 @@ export default class Datepicker {
     return this.localeObjects.en;
   }
 }
-
-window.addEventListener('load', () => {
-  const datepicker = new Datepicker();
-});
