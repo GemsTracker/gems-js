@@ -46,6 +46,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    finishUrl: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     ProgressBar,
@@ -79,6 +83,9 @@ export default {
           progress.value = result.data.percent * 100;
           if (progress.value === 100) {
             finished.value = true;
+            if (props.finishUrl) {
+              window.location.href = props.finishUrl;
+            }
           }
         }
         if ('messages' in result.data && result.data.messages !== null) {
