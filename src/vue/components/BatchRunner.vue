@@ -50,6 +50,10 @@ export default {
       type: String,
       default: null,
     },
+    restartRedirectUrl: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     ProgressBar,
@@ -126,6 +130,11 @@ export default {
     });
 
     const restart = (async () => {
+      if (props.restartRedirectUrl) {
+        window.location.href = props.restartRedirectUrl;
+        return;
+      }
+
       const resetUrl = `${currentUrl}?progress=restart`;
       const result = await axios.get(resetUrl);
       if ('data' in result) {
