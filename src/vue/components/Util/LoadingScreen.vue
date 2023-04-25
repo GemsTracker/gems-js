@@ -4,6 +4,8 @@
   </div>
 </template>
 <script>
+import { computed } from 'vue';
+
 export default {
   props: {
     size: {
@@ -17,17 +19,21 @@ export default {
       default: null,
     },
   },
-  computed: {
-    loaderContainerStyle() {
-      return `width: ${this.size}; height: ${this.size}`;
-    },
-    loaderClass() {
-      const loaderClass = ['loader'];
-      if (this.color !== null) {
-        loaderClass.push(this.color);
+  setup(props) {
+    const loaderContainerStyle = computed(() => `width: ${props.size}; height: ${props.size}`);
+
+    const loaderClass = computed(() => {
+      const classNames = ['loader'];
+      if (props.color !== null) {
+        classNames.push(props.color);
       }
-      return loaderClass.join(' ');
-    },
+      return classNames.join(' ');
+    });
+
+    return {
+      loaderClass,
+      loaderContainerStyle,
+    };
   },
 };
 </script>
