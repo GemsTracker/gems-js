@@ -5,25 +5,54 @@ import useGetModelRepository from './modelRepository';
 const useInsertableQuestionnaireRepository = (() => {
   const { getModelRepository } = useGetModelRepository();
   const modelRepository = getModelRepository();
-  const insertableQuestionnaireModel = modelRepository.getModel('InsertableQuestionnaire', 'insertable-questionnaire');
+  const insertableQuestionnaireModel = modelRepository.getEndpointModel('InsertableQuestionnaires', 'insertable-questionnaire');
+  insertableQuestionnaireModel.idField = null;
   const { sortFieldsFunction } = useArrayObjectFunctions();
 
   const loading = ref(null);
 
-  const getInsertableQuestionnaireForOrganization = (async (organizationId) => {
+  const getInsertableQuestionnairesForOrganization = (async (organizationId) => {
     loading.value = true;
     const filter = {
       organization: organizationId,
+      active: 1,
       per_page: 200,
     };
-    const tracks = await insertableQuestionnaireModel.all(filter);
+    const questionnaires = await insertableQuestionnaireModel.all(filter);
+    console.log(questionnaires);
+
     loading.value = false;
-    return tracks.sort(sortFieldsFunction(['name']));
+    return questionnaires.sort(sortFieldsFunction(['name']));
+  });
+
+  const groupByServiceType = ((questionnaires) => {
+    const patientQuestionnaires = [];
+    const practitionerQuestionnaires = [];
+
+    questionnaires.forEach((questionnaire) => {
+      console.log('SORTING QUESTIONNAIRE', questionnaire);
+      if ('subjectType' in questionnaire) {
+        if (questionnaire.subjectType.includes('Patient')) {
+          console.log('FOR PATIENTS!');
+          patientQuestionnaires.push(questionnaire);
+        }
+        if (questionnaire.subjectType.includes('Practitioner')) {
+          console.log('FOR PRACTITIONERS!');
+          practitionerQuestionnaires.push(questionnaire);
+        }
+      }
+    });
+
+    return [
+      patientQuestionnaires,
+      practitionerQuestionnaires,
+    ];
   });
 
   return {
     loading,
-    getInsertableQuestionnaireForOrganization,
+    getInsertableQuestionnairesForOrganization,
+    groupByServiceType,
   };
 });
 

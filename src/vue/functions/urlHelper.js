@@ -12,6 +12,8 @@ const useUrlHelper = (() => {
     return `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit-track/${carePlanId}`;
   });
 
+  const getInsertSurveyUrl = ((surveyId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/insert/${surveyId}`);
+
   const getTokenAnswerUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/answer/${tokenId}`);
   const getTokenAskUrl = ((tokenId) => `${baseStore.baseUrl}ask/to-survey/${tokenId}`);
   const getTokenShowUrl = ((tokenId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${tokenId}`);
@@ -21,6 +23,7 @@ const useUrlHelper = (() => {
   return {
     getCarePlanDeleteUrl,
     getCarePlanEditUrl,
+    getInsertSurveyUrl,
     getTokenAnswerUrl,
     getTokenAskUrl,
     getTokenShowUrl,
