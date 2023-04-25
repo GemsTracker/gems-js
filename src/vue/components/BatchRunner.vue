@@ -84,6 +84,9 @@ export default {
         if ('messages' in result.data && result.data.messages !== null) {
           messages.value = result.data.messages;
         }
+        if ('finished' in result.data) {
+          finished.value = result.data.finished;
+        }
       }
       console.log(result.data);
     });
