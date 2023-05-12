@@ -71,7 +71,7 @@ export default {
     });
 
     const fetchProgress = (async () => {
-      const runUrl = `${currentUrl}?progress=run`;
+      const runUrl = `${currentUrl}?step=batch&progress=run`;
       console.log(currentUrl, runUrl);
       const result = await axios.get(runUrl);
       if ('data' in result) {
@@ -101,7 +101,7 @@ export default {
     });
 
     const init = (async () => {
-      const initUrl = `${currentUrl}?progress=init`;
+      const initUrl = `${currentUrl}?step=batch&progress=init`;
       const result = await axios.get(initUrl);
       if ('data' in result) {
         initialized.value = true;
@@ -122,7 +122,7 @@ export default {
     });
 
     const restart = (async () => {
-      const resetUrl = `${currentUrl}?progress=restart`;
+      const resetUrl = `${currentUrl}?step=batch&progress=restart`;
       const result = await axios.get(resetUrl);
       if ('data' in result) {
         progress.value = 0;
