@@ -149,6 +149,13 @@ const usePatientRepository = (() => {
     return number;
   });
 
+  const active = computed(() => {
+    if (patientData.value && 'active' in patientData.value) {
+      return patientData.value.active;
+    }
+    return null;
+  });
+
   return {
     age,
     birthDate,
@@ -165,6 +172,7 @@ const usePatientRepository = (() => {
     organization,
     patientNr,
     phoneNumber,
+    active,
   };
 });
 

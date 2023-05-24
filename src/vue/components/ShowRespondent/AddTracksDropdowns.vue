@@ -27,6 +27,9 @@
           </li>
         </drop-down>
       </div>
+
+      <a v-if="active === true" class="btn btn-primary ms-3" type="button" :href="getRespondentDeleteUrl()">Delete track</a>
+      <a v-if="active === false" class="btn btn-primary ms-3" type="button" :href="getRespondentUndeleteUrl()">Undelete track</a>
   </div>
 </template>
 <script>
@@ -37,6 +40,7 @@ import useUrlHelper from '../../functions/urlHelper';
 import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
+import usePatientRepository from "../../functions/patientRepository";
 
 export default {
   components: {
@@ -73,11 +77,13 @@ export default {
       }
     });
 
-    const { getInsertSurveyUrl, getTrackCreateUrl } = useUrlHelper();
+    const { getInsertSurveyUrl, getTrackCreateUrl, getRespondentDeleteUrl, getRespondentUndeleteUrl } = useUrlHelper();
 
     onMounted(() => {
       getData();
     });
+
+    const { active } = usePatientRepository();
 
     return {
       getInsertSurveyUrl,
@@ -87,6 +93,9 @@ export default {
       practitionerQuestionnaires,
       tracks,
       trackLoading,
+      active,
+      getRespondentDeleteUrl,
+      getRespondentUndeleteUrl,
     };
   },
 };
