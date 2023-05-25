@@ -26,7 +26,6 @@ const usePatientRepository = (() => {
   });
 
   const organization = computed(() => {
-    getPatientData();
     if (patientData.value && 'managingOrganization' in patientData.value
       && 'display' in patientData.value.managingOrganization) {
       return patientData.value.managingOrganization.display;
@@ -35,7 +34,6 @@ const usePatientRepository = (() => {
   });
 
   const familyName = computed(() => {
-    getPatientData();
     if (patientData.value && 'name' in patientData.value && patientData.value.name.length
       && 'family' in patientData.value.name[0]) {
       return patientData.value.name[0].family;
@@ -44,7 +42,6 @@ const usePatientRepository = (() => {
   });
 
   const givenName = computed(() => {
-    getPatientData();
     if (patientData.value && 'name' in patientData.value && patientData.value.name.length
       && 'given' in patientData.value.name[0]) {
       return patientData.value.name[0].given;
@@ -53,7 +50,6 @@ const usePatientRepository = (() => {
   });
 
   const fullName = computed(() => {
-    getPatientData();
     const nameParts = [];
     if (givenName.value !== null) {
       nameParts.push(givenName.value);
@@ -150,7 +146,6 @@ const usePatientRepository = (() => {
   });
 
   const active = computed(() => {
-    getPatientData();
     if (patientData.value && 'active' in patientData.value) {
       return patientData.value.active;
     }

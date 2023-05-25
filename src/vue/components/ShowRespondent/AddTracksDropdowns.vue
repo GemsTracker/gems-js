@@ -2,7 +2,8 @@
   <div class="track-buttons">
       <loading-screen v-if="loading === true"></loading-screen>
       <strong>Add&nbsp;</strong>
-      <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0" :loading="trackLoading">
+      <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0"
+                 :loading="trackLoading">
         <li v-for="(track, index) in tracks" :key="index">
           <a class="dropdown-item" :href="getTrackCreateUrl(track.id)">{{ track.name }}</a>
         </li>
@@ -28,19 +29,22 @@
         </drop-down>
       </div>
 
-      <a v-if="active === true" class="btn btn-primary ms-3" type="button" :href="getRespondentDeleteUrl()">Delete patient</a>
-      <a v-if="active === false" class="btn btn-primary ms-3" type="button" :href="getRespondentUndeleteUrl()">Undelete patient</a>
+      <a class="btn btn-primary-ms-3" type="button" :href="disableButtonUrl"
+         :class="{disabled: disableButtonLabel === null}">
+          <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
+          {{ disableButtonLabel }}
+      </a>
   </div>
 </template>
 <script>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import useTrackRepository from '../../functions/TrackRepository';
 import useInsertableQuestionnaireRepositoryRepository from '../../functions/InsertableQuestionnaireRepository';
 import useUrlHelper from '../../functions/urlHelper';
 import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
-import usePatientRepository from "../../functions/patientRepository";
+import usePatientRepository from '../../functions/patientRepository';
 
 export default {
   components: {
@@ -77,15 +81,47 @@ export default {
       }
     });
 
-    const { getInsertSurveyUrl, getTrackCreateUrl, getRespondentDeleteUrl, getRespondentUndeleteUrl } = useUrlHelper();
+    const {
+      getInsertSurveyUrl,
+      getTrackCreateUrl,
+      getRespondentDeleteUrl,
+      getRespondentUndeleteUrl,
+    } = useUrlHelper();
+
+    const { active, getPatientData } = usePatientRepository();
 
     onMounted(() => {
       getData();
+      getPatientData();
     });
 
-    const { active } = usePatientRepository();
+    const disableButtonLabel = computed(() => {
+      if (active.value === true) {
+        return 'Delete patient';
+      }
+      if (active.value === false) {
+        return 'Undelete patient';
+      }
+      return null;
+    });
+
+    const toggleActive = (() => {
+
+    });
+
+    const disableButtonUrl = computed(() => {
+      if (active.value === true) {
+        return getRespondentDeleteUrl();
+      }
+      if (active.value === false) {
+        return getRespondentUndeleteUrl();
+      }
+      return null;
+    });
 
     return {
+      disableButtonLabel,
+      disableButtonUrl,
       getInsertSurveyUrl,
       getTrackCreateUrl,
       questionnaireLoading,
@@ -93,9 +129,6 @@ export default {
       practitionerQuestionnaires,
       tracks,
       trackLoading,
-      active,
-      getRespondentDeleteUrl,
-      getRespondentUndeleteUrl,
     };
   },
 };

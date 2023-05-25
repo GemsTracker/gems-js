@@ -9,6 +9,8 @@
   </div>
 </template>
 <script>
+import { onMounted } from 'vue';
+
 import usePatientRepository from '../../functions/patientRepository';
 import LoadingScreen from '../Util/LoadingScreen.vue';
 
@@ -21,10 +23,15 @@ export default {
       birthdayDmy,
       email,
       fullName,
+      getPatientData,
       loading,
       patientNr,
       phoneNumber,
     } = usePatientRepository();
+
+    onMounted(() => {
+      getPatientData();
+    });
 
     return {
       birthdayDmy,
