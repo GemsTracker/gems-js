@@ -28,8 +28,8 @@
         </drop-down>
       </div>
 
-      <a v-if="active === true" class="btn btn-primary ms-3" type="button" :href="getRespondentDeleteUrl()">Delete track</a>
-      <a v-if="active === false" class="btn btn-primary ms-3" type="button" :href="getRespondentUndeleteUrl()">Undelete track</a>
+      <a v-if="active === true" class="btn btn-primary ms-3" type="button" :href="getRespondentDeleteUrl()">Delete patient</a>
+      <a v-if="active === false" class="btn btn-primary ms-3" type="button" :href="getRespondentUndeleteUrl()">Undelete patient</a>
   </div>
 </template>
 <script>

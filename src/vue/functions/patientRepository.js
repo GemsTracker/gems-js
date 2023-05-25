@@ -150,6 +150,7 @@ const usePatientRepository = (() => {
   });
 
   const active = computed(() => {
+    getPatientData();
     if (patientData.value && 'active' in patientData.value) {
       return patientData.value.active;
     }
