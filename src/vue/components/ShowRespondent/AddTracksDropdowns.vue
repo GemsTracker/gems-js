@@ -45,12 +45,15 @@ import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
 import usePatientRepository from '../../functions/patientRepository';
+import { useI18n } from 'vue-i18n';
 
 export default {
   components: {
     DropDown, LoadingScreen,
   },
   setup() {
+    const { t } = useI18n();
+
     const tracks = ref(null);
     const questionnaires = ref(null);
     const patientQuestionnaires = ref(null);
@@ -97,10 +100,10 @@ export default {
 
     const disableButtonLabel = computed(() => {
       if (active.value === true) {
-        return 'Delete patient';
+        return t('Delete patient');
       }
       if (active.value === false) {
-        return 'Undelete patient';
+        return t('Undelete patient');
       }
       return null;
     });
