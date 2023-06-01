@@ -1,6 +1,5 @@
 <template>
   <div class="track-buttons">
-      <loading-screen v-if="loading === true"></loading-screen>
       <strong>Add&nbsp;</strong>
       <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0"
                  :loading="trackLoading">
@@ -14,7 +13,7 @@
         <drop-down label="Patients" :loading="questionnaireLoading"
          :disabled="patientQuestionnaires === null || patientQuestionnaires.length === 0">
           <li v-for="(questionnaire, index) in patientQuestionnaires" :key="index">
-            <a class="dropdown-item" :href="getInsertSurveyUrl(questionnaire)">
+            <a class="dropdown-item" :href="getInsertSurveyUrl(questionnaire.id)">
               {{ questionnaire.name }}
             </a>
           </li>
@@ -22,7 +21,7 @@
         <drop-down label="Staff" :loading="questionnaireLoading"
          :disabled="practitionerQuestionnaires === null || practitionerQuestionnaires.length === 0">
           <li v-for="(questionnaire, index) in practitionerQuestionnaires" :key="index">
-            <a class="dropdown-item" :href="getInsertSurveyUrl(questionnaire)">
+            <a class="dropdown-item" :href="getInsertSurveyUrl(questionnaire.id)">
                 {{ questionnaire.name }}
             </a>
           </li>
@@ -37,7 +36,13 @@
   </div>
 </template>
 <script>
-import { computed, onMounted, ref } from 'vue';
+import {
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
+import { useI18n } from 'vue-i18n';
 import useTrackRepository from '../../functions/TrackRepository';
 import useInsertableQuestionnaireRepositoryRepository from '../../functions/InsertableQuestionnaireRepository';
 import useUrlHelper from '../../functions/urlHelper';
@@ -45,7 +50,6 @@ import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
 import usePatientRepository from '../../functions/patientRepository';
-import { useI18n } from 'vue-i18n';
 
 export default {
   components: {
@@ -98,6 +102,16 @@ export default {
       getPatientData();
     });
 
+    const patientCombi = computed(() => patientStore.patientOrganizationCombination);
+    watch(patientCombi, () => {
+      tracks.value = null;
+      questionnaires.value = null;
+      patientQuestionnaires.value = null;
+      practitionerQuestionnaires.value = null;
+      getData();
+      getPatientData();
+    });
+
     const disableButtonLabel = computed(() => {
       if (active.value === true) {
         return t('Delete patient');
@@ -106,10 +120,6 @@ export default {
         return t('Undelete patient');
       }
       return null;
-    });
-
-    const toggleActive = (() => {
-
     });
 
     const disableButtonUrl = computed(() => {

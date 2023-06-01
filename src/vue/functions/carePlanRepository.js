@@ -13,16 +13,13 @@ const useCarePlanRepository = (() => {
 
   const getAllCarePlans = (async () => {
     loading.value = true;
-    const rawCarePlans = await carePlanModel.all({ per_page: 200 });
-    const carePlanArray = Object.values(rawCarePlans);
-    console.log(carePlanArray);
+    const carePlanArray = await carePlanModel.all({ per_page: 200 });
     const augmentedCarePlans = carePlanArray.map((carePlan) => {
       const augmentedCarePlan = carePlan;
       // Add start for easier sort
       augmentedCarePlan.start = carePlan.period.start;
       return augmentedCarePlan;
     });
-    console.log(augmentedCarePlans);
     loading.value = false;
     return augmentedCarePlans.sort(sortFieldsFunction(['-start']));
   });

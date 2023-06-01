@@ -52,7 +52,6 @@ export default {
   },
   setup(props) {
     const batchCount = ref(0);
-    const currentUrl = window.location.pathname;
     const finished = ref(false);
     const info = ref([]);
     const initialized = ref(false);
@@ -66,13 +65,31 @@ export default {
       restart: 'Restart',
     });
 
+    const getUrl = ((changedSearchParams = {}) => {
+      const currentUrl = window.location.pathname;
+      const searchParams = new URLSearchParams(window.location.search);
+
+      Object.keys(changedSearchParams).forEach((searchParam) => {
+        if (changedSearchParams[searchParam] === null && searchParams.has(searchParam)) {
+          searchParams.delete(searchParam);
+          return;
+        }
+        searchParams.set(searchParam, changedSearchParams[searchParam]);
+      });
+      const queryString = searchParams.toString();
+      if (queryString !== '') {
+        return `${currentUrl}?${queryString}`;
+      }
+
+      return currentUrl;
+    });
+
     const abort = (() => {
       emergencyStop.value = true;
     });
 
     const fetchProgress = (async () => {
-      const runUrl = `${currentUrl}?step=batch&progress=run`;
-      console.log(currentUrl, runUrl);
+      const runUrl = getUrl({ progress: 'run' });
       const result = await axios.get(runUrl);
       if ('data' in result) {
         if ('percent' in result.data) {
@@ -101,7 +118,7 @@ export default {
     });
 
     const init = (async () => {
-      const initUrl = `${currentUrl}?step=batch&progress=init`;
+      const initUrl = getUrl({ progress: 'init' });
       const result = await axios.get(initUrl);
       if ('data' in result) {
         initialized.value = true;
@@ -122,7 +139,7 @@ export default {
     });
 
     const restart = (async () => {
-      const resetUrl = `${currentUrl}?step=batch&progress=restart`;
+      const resetUrl = getUrl({ progress: 'restart' });
       const result = await axios.get(resetUrl);
       if ('data' in result) {
         progress.value = 0;

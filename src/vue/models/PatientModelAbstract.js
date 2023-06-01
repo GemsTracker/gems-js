@@ -8,11 +8,21 @@ export default class PatientModelAbstract extends Model {
 
     this.respondentData = true;
     this.patientField = 'patient';
-    this.delimiter = '@';
-
     this.patientStore = usePatientStore();
 
+    this.delimiter = this.patientStore.delimiter;
+
     this.addRespondentDataToFilters();
+  }
+
+  async all(filters = null, refresh = false) {
+    this.addRespondentDataToFilters();
+    return super.all(filters, refresh);
+  }
+
+  async findById(id, filters = null, refresh = false) {
+    this.addRespondentDataToFilters();
+    return super.findById(id, filters, refresh);
   }
 
   addRespondentDataToFilters() {
@@ -20,7 +30,6 @@ export default class PatientModelAbstract extends Model {
   }
 
   withPatientNrOrganizationCombination() {
-    this.filters[this.patientField] = this.patientStore.patientNr
-      + this.delimiter + this.patientStore.organizationId;
+    this.filters[this.patientField] = this.patientStore.patientOrganizationCombination;
   }
 }

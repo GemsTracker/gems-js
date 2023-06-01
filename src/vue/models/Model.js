@@ -85,7 +85,7 @@ export default class Model {
         this.loadingIds[id] = this.store.getModelData(this.name, loadData);
         const data = await this.loadingIds[id];
 
-        delete this.loadingIds[id];
+        // delete this.loadingIds[id];
         if (data === null) {
           return data;
         }

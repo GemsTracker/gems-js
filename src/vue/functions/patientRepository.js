@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import usePatientStore from '../stores/patientStore';
 import useGetModelRepository from './modelRepository';
 
@@ -9,20 +9,22 @@ const usePatientRepository = (() => {
 
   const patientStore = usePatientStore();
 
-  console.log('hi!');
-
   const loading = ref(null);
   const patientNr = computed(() => patientStore.patientNr);
+
+  const patientOrgCombination = computed(() => `${patientStore.patientNr}@${patientStore.organizationId}`);
 
   const patientData = ref(null);
 
   const getPatientData = (async () => {
-    if (patientData.value === null) {
-      loading.value = true;
-      patientData.value = await patientModel.find();
-    }
+    loading.value = true;
+    patientData.value = await patientModel.find();
     loading.value = false;
     return patientData.value;
+  });
+
+  watch(patientOrgCombination, () => {
+    getPatientData();
   });
 
   const organization = computed(() => {

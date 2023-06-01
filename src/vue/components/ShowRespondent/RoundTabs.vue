@@ -3,7 +3,7 @@
     <loading-screen v-if="loading === true"></loading-screen>
     <template v-if="groupedTokens">
       <ul class="nav nav-tabs">
-        <li v-for="momentInfo, index in groupedTokens" :key="index"
+        <li v-for="(momentInfo, index) in groupedTokens" :key="index"
           @click="changeTab(index)" class="nav-item">
           <a class="nav-link" :class="{active: (index === currentTab)}">{{momentInfo.name}}</a>
         </li>
@@ -22,20 +22,27 @@
               </tr>
             </thead>
             <tbody>
-              <token-row v-for="token, index in groupedTokens[currentTab].tokens"
+              <token-row v-for="(token, index) in groupedTokens[currentTab].tokens"
                 :key="index" :token="token"></token-row>
             </tbody>
           </table>
         </div>
       </div>
     </template>
+    <span v-if="groupedTokens !== null && groupedTokens.length === 0" class="info">No tracks</span>
   </div>
 </template>
 <script>
-import { computed, onMounted, ref } from 'vue';
+import {
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import useTokenRepository from '../../functions/tokenRepository';
 import LoadingScreen from '../Util/LoadingScreen.vue';
 import TokenRow from './TokenRow.vue';
+import usePatientStore from '../../stores/patientStore';
 
 export default {
   components: {
@@ -62,6 +69,12 @@ export default {
     });
 
     onMounted(async () => {
+      getTokens();
+    });
+
+    const patientStore = usePatientStore();
+    const patientCombi = computed(() => patientStore.patientOrganizationCombination);
+    watch(patientCombi, () => {
       getTokens();
     });
 

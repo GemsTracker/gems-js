@@ -1,5 +1,6 @@
 <template>
   <div>
+    <organization-tabs />
     <respondent-info v-if="showRespondentInfo"></respondent-info>
     <add-tracks-dropdowns></add-tracks-dropdowns>
     <div class="display-picker text-end">
@@ -26,6 +27,7 @@ import AddTracksDropdowns from './ShowRespondent/AddTracksDropdowns.vue';
 import RespondentInfo from './ShowRespondent/RespondentInfo.vue';
 import RoundTabs from './ShowRespondent/RoundTabs.vue';
 import TokenTimeline from './ShowRespondent/TokenTimeline.vue';
+import OrganizationTabs from './ShowRespondent/OrganizationTabs.vue';
 
 export default {
   props: {
@@ -52,6 +54,7 @@ export default {
     },
   },
   components: {
+    OrganizationTabs,
     AddTracksDropdowns, RespondentInfo, RoundTabs, TokenTimeline,
   },
   setup(props) {
