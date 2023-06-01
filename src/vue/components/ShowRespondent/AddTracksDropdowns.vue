@@ -2,7 +2,8 @@
   <div class="track-buttons">
       <loading-screen v-if="loading === true"></loading-screen>
       <strong>Add&nbsp;</strong>
-      <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0" :loading="trackLoading">
+      <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0"
+                 :loading="trackLoading">
         <li v-for="(track, index) in tracks" :key="index">
           <a class="dropdown-item" :href="getTrackCreateUrl(track.id)">{{ track.name }}</a>
         </li>
@@ -27,22 +28,32 @@
           </li>
         </drop-down>
       </div>
+
+      <a class="btn btn-primary ms-3" type="button" :href="disableButtonUrl"
+         :class="{disabled: disableButtonLabel === null}">
+          <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
+          {{ disableButtonLabel }}
+      </a>
   </div>
 </template>
 <script>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import useTrackRepository from '../../functions/TrackRepository';
 import useInsertableQuestionnaireRepositoryRepository from '../../functions/InsertableQuestionnaireRepository';
 import useUrlHelper from '../../functions/urlHelper';
 import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
+import usePatientRepository from '../../functions/patientRepository';
+import { useI18n } from 'vue-i18n';
 
 export default {
   components: {
     DropDown, LoadingScreen,
   },
   setup() {
+    const { t } = useI18n();
+
     const tracks = ref(null);
     const questionnaires = ref(null);
     const patientQuestionnaires = ref(null);
@@ -73,13 +84,47 @@ export default {
       }
     });
 
-    const { getInsertSurveyUrl, getTrackCreateUrl } = useUrlHelper();
+    const {
+      getInsertSurveyUrl,
+      getTrackCreateUrl,
+      getRespondentDeleteUrl,
+      getRespondentUndeleteUrl,
+    } = useUrlHelper();
+
+    const { active, getPatientData } = usePatientRepository();
 
     onMounted(() => {
       getData();
+      getPatientData();
+    });
+
+    const disableButtonLabel = computed(() => {
+      if (active.value === true) {
+        return t('Delete patient');
+      }
+      if (active.value === false) {
+        return t('Undelete patient');
+      }
+      return null;
+    });
+
+    const toggleActive = (() => {
+
+    });
+
+    const disableButtonUrl = computed(() => {
+      if (active.value === true) {
+        return getRespondentDeleteUrl();
+      }
+      if (active.value === false) {
+        return getRespondentUndeleteUrl();
+      }
+      return null;
     });
 
     return {
+      disableButtonLabel,
+      disableButtonUrl,
       getInsertSurveyUrl,
       getTrackCreateUrl,
       questionnaireLoading,

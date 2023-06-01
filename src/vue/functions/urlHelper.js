@@ -20,6 +20,9 @@ const useUrlHelper = (() => {
 
   const getTrackCreateUrl = ((trackId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/create/${trackId}`);
 
+  const getRespondentDeleteUrl = ((trackId) => `${baseStore.baseUrl}respondent/delete/${patientStore.patientNr}/${patientStore.organizationId}`);
+  const getRespondentUndeleteUrl = ((trackId) => `${baseStore.baseUrl}respondent/undelete/${patientStore.patientNr}/${patientStore.organizationId}`);
+
   return {
     getCarePlanDeleteUrl,
     getCarePlanEditUrl,
@@ -28,6 +31,8 @@ const useUrlHelper = (() => {
     getTokenAskUrl,
     getTokenShowUrl,
     getTrackCreateUrl,
+    getRespondentDeleteUrl,
+    getRespondentUndeleteUrl,
   };
 });
 
