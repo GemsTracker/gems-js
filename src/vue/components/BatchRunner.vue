@@ -43,9 +43,29 @@ export default {
       default: null,
     },
     autostart: {
-      type: Boolean,
-      default: false,
+        type: String,
+        default: null,
     },
+    initurl: {
+        type: String,
+        default: null,
+    },
+    runurl: {
+        type: String,
+        default: null,
+    },
+    downloadurl: {
+        type: String,
+        default: null,
+    },
+    restartload: {
+        type: String,
+        default: null,
+    },
+    restarturl: {
+        type: String,
+        default: null,
+    }
   },
   components: {
     ProgressBar,
@@ -89,7 +109,8 @@ export default {
     });
 
     const fetchProgress = (async () => {
-      const runUrl = getUrl({ progress: 'run' });
+      const runUrl = props.runurl;
+      // console.log(currentUrl, runUrl);
       const result = await axios.get(runUrl);
       if ('data' in result) {
         if ('percent' in result.data) {
@@ -103,9 +124,13 @@ export default {
         }
         if ('finished' in result.data) {
           finished.value = result.data.finished;
+          if (finished.value && props.downloadurl) {
+              // console.log(props.downloadurl);
+              window.location.href = props.downloadurl;
+          }
         }
       }
-      console.log(result.data);
+      // console.log(result.data);
     });
 
     const start = (async () => {
@@ -118,7 +143,8 @@ export default {
     });
 
     const init = (async () => {
-      const initUrl = getUrl({ progress: 'init' });
+      // console.log(currentUrl, props.initurl);
+      const initUrl = props.initurl;
       const result = await axios.get(initUrl);
       if ('data' in result) {
         initialized.value = true;
@@ -139,7 +165,11 @@ export default {
     });
 
     const restart = (async () => {
-      const resetUrl = getUrl({ progress: 'restart' });
+      const resetUrl = props.restarturl;
+      // console.log(resetUrl, props.restartload);
+      if ('1' == props.restartload) {
+          window.location.href = resetUrl;
+      }
       const result = await axios.get(resetUrl);
       if ('data' in result) {
         progress.value = 0;
@@ -151,7 +181,7 @@ export default {
 
     onMounted(async () => {
       await init();
-      if (props.autostart) {
+      if ('1' == props.autostart) {
         start();
       }
     });
