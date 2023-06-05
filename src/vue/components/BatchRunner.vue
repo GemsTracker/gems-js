@@ -18,12 +18,12 @@
     </button>
     <div v-if="messages.length" class="alert alert-info" role="alert">
       <ul>
-        <li v-for="message, index in messages" :key="index">{{ message }}</li>
+        <li v-for="(message, index) in messages" :key="index">{{ message }}</li>
       </ul>
     </div>
     <div v-if="info.length" class="card text-bg-light">
       <div class="card-body">
-        <p v-for="message, index in info" :key="index" class="info">
+        <p v-for="(message, index) in info" :key="index" class="info">
           {{ message }}
         </p>
       </div>
@@ -43,29 +43,29 @@ export default {
       default: null,
     },
     autostart: {
-        type: String,
-        default: null,
+      type: Boolean,
+      default: false,
     },
-    initurl: {
-        type: String,
-        default: null,
+    initUrl: {
+      type: String,
+      default: null,
     },
-    runurl: {
-        type: String,
-        default: null,
+    runUrl: {
+      type: String,
+      default: null,
     },
-    downloadurl: {
-        type: String,
-        default: null,
+    downloadUrl: {
+      type: String,
+      default: null,
     },
-    restartload: {
-        type: String,
-        default: null,
+    restartLoad: {
+      type: Boolean,
+      default: false,
     },
-    restarturl: {
-        type: String,
-        default: null,
-    }
+    restartUrl: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     ProgressBar,
@@ -85,7 +85,7 @@ export default {
       restart: 'Restart',
     });
 
-    const getUrl = ((changedSearchParams = {}) => {
+    /* const getUrl = ((changedSearchParams = {}) => {
       const currentUrl = window.location.pathname;
       const searchParams = new URLSearchParams(window.location.search);
 
@@ -102,14 +102,14 @@ export default {
       }
 
       return currentUrl;
-    });
+    }); */
 
     const abort = (() => {
       emergencyStop.value = true;
     });
 
     const fetchProgress = (async () => {
-      const runUrl = props.runurl;
+      const { runUrl } = props;
       // console.log(currentUrl, runUrl);
       const result = await axios.get(runUrl);
       if ('data' in result) {
@@ -124,9 +124,9 @@ export default {
         }
         if ('finished' in result.data) {
           finished.value = result.data.finished;
-          if (finished.value && props.downloadurl) {
-              // console.log(props.downloadurl);
-              window.location.href = props.downloadurl;
+          if (finished.value && props.downloadUrl) {
+            // console.log(props.downloadUrl);
+            window.location.href = props.downloadUrl;
           }
         }
       }
@@ -143,8 +143,8 @@ export default {
     });
 
     const init = (async () => {
-      // console.log(currentUrl, props.initurl);
-      const initUrl = props.initurl;
+      // console.log(currentUrl, props.initUrl);
+      const { initUrl } = props;
       const result = await axios.get(initUrl);
       if ('data' in result) {
         initialized.value = true;
@@ -165,12 +165,12 @@ export default {
     });
 
     const restart = (async () => {
-      const resetUrl = props.restarturl;
-      // console.log(resetUrl, props.restartload);
-      if ('1' == props.restartload) {
-          window.location.href = resetUrl;
+      const { restartUrl } = props;
+      // console.log(restartUrl, props.restartLoad);
+      if (props.restartLoad) {
+        window.location.href = restartUrl;
       }
-      const result = await axios.get(resetUrl);
+      const result = await axios.get(restartUrl);
       if ('data' in result) {
         progress.value = 0;
         finished.value = false;
@@ -181,8 +181,8 @@ export default {
 
     onMounted(async () => {
       await init();
-      if ('1' == props.autostart) {
-        start();
+      if (props.autostart) {
+        await start();
       }
     });
 
