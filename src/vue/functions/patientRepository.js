@@ -105,7 +105,7 @@ const usePatientRepository = (() => {
 
   const birthdayDmy = computed(() => {
     if (birthDate.value !== null) {
-      const month = `${birthDate.value.getMonth()}`.padStart(2, '0');
+      const month = `${birthDate.value.getMonth() + 1}`.padStart(2, '0');
       const day = `${birthDate.value.getDate()}`.padStart(2, '0');
       return `${day}-${month}-${birthDate.value.getFullYear()}`;
     }
@@ -114,7 +114,7 @@ const usePatientRepository = (() => {
 
   const birthdayYmd = computed(() => {
     if (birthDate.value !== null) {
-      const month = `${birthDate.value.getMonth()}`.padStart(2, '0');
+      const month = `${birthDate.value.getMonth() + 1}`.padStart(2, '0');
       const day = `${birthDate.value.getDate()}`.padStart(2, '0');
       return `${birthDate.value.getFullYear()}-${month}-${day}`;
     }
