@@ -1,5 +1,5 @@
 <template>
-  <div class="careplan-timeline-block card traject">
+  <div class="careplan-timeline-block card traject" :class="{deleted: !activeCarePlan}">
     <div class="card-header header" @click="toggleExpand">
       <h4 class="card-title row">
         <div class="col">
@@ -15,9 +15,14 @@
           <font-awesome-icon v-if="expanded" icon="chevron-down" class="title-collapse" />
         </div>
         <div class="col-3 text-end">
-          <tool-tip content="Delete item!" class="action-icon">
+          <tool-tip v-if="activeCarePlan" content="Delete track!" class="action-icon">
             <a :href="carePlanDeleteUrl">
               <font-awesome-icon icon="trash-can" />
+            </a>
+          </tool-tip>
+          <tool-tip v-if="!activeCarePlan" content="Restore track!" class="action-icon">
+            <a :href="carePlanUnDeleteUrl">
+              <font-awesome-icon icon="recycle" />
             </a>
           </tool-tip>
         </div>
@@ -65,7 +70,7 @@
     <div v-if="expanded" class="card-body">
       <loading-screen v-if="loading === true"></loading-screen>
       <div v-if="carePlanTokens !== null" class="objecten">
-        <timeline-measure-moment-block v-for="measureMoment, index in carePlanTokens" :key="index"
+        <timeline-measure-moment-block v-for="(measureMoment, index) in carePlanTokens" :key="index"
           :measure-moment="measureMoment" />
       </div>
     </div>
@@ -80,6 +85,7 @@ import {
   faChevronDown,
   faChevronRight,
   faPencil,
+  faRecycle,
   faTrashCan,
 } from '@fortawesome/free-solid-svg-icons';
 import useTokenRepository from '../../functions/tokenRepository';
@@ -89,7 +95,7 @@ import TimelineMeasureMomentBlock from './TimelineMeasureMomentBlock.vue';
 import LoadingScreen from '../Util/LoadingScreen.vue';
 import ToolTip from '../Util/ToolTip.vue';
 
-library.add(faChevronDown, faChevronRight, faPencil, faTrashCan);
+library.add(faChevronDown, faChevronRight, faPencil, faRecycle, faTrashCan);
 
 export default {
   props: {
@@ -110,10 +116,13 @@ export default {
     const currentLocale = computed(() => modelStore.locale);
     const expanded = ref(props.open);
 
-    const { getCarePlanDeleteUrl, getCarePlanEditUrl } = useUrlHelper();
+    const { getCarePlanDeleteUrl, getCarePlanEditUrl, getCarePlanUnDeleteUrl } = useUrlHelper();
 
     const carePlanDeleteUrl = getCarePlanDeleteUrl(props.carePlan.id);
     const carePlanEditUrl = getCarePlanEditUrl(props.carePlan.id);
+    const carePlanUnDeleteUrl = getCarePlanUnDeleteUrl(props.carePlan.id);
+
+    const activeCarePlan = computed(() => 'status' in props.carePlan && props.carePlan.status === 'active');
 
     const { t } = useI18n();
 
@@ -169,9 +178,11 @@ export default {
     });
 
     return {
+      activeCarePlan,
       carePlanTokens,
       carePlanDeleteUrl,
       carePlanEditUrl,
+      carePlanUnDeleteUrl,
       expanded,
       loading,
       startDate,

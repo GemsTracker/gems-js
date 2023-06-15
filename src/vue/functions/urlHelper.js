@@ -6,6 +6,7 @@ const useUrlHelper = (() => {
   const patientStore = usePatientStore();
 
   const getCarePlanDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/delete-track/${carePlanId}`);
+  const getCarePlanUnDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/undelete-track/${carePlanId}`);
   const getCarePlanEditUrl = ((carePlanId) => {
     console.log(baseStore.baseUrl);
     console.log(`${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit-track/${carePlanId}`);
@@ -25,7 +26,9 @@ const useUrlHelper = (() => {
 
   return {
     getCarePlanDeleteUrl,
+
     getCarePlanEditUrl,
+    getCarePlanUnDeleteUrl,
     getInsertSurveyUrl,
     getTokenAnswerUrl,
     getTokenAskUrl,
