@@ -28,7 +28,11 @@
         </p>
       </div>
     </div>
-
+    <div v-if="errorMessage">
+        <h4>A communication error occurred!</h4>
+        <p>{{ errorMessage }}</p>
+        <p class="centerAlign" v-if="errorLink"><a :href="errorLink" class="actionlink btn" target="_blank">Open error link in new tab</a></p>
+    </div>
   </div>
 </template>
 <script>
@@ -45,6 +49,14 @@ export default {
     autostart: {
       type: Boolean,
       default: false,
+    },
+    errorLink: {
+      type: String,
+      default: null,
+    },
+    errorMessage: {
+      type: String,
+      default: null,
     },
     initUrl: {
       type: String,
@@ -73,6 +85,8 @@ export default {
   setup(props) {
     const batchCount = ref(0);
     const finished = ref(false);
+    const errorLink = ref(null);
+    const errorMessage = ref(null);
     const info = ref([]);
     const initialized = ref(false);
     const messages = ref([]);
@@ -85,24 +99,52 @@ export default {
       restart: 'Restart',
     });
 
-    /* const getUrl = ((changedSearchParams = {}) => {
-      const currentUrl = window.location.pathname;
-      const searchParams = new URLSearchParams(window.location.search);
+    async function fetchUrl(url) {
+        var output;
 
-      Object.keys(changedSearchParams).forEach((searchParam) => {
-        if (changedSearchParams[searchParam] === null && searchParams.has(searchParam)) {
-          searchParams.delete(searchParam);
-          return;
-        }
-        searchParams.set(searchParam, changedSearchParams[searchParam]);
-      });
-      const queryString = searchParams.toString();
-      if (queryString !== '') {
-        return `${currentUrl}?${queryString}`;
-      }
+        errorLink.value = url;
+        console.log(url);
+        output = await axios.get(url)
+          .catch(function (error) {
+              var message = error.message;
 
-      return currentUrl;
-    }); */
+              if (error.response) {
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx
+                  // console.log(error.response.data);
+                  if (! message) {
+                      if (500 === error.response.status) {
+                          message = "The server could not handle your request.";
+                      } else {
+                          message = "We got an error from you server!"
+                      }
+                  }
+              } else if (error.request) {
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js
+                  // console.log(error.request);
+                  if (! message) {
+                      message = "The server did not react in time."
+                  }
+              } else {
+                  // Something happened in setting up the request that triggered an Error
+                  // console.log('Error', error.message);
+                  if (! message) {
+                      message = "Some error occured, but we have no information on it."
+                  }
+              }
+              errorMessage.value = message;
+              finished.value = true;
+              return {
+                  'messages': message,
+                  'finished': true
+              };
+          });
+
+        // console.log(output);
+        return output;
+    };
 
     const abort = (() => {
       emergencyStop.value = true;
@@ -110,8 +152,8 @@ export default {
 
     const fetchProgress = (async () => {
       const { runUrl } = props;
-      // console.log(currentUrl, runUrl);
-      const result = await axios.get(runUrl);
+      const result = fetchUrl(runUrl);
+
       if ('data' in result) {
         if ('percent' in result.data) {
           progress.value = result.data.percent * 100;
@@ -127,6 +169,8 @@ export default {
           if (finished.value && props.downloadUrl) {
             // console.log(props.downloadUrl);
             window.location.href = props.downloadUrl;
+          } else {
+              return;
           }
         }
       }
@@ -143,11 +187,11 @@ export default {
     });
 
     const init = (async () => {
-      // console.log(currentUrl, props.initUrl);
       const { initUrl } = props;
-      const result = await axios.get(initUrl);
+      const result = await fetchUrl(initUrl);
       if ('data' in result) {
         initialized.value = true;
+        // console.log(result.data)
         if ('count' in result.data) {
           batchCount.value = result.data.count;
         }
@@ -170,7 +214,8 @@ export default {
       if (props.restartLoad) {
         window.location.href = restartUrl;
       }
-      const result = await axios.get(restartUrl);
+      // const result = await axios.get(restartUrl);
+      const result = await fetchUrl(restartUrl);
       if ('data' in result) {
         progress.value = 0;
         finished.value = false;
@@ -190,6 +235,8 @@ export default {
       abort,
       batchCount,
       emergencyStop,
+      errorLink,
+      errorMessage,
       finished,
       info,
       initialized,
