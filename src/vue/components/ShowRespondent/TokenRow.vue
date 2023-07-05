@@ -78,9 +78,9 @@ export default {
 
     const { getTokenAnswerUrl, getTokenAskUrl, getTokenShowUrl } = useUrlHelper();
 
-    const tokenAnswerUrl = getTokenAnswerUrl(props.token.id);
+    const tokenAnswerUrl = getTokenAnswerUrl(props.token.id, props.token.carePlanId);
     const tokenAskUrl = getTokenAskUrl(props.token.id);
-    const tokenShowUrl = getTokenShowUrl(props.token.id);
+    const tokenShowUrl = getTokenShowUrl(props.token.id, props.token.carePlanId);
 
     const toTokenInfo = (() => {
       console.log('Show token info');

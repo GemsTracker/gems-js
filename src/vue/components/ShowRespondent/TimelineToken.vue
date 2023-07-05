@@ -56,7 +56,7 @@ export default {
     const copyTokenTooltip = ref('Copy');
 
     const { getTokenShowUrl } = useUrlHelper();
-    const tokenShowUrl = getTokenShowUrl(props.token.id);
+    const tokenShowUrl = getTokenShowUrl(props.token.id, props.token.carePlanId);
 
     const tokenLink = computed(() => {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
