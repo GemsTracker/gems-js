@@ -12,22 +12,22 @@
       </ul>
       <div class="row">
         <div v-if="currentTabData !== null"
-          :class="{col: (visiblePreview && previewPosition == 'right')}">
+          :class="{col: (visiblePreview && previewPosition === 'right')}">
           <text-element :options="structure.subject" />
           <ck-editor :options="structure.body" />
           <validator-messages :validator="validator" :serverValidator="serverValidator" />
         </div>
-        <div class="preview" :class="{col: (visiblePreview && previewPosition == 'right')}">
+        <div class="preview" :class="{col: (visiblePreview && previewPosition === 'right')}">
           <h3 class="title">Preview</h3>
           <div class="controls">
             <font-awesome-icon @click="changePreviewPosition('right')"
               icon="fa-regular fa-square-caret-left"
               title="Side by side"
-              :class="{'text-danger': visiblePreview && previewPosition == 'right'}" />
+              :class="{'text-danger': visiblePreview && previewPosition === 'right'}" />
             <font-awesome-icon @click="changePreviewPosition('bottom')"
               icon="fa-regular fa-square-caret-down"
               title="Under"
-              :class="{'text-danger': visiblePreview && previewPosition == 'bottom'}" />
+              :class="{'text-danger': visiblePreview && previewPosition === 'bottom'}" />
             <font-awesome-icon v-if="visiblePreview" @click="visiblePreview = false"
               title="Hide"
               icon="fa-solid fa-eye" />
@@ -39,7 +39,7 @@
             :form-data="currentTabData" :comm-fields="commFields" />
         </div>
       </div>
-      <comm-field-filter :comm-target="commTarget" />
+      <comm-field-filter v-if="commTarget !== null" :comm-target="commTarget" />
       <template v-if="!commFieldsLoading">
         <span v-if="commFieldsEmpty" class="text-danger">No fields found for input value</span>
         <comm-template-fields :comm-fields="commFields" />
@@ -126,12 +126,6 @@ export default {
       }
       return null;
     });
-    onMounted(() => {
-      const tabIndexes = Object.keys(tabs.value);
-      if (tabIndexes.length) {
-        [currentTab.value] = tabIndexes;
-      }
-    });
 
     const currentTabData = computed(() => {
       if (Array.isArray(formValue.value)) {
@@ -179,6 +173,10 @@ export default {
     const commFieldsEmpty = ref(false);
 
     const getCommFields = (async (target, filter = null) => {
+      if (target === null) {
+        return;
+      }
+
       commFieldsEmpty.value = false;
       const newCommfields = await getCommFieldsForTarget(target, filter);
       if (newCommfields !== null) {
@@ -189,17 +187,31 @@ export default {
     });
 
     const initValues = (() => {
-      if ('name' in props.options && props.options.name !== null && props.options.name in parentFormData.value && parentFormData.value[props.options.name] === null) {
-        const newData = [];
+      if ('name' in props.options && props.options.name !== null && props.options.name in parentFormData.value) {
+        let newData = parentFormData.value[props.options.name];
+        if (newData === null) {
+          newData = [];
+        }
+
+        const addedLanguages = [];
+        newData.forEach((row) => {
+          if ('language' in row) {
+            addedLanguages.push(row.language);
+          }
+        });
+
         const { getInitialFormValues } = useGemsFormFunctions(
           structure,
           currentTabData,
         );
 
         Object.keys(tabs.value).forEach((language) => {
-          const newRow = getInitialFormValues();
-          newRow.language = language;
-          newData.push(newRow);
+          if (!addedLanguages.includes(language)) {
+            const newRow = getInitialFormValues();
+            newRow.language = language;
+            newData.push(newRow);
+            addedLanguages.push(language);
+          }
         });
 
         parentFormData.value[props.options.name] = newData;
@@ -207,20 +219,28 @@ export default {
     });
 
     onMounted(() => {
+      const tabIndexes = Object.keys(tabs.value);
+      if (tabIndexes.length) {
+        [currentTab.value] = tabIndexes;
+      }
       getCommFields(commTarget.value);
 
       initValues();
     });
 
     watch(commTarget, (newTarget) => {
-      console.log('changing target');
       getCommFields(newTarget);
     });
 
     watch(fieldFilter, (newFilter) => {
       const filter = toRaw(newFilter);
-      console.log('changing filter', commTarget.value, filter);
       getCommFields(commTarget.value, filter);
+    });
+
+    watch(parentFormData, (newData, oldData) => {
+      if (oldData !== null && !(props.options.name in oldData) && props.options.name in newData) {
+        initValues();
+      }
     });
 
     return {
