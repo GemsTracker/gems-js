@@ -21,8 +21,8 @@ export default class Autosubmit {
     }
     const inputs = form.querySelectorAll(selector);
     inputs.forEach((input) => {
-      input.addEventListener('keyup', () => form.submit());
-      input.addEventListener('input', () => form.submit());
+      // input.addEventListener('keyup', () => form.submit());
+      // input.addEventListener('input', () => form.submit());
       input.addEventListener('change', () => form.submit());
     });
   }
