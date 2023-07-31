@@ -17,6 +17,17 @@ const useUrlHelper = (() => {
 
   const getTrackCreateUrl = ((trackId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/create/${trackId}`);
 
+  const getRespondentShowUrl = ((patientNr = null, organizationId = null) => {
+    let newPatientNr = patientNr;
+    if (newPatientNr === null) {
+      newPatientNr = patientStore.patientNr;
+    }
+    let newOrganizationId = organizationId;
+    if (newOrganizationId === null) {
+      newOrganizationId = patientStore.organizationId;
+    }
+    return `${baseStore.baseUrl}respondent/${newPatientNr}/${newOrganizationId}`;
+  });
   const getRespondentDeleteUrl = (() => `${baseStore.baseUrl}respondent/delete/${patientStore.patientNr}/${patientStore.organizationId}`);
   const getRespondentUndeleteUrl = (() => `${baseStore.baseUrl}respondent/undelete/${patientStore.patientNr}/${patientStore.organizationId}`);
 
@@ -31,6 +42,7 @@ const useUrlHelper = (() => {
     getTokenShowUrl,
     getTrackCreateUrl,
     getRespondentDeleteUrl,
+    getRespondentShowUrl,
     getRespondentUndeleteUrl,
   };
 });
