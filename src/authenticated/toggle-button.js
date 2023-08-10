@@ -16,14 +16,14 @@ export default class ToggleButton {
 
   static getTargetName(element) {
     let name = null;
+    if (element.hasAttribute('selectorName')) {
+      name = element.getAttribute('selectorName');
+    }
     if (element.hasAttribute('selectorname')) {
       name = element.getAttribute('selectorname');
     }
     if (element.hasAttribute('selector-name')) {
       name = element.getAttribute('selector-name');
-    }
-    if (element.hasAttribute('selectorName')) {
-      name = element.getAttribute('selectorName');
     }
     return name;
   }
