@@ -1,9 +1,11 @@
 <template>
-  <component v-if="currentComponentName !== null" :is="currentComponentName"
-    :options="options" />
+  <component v-if="currentComponentName !== null && currentComponentName in formElements"
+             :is="formElements[currentComponentName]"
+             :options="options" />
 </template>
 <script>
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
+import useFormElements from '../../functions/formElements';
 
 export default {
   props: {
@@ -12,25 +14,9 @@ export default {
       required: true,
     },
   },
-  components: {
-    CheckboxElement: defineAsyncComponent(() => import('./Element/CheckboxElement.vue')),
-    DateElement: defineAsyncComponent(() => import('./Element/DateElement.vue')),
-    // DossierTemplateElement,
-    HiddenElement: defineAsyncComponent(() => import('./Element/HiddenElement.vue')),
-    HtmlElement: defineAsyncComponent(() => import('./Element/HtmlElement.vue')),
-    MultiCheckboxElement: defineAsyncComponent(() => import('./Element/MultiCheckboxElement.vue')),
-    MultiSelectElement: defineAsyncComponent(() => import('./Element/MultiSelectElement.vue')),
-    NumberElement: defineAsyncComponent(() => import('./Element/NumberElement.vue')),
-    RadioElement: defineAsyncComponent(() => import('./Element/RadioElement.vue')),
-    SelectElement: defineAsyncComponent(() => import('./Element/SelectElement.vue')),
-    SubformsElement: defineAsyncComponent(() => import('./Element/SubformsElement.vue')),
-    TextElement: defineAsyncComponent(() => import('./Element/TextElement.vue')),
-    TextareaElement: defineAsyncComponent(() => import('./Element/TextareaElement.vue')),
-
-    CommTemplateTranslationsElement: defineAsyncComponent(() => import('./Element/CommTemplateTranslationsElement.vue')),
-    // TextSuggestionsElement,
-  },
   setup(props) {
+    const { formElements } = useFormElements();
+
     const elementType = computed(() => {
       if ('elementClass' in props.options) {
         return props.options.elementClass;
@@ -56,6 +42,7 @@ export default {
     return {
       elementType,
       currentComponentName,
+      formElements,
     };
   },
 };
