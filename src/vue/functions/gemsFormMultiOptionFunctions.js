@@ -27,6 +27,20 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
 
       const data = await model.all({ per_page: 9999 });
       allReferenceData.value = data;
+      // Use id field as keys if available
+      if (Array.isArray(data)) {
+        const idKeyValues = {};
+        let hasId = false;
+        data.forEach((row) => {
+          if ('id' in row) {
+            hasId = true;
+            idKeyValues[row.id] = row;
+          }
+        });
+        if (hasId) {
+          allReferenceData.value = idKeyValues;
+        }
+      }
       loadingReferenceData.value = false;
     }
     return null;
