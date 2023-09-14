@@ -42,7 +42,7 @@ export default class Model {
         && this.loadingAll[loadingHash] === undefined)) {
       const loadData = this.getLoadData();
       loadData.loadingHash = loadingHash;
-      loadData.filters = currentFilters;
+      loadData.filters = this.constructor.checkFilters(currentFilters);
       this.loadingAll[loadingHash] = this.store.getModelData(this.name, loadData);
       const data = await this.loadingAll[loadingHash];
       this.afterLoad();
@@ -64,6 +64,18 @@ export default class Model {
     return null;
   }
 
+  static checkFilters(filters) {
+    const checkedFilters = {};
+    Object.keys(filters).forEach((fieldName) => {
+      let value = filters[fieldName];
+      if (Array.isArray(value)) {
+        value = `[${value.join(',')}]`;
+      }
+      checkedFilters[fieldName] = value;
+    });
+    return checkedFilters;
+  }
+
   async findById(id, filters = null, refresh = false) {
     if ((typeof id === 'number' || typeof id === 'string')) {
       // console.log(`Find by ID call to ${this.endpoint}...${id}`);
@@ -73,7 +85,7 @@ export default class Model {
           && this.loadingIds[id] === undefined
         )) {
         const loadData = this.getLoadData();
-        loadData.filters = { ...this.filters, ...filters };
+        loadData.filters = this.constructor.checkFilters({ ...this.filters, ...filters });
         if (this.idField) {
           loadData.filters[this.idField] = id;
         }
