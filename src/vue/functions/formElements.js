@@ -10,6 +10,7 @@ const formElements = {
   MultiSelectElement: defineAsyncComponent(() => import('../components/GemsForm/Element/MultiSelectElement.vue')),
   NumberElement: defineAsyncComponent(() => import('../components/GemsForm/Element/NumberElement.vue')),
   RadioElement: defineAsyncComponent(() => import('../components/GemsForm/Element/RadioElement.vue')),
+  RTEElement: defineAsyncComponent(() => import('../components/GemsForm/Element/RTEElement.vue')),
   SelectElement: defineAsyncComponent(() => import('../components/GemsForm/Element/SelectElement.vue')),
   SubformsElement: defineAsyncComponent(() => import('../components/GemsForm/Element/SubformsElement.vue')),
   TextElement: defineAsyncComponent(() => import('../components/GemsForm/Element/TextElement.vue')),
