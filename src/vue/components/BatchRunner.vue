@@ -147,19 +147,24 @@ export default {
       const { initUrl } = props;
       const result = await axios.get(initUrl);
       if ('data' in result) {
-        initialized.value = true;
-        if ('count' in result.data) {
-          batchCount.value = result.data.count;
-        }
-        if ('translations' in result.data) {
-          translations.value = result.data.translations;
-        }
-        if ('info' in result.data && result.data.info !== null) {
-          let infoArray = result.data.info;
-          if (!Array.isArray(infoArray)) {
-            infoArray = [infoArray];
+        if (typeof result.data === 'string') {
+          // This at least shows us what goes wrong
+          location.href = initUrl;
+        } else {
+          initialized.value = true;
+          if ('count' in result.data) {
+            batchCount.value = result.data.count;
           }
-          info.value = infoArray;
+          if ('translations' in result.data) {
+            translations.value = result.data.translations;
+          }
+          if ('info' in result.data && result.data.info !== null) {
+            let infoArray = result.data.info;
+            if (!Array.isArray(infoArray)) {
+              infoArray = [infoArray];
+            }
+            info.value = infoArray;
+          }
         }
       }
     });
