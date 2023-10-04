@@ -40,7 +40,7 @@ export default class AutoFocus {
 
     addTracker(currentElement, focusTracker) {
         currentElement.addEventListener('focus', function () {
-            console.log(currentElement.getAttribute('id'));
+            // console.log(currentElement.getAttribute('id'));
             focusTracker.setAttribute('value', currentElement.getAttribute('id'));
         });
     }
