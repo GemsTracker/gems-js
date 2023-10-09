@@ -9,6 +9,7 @@ export default class Api {
 
     const headers = {
       'X-Requested-With': 'XMLHttpRequest',
+      'X-gems-vue': 1,
     };
     if (locale !== null && locale !== undefined) {
       headers['Accept-Language'] = locale;
