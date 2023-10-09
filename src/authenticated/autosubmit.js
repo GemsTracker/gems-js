@@ -1,5 +1,3 @@
-import {getAttribute} from "eslint-plugin-vue/lib/utils";
-
 export default class Autosubmit {
   constructor() {
     this.init();
@@ -9,30 +7,30 @@ export default class Autosubmit {
     document.querySelectorAll('form').forEach((form) => {
       if (form.getAttribute('class').includes('auto-submit')) {
         // console.log(form.getAttribute('class'));
-        form.querySelectorAll('input').forEach((inputElement) => {this.addInput(form, inputElement);});
-        form.querySelectorAll('select').forEach((selectElement) => {this.addSelect(form, selectElement);});
+        form.querySelectorAll('input').forEach((inputElement) => { this.addInput(form, inputElement); });
+        form.querySelectorAll('select').forEach((selectElement) => { this.addSelect(form, selectElement); });
       } else {
-        form.querySelectorAll('input.auto-submit').forEach((inputElement) => {this.addInput(form, inputElement);});
-        form.querySelectorAll('select.auto-submit').forEach((selectElement) => {this.addSelect(form, selectElement);});
+        form.querySelectorAll('input.auto-submit').forEach((inputElement) => { this.addInput(form, inputElement); });
+        form.querySelectorAll('select.auto-submit').forEach((selectElement) => { this.addSelect(form, selectElement); });
       }
     });
   }
 
   addInput(form, inputElement) {
-    var eType = inputElement.getAttribute('eType');
+    const eType = inputElement.getAttribute('eType');
     // console.log(inputElement.getAttribute('name'), inputElement.getAttribute('eType'));
 
     if (['hidden'].includes(eType)) {
       return;
     }
 
-    var eClass = inputElement.getAttribute('class');
+    const eClass = inputElement.getAttribute('class');
     if (eClass && eClass.includes('blur')) {
       inputElement.addEventListener('blur', (event) => this.submitOnChange(form, inputElement, event));
       return;
     }
 
-    var call = (event) => this.submitOnElement(form, inputElement, event);
+    const call = (event) => this.submitOnElement(form, inputElement, event);
     if (['checkbos', 'radio'].includes(eType)) {
       inputElement.addEventListener('click', call);
       return;
@@ -42,14 +40,14 @@ export default class Autosubmit {
     // inputElement.addEventListener('change', call);
   }
 
-  addSelect(form, selectElement){
-    var call = (event) => this.submitOnElement(form, selectElement, event);
+  addSelect(form, selectElement) {
+    const call = (event) => this.submitOnElement(form, selectElement, event);
     selectElement.addEventListener('change', call);
   }
 
   submitOnChange(form, inputElement, event) {
     // console.log(inputElement.value, inputElement.getAttribute('value'));
-    if (inputElement.value && (inputElement.value != inputElement.getAttribute('value'))) {
+    if (inputElement.value && (inputElement.value !== inputElement.getAttribute('value'))) {
       this.submitOnElement(form, inputElement, event);
     }
   }
