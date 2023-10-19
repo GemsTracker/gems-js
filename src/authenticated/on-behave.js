@@ -1,5 +1,3 @@
-import OnOfEdit from "./on-off-edit";
-
 export default class OnBehave {
   constructor() {
     this.init();
@@ -7,13 +5,13 @@ export default class OnBehave {
 
   init() {
     document.querySelectorAll('.windowCloseButton').forEach((element) => {
-      element.addEventListener('click', this.closeWindow)
+      element.addEventListener('click', this.closeWindow);
     });
     document.querySelectorAll('.windowPrintButton').forEach((element) => {
-      element.addEventListener('click', this.printWindow)
+      element.addEventListener('click', this.printWindow);
     });
     document.querySelectorAll('a.newWindowOnClick').forEach((element) => {
-      var targetId = element.getAttribute('gt-target-id');
+      const targetId = element.getAttribute('gt-target-id');
       if (targetId) {
         element.setAttribute('target', targetId);
       } else {
