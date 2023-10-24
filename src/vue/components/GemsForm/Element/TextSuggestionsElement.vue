@@ -25,8 +25,8 @@ import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunct
 
 import GemsFormLabel from '../Label.vue';
 import GemsFormValidatorMessages from '../ValidatorMessages.vue';
-import LoadingScreen from '../LoadingScreen.vue';
-import useGemsFormMultiOptionFunctions from '../../functions/useGemsFormMultiOptionFunctions';
+import LoadingScreen from '../../Util/LoadingScreen.vue';
+import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
 
 export default {
   props: {
