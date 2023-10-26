@@ -1,6 +1,6 @@
 <template>
   <div class="track-buttons">
-      <strong>Add&nbsp;</strong>
+      <strong>{{ t('Add') }}&nbsp;</strong>
       <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0"
                  :loading="trackLoading">
         <li v-for="(track, index) in tracks" :key="index">
@@ -140,6 +140,7 @@ export default {
       questionnaireLoading,
       patientQuestionnaires,
       practitionerQuestionnaires,
+      t,
       tracks,
       trackLoading,
     };
