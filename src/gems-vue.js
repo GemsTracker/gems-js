@@ -3,6 +3,8 @@ import { createPinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import appSettings from './vue/appSettings';
 import translations from './locales/translations';
+import rootAttributesToProps from './vue/functions/rootAttributesToProps';
+import BaseApp from './vue/App.vue';
 
 const i18n = createI18n({
   legacy: false,
@@ -11,7 +13,9 @@ const i18n = createI18n({
   messages: translations,
 });
 
-const app = createApp(appSettings);
+const baseProps = rootAttributesToProps('app', appSettings);
+
+const app = createApp(BaseApp, baseProps);
 const pinia = createPinia();
 app.use(pinia);
 app.use(i18n);
