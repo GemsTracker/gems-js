@@ -13,7 +13,7 @@ export default class AutoFocus {
     }
 
     if (!currentElement) {
-      const firstInput = document.querySelector('form input');
+      const firstInput = document.querySelector('form input:not([readonly="readonly"], [disabled="1"])');
       if (firstInput) {
         currentElement = firstInput.getAttribute('id');
       }
