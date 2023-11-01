@@ -31,5 +31,5 @@ export default class OnBehave {
 
 window.addEventListener('load', () => {
   // eslint-disable-next-line no-unused-vars
-  const onOffEdit = new OnBehave();
+  const onBehave = new OnBehave();
 });
