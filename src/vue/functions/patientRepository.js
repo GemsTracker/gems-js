@@ -133,6 +133,18 @@ const usePatientRepository = (() => {
     return emailAddress;
   });
 
+  const emailInfo = computed(() => {
+    let emailAddress = null;
+    if (patientData.value && 'telecom' in patientData.value) {
+      patientData.value.telecom.forEach((contactInfo) => {
+        if ('system' in contactInfo && contactInfo.system === 'email') {
+          emailAddress = contactInfo;
+        }
+      });
+    }
+    return emailAddress;
+  });
+
   const phoneNumber = computed(() => {
     let number = null;
     let use = null;
@@ -145,6 +157,20 @@ const usePatientRepository = (() => {
       });
     }
     return number;
+  });
+
+  const phoneNumbers = computed(() => {
+    if (patientData.value && 'telecom' in patientData.value) {
+      return patientData.value.telecom
+        .filter((telecomItem) => 'system' in telecomItem && telecomItem.system === 'phone')
+        .sort((telecomItem) => {
+          if (telecomItem.use === 'mobile') {
+            return -1;
+          }
+          return 1;
+        });
+    }
+    return [];
   });
 
   const active = computed(() => {
@@ -161,6 +187,7 @@ const usePatientRepository = (() => {
     birthdayYear,
     birthdayYmd,
     email,
+    emailInfo,
     familyName,
     fullName,
     gender,
@@ -170,6 +197,7 @@ const usePatientRepository = (() => {
     organization,
     patientNr,
     phoneNumber,
+    phoneNumbers,
     active,
   };
 });
