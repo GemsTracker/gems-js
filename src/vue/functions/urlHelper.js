@@ -21,9 +21,19 @@ const useUrlHelper = (() => {
     };
   });
 
+  const getAppointmentShowUrl = ((appointmentId, patientNr = null, organizationId = null) => {
+    const { checkedPatientNr, checkedOrganizationId } = checkPatientData(patientNr, organizationId);
+    return `${baseStore.baseUrl}respondent/${checkedPatientNr}/${checkedOrganizationId}/appointments/${appointmentId}`;
+  });
+  const getAppointmentEditUrl = ((appointmentId, patientNr = null, organizationId = null) => {
+    const { checkedPatientNr, checkedOrganizationId } = checkPatientData(patientNr, organizationId);
+    return `${baseStore.baseUrl}respondent/${checkedPatientNr}/${checkedOrganizationId}/appointments/edit/${appointmentId}`;
+  });
+
   const getCarePlanDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/delete/${carePlanId}`);
   const getCarePlanUnDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/undelete/${carePlanId}`);
   const getCarePlanEditUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit/${carePlanId}`);
+  const getCarePlanShowUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${carePlanId}`);
 
   const getInsertSurveyUrl = ((surveyId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/insert/${surveyId}`);
 
@@ -44,8 +54,11 @@ const useUrlHelper = (() => {
   const getRespondentUndeleteUrl = (() => `${baseStore.baseUrl}respondent/undelete/${patientStore.patientNr}/${patientStore.organizationId}`);
 
   return {
+    getAppointmentShowUrl,
+    getAppointmentEditUrl,
     getCarePlanDeleteUrl,
     getCarePlanEditUrl,
+    getCarePlanShowUrl,
     getCarePlanUnDeleteUrl,
     getInsertSurveyUrl,
     getTokenAnswerUrl,
