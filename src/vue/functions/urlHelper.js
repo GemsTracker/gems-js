@@ -35,6 +35,8 @@ const useUrlHelper = (() => {
   const getCarePlanEditUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit/${carePlanId}`);
   const getCarePlanShowUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/${carePlanId}`);
 
+  const getChangeConsentUrl = (() => `${baseStore.baseUrl}respondent/change-consent/${patientStore.patientNr}/${patientStore.organizationId}`);
+
   const getInsertSurveyUrl = ((surveyId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/insert/${surveyId}`);
 
   const getTokenAnswerUrl = ((tokenId, carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/track/${carePlanId}/token/answer/${tokenId}`);
@@ -60,6 +62,7 @@ const useUrlHelper = (() => {
     getCarePlanEditUrl,
     getCarePlanShowUrl,
     getCarePlanUnDeleteUrl,
+    getChangeConsentUrl,
     getInsertSurveyUrl,
     getTokenAnswerUrl,
     getTokenAskUrl,
