@@ -1,0 +1,122 @@
+<template>
+  <div class="care-plans-content">
+    <div class="filter-item">
+      <label>
+          <input type="checkbox" v-model="showDeleted">
+          {{ t('Show deleted') }}
+      </label>
+    </div>
+    <table v-if="carePlans" class="table browser">
+      <thead>
+      <tr>
+        <th></th>
+        <th>{{ t('Track')}}</th>
+        <th>{{ t('Description')}}</th>
+        <th>{{ t('Start')}}</th>
+        <th>{{ t('Progress')}}</th>
+        <th>{{ t('Added by')}}</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(carePlan, index) in filteredCarePlans" :key="index"
+            :class="{deleted: carePlan.status === 'revoked'}">
+          <td>
+              <a :href="getCarePlanShowUrl(carePlan.id)" class="btn">{{ t('Show')}}</a>
+          </td>
+          <td>{{ carePlan.title }}</td>
+          <td>{{ carePlan.description }}</td>
+          <td>{{ formatJsonDate(carePlan.start) }}</td>
+          <td>
+              <span v-if="carePlan.id in carePlanTasks">
+                  <token-progress :tokens="carePlanTasks[carePlan.id]" />
+                  <token-status-bar :tokens="carePlanTasks[carePlan.id]" />
+              </span>
+          </td>
+          <td>{{ getCarePlanCreator(carePlan) }}</td>
+          <td>
+              <a v-if="carePlan.status === 'active'"
+                 :href="getCarePlanEditUrl(carePlan.id)"
+                 class="btn">
+                {{ t('Edit')}}
+              </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+<script>
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import useCarePlanRepository from '../../functions/carePlanRepository';
+import useDateFunctions from '../../functions/DateFunctions';
+import useTokenRepository from '../../functions/tokenRepository';
+import useUrlHelper from '../../functions/urlHelper';
+import TokenStatusBar from './TokenStatusBar.vue';
+import TokenProgress from './TokenProgress.vue';
+
+export default {
+  components: {TokenProgress, TokenStatusBar},
+  setup() {
+    const carePlans = ref(null);
+    const questionnaireTasks = ref(null);
+    const showDeleted = ref(true);
+    const { t } = useI18n();
+    const { formatJsonDate } = useDateFunctions();
+
+    const { getCarePlanEditUrl, getCarePlanShowUrl } = useUrlHelper();
+
+    const { getAllCarePlans } = useCarePlanRepository();
+    const { getAllTokens, groupByCarePlans } = useTokenRepository();
+
+    const getCarePlans = (async () => {
+      carePlans.value = await getAllCarePlans();
+      questionnaireTasks.value = await getAllTokens();
+    });
+
+    const filteredCarePlans = computed(() => {
+      if (showDeleted.value === false && carePlans.value !== null) {
+        return carePlans.value.filter((carePlan) => carePlan.status !== 'revoked');
+      }
+      return carePlans.value;
+    });
+
+    const getCarePlanCreator = ((carePlan) => {
+      let creatorName = null;
+      if ('contributor' in carePlan && Array.isArray(carePlan.contributor)) {
+        carePlan.contributor.forEach((contributor) => {
+          if ('type' in contributor && contributor.type === 'staff' && 'display' in contributor) {
+            creatorName = contributor.display;
+          }
+        });
+      }
+      return creatorName;
+    });
+
+    const carePlanTasks = computed(() => {
+      if (questionnaireTasks.value !== null) {
+        return groupByCarePlans(questionnaireTasks.value);
+      }
+      return {};
+    });
+
+    onMounted(() => {
+      getCarePlans();
+      getAllTokens();
+    });
+
+    return {
+      carePlans,
+      carePlanTasks,
+      filteredCarePlans,
+      formatJsonDate,
+      getCarePlanCreator,
+      getCarePlanEditUrl,
+      getCarePlanShowUrl,
+      showDeleted,
+      t,
+    };
+  },
+};
+</script>
