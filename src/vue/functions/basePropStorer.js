@@ -1,3 +1,4 @@
+import { useI18n } from 'vue-i18n';
 import useModelStore from '../stores/modelRepository';
 import useBaseStore from '../stores/baseStore';
 import usePatientStore from '../stores/patientStore';
@@ -15,6 +16,8 @@ const useBasePropStorer = ((props) => {
   }
   if ('locale' in props) {
     modelStore.setLocale(props.locale);
+    const { locale } = useI18n({ useScope: 'global' });
+    locale.value = props.locale;
   }
   if ('patientNr' in props) {
     patientStore.setPatientNr(props.patientNr);
