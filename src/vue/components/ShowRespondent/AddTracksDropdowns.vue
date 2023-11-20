@@ -27,12 +27,6 @@
           </li>
         </drop-down>
       </div>
-
-      <a class="btn btn-primary ms-3" type="button" :href="disableButtonUrl"
-         :class="{disabled: disableButtonLabel === null}">
-          <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
-          {{ disableButtonLabel }}
-      </a>
   </div>
 </template>
 <script>
@@ -48,12 +42,10 @@ import useInsertableQuestionnaireRepositoryRepository from '../../functions/Inse
 import useUrlHelper from '../../functions/urlHelper';
 import usePatientStore from '../../stores/patientStore';
 import DropDown from '../Util/DropDown.vue';
-import LoadingScreen from '../Util/LoadingScreen.vue';
-import usePatientRepository from '../../functions/patientRepository';
 
 export default {
   components: {
-    DropDown, LoadingScreen,
+    DropDown,
   },
   setup() {
     const { t } = useI18n();
@@ -91,15 +83,10 @@ export default {
     const {
       getInsertSurveyUrl,
       getTrackCreateUrl,
-      getRespondentDeleteUrl,
-      getRespondentUndeleteUrl,
     } = useUrlHelper();
-
-    const { active, getPatientData } = usePatientRepository();
 
     onMounted(() => {
       getData();
-      getPatientData();
     });
 
     const patientCombi = computed(() => patientStore.patientOrganizationCombination);
@@ -109,32 +96,9 @@ export default {
       patientQuestionnaires.value = null;
       practitionerQuestionnaires.value = null;
       getData();
-      getPatientData();
-    });
-
-    const disableButtonLabel = computed(() => {
-      if (active.value === true) {
-        return t('Delete patient');
-      }
-      if (active.value === false) {
-        return t('Undelete patient');
-      }
-      return null;
-    });
-
-    const disableButtonUrl = computed(() => {
-      if (active.value === true) {
-        return getRespondentDeleteUrl();
-      }
-      if (active.value === false) {
-        return getRespondentUndeleteUrl();
-      }
-      return null;
     });
 
     return {
-      disableButtonLabel,
-      disableButtonUrl,
       getInsertSurveyUrl,
       getTrackCreateUrl,
       questionnaireLoading,

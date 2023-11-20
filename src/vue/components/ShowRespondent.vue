@@ -2,7 +2,7 @@
   <div>
     <organization-tabs />
     <respondent-info v-if="showRespondentInfo"></respondent-info>
-    <add-tracks-dropdowns></add-tracks-dropdowns>
+    <button-row></button-row>
     <div class="display-picker text-end">
       <span v-for="(label, optionName, index) in displayOptions" :key="index">
         <a @click.prevent="currentDisplay = optionName"
@@ -23,11 +23,11 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useBasePropStorer from '../functions/basePropStorer';
 import useBaseStore from '../stores/baseStore';
-import AddTracksDropdowns from './ShowRespondent/AddTracksDropdowns.vue';
 import RespondentInfo from './ShowRespondent/RespondentInfo.vue';
 import RoundTabs from './ShowRespondent/RoundTabs.vue';
 import TokenTimeline from './ShowRespondent/TokenTimeline.vue';
 import OrganizationTabs from './ShowRespondent/OrganizationTabs.vue';
+import ButtonRow from './ShowRespondent/ButtonRow.vue';
 
 export default {
   props: {
@@ -54,8 +54,11 @@ export default {
     },
   },
   components: {
+    ButtonRow,
     OrganizationTabs,
-    AddTracksDropdowns, RespondentInfo, RoundTabs, TokenTimeline,
+    RespondentInfo,
+    RoundTabs,
+    TokenTimeline,
   },
   setup(props) {
     const displayOptions = {
