@@ -85,6 +85,19 @@ const useTokenRepository = (() => {
     return allTokens.filter((token) => token.carePlanId === carePlanId);
   });
 
+  const getToken = (async (tokenId) => {
+    const allTokens = await getAllTokens();
+    if (allTokens !== null) {
+      for (let i = 0; i < allTokens.length; i += 1) {
+        const token = allTokens[i];
+        if (token.id === tokenId) {
+          return token;
+        }
+      }
+    }
+    return null;
+  });
+
   const groupByCarePlans = ((tokens) => {
     const groupedTokens = {};
     Object.keys(tokens).forEach((tokenId) => {
@@ -193,6 +206,7 @@ const useTokenRepository = (() => {
     getAllTokens,
     groupByCarePlans,
     getCarePlanTokens,
+    getToken,
     groupByCareplanyMeasureMoment,
     groupByDate,
     groupByMeasureMoment,
