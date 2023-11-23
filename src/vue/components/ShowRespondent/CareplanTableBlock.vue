@@ -1,11 +1,5 @@
 <template>
   <div class="care-plans-content">
-    <div class="filter-item">
-      <label>
-          <input type="checkbox" v-model="showDeleted">
-          {{ t('Show deleted') }}
-      </label>
-    </div>
     <table v-if="carePlans" class="table browser">
       <thead>
       <tr>
@@ -57,11 +51,19 @@ import TokenStatusBar from './TokenStatusBar.vue';
 import TokenProgress from './TokenProgress.vue';
 
 export default {
-  components: {TokenProgress, TokenStatusBar},
-  setup() {
+  props: {
+    showDeleted: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  components: {
+    TokenProgress,
+    TokenStatusBar,
+  },
+  setup(props) {
     const carePlans = ref(null);
     const questionnaireTasks = ref(null);
-    const showDeleted = ref(true);
     const { t } = useI18n();
     const { formatJsonDate } = useDateFunctions();
 
@@ -76,7 +78,7 @@ export default {
     });
 
     const filteredCarePlans = computed(() => {
-      if (showDeleted.value === false && carePlans.value !== null) {
+      if (props.showDeleted === false && carePlans.value !== null) {
         return carePlans.value.filter((carePlan) => carePlan.status !== 'revoked');
       }
       return carePlans.value;
@@ -114,7 +116,6 @@ export default {
       getCarePlanCreator,
       getCarePlanEditUrl,
       getCarePlanShowUrl,
-      showDeleted,
       t,
     };
   },
