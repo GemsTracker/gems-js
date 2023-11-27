@@ -14,6 +14,10 @@ const useCarePlanRepository = (() => {
   const getAllCarePlans = (async () => {
     loading.value = true;
     const carePlanArray = await carePlanModel.all({ per_page: 200 });
+    if (carePlanArray === null) {
+      loading.value = false;
+      return [];
+    }
     const augmentedCarePlans = carePlanArray.map((carePlan) => {
       const augmentedCarePlan = carePlan;
       // Add start for easier sort

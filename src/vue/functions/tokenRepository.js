@@ -73,6 +73,10 @@ const useTokenRepository = (() => {
   const getAllTokens = (async () => {
     loading.value = true;
     const rawTokens = await tokenModel.all();
+    if (rawTokens === null) {
+      loading.value = false;
+      return [];
+    }
     const tokenArray = Object.values(rawTokens);
     const augmentedTokens = addTokenInfoFields(tokenArray);
     loading.value = false;
