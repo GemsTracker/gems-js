@@ -232,6 +232,21 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
           });
         }
       }
+      if ('valueFromField' in updateFields[updateFieldName] && updateFieldName in formValues.value) {
+        let valueFromField = null;
+        if (Array.isArray(updateFields[updateFieldName].valueFromField)) {
+          valueFromField = allReferenceData.value[newValue];
+          updateFields[updateFieldName].valueFromField.forEach((fieldName) => {
+            if (fieldName in valueFromField) {
+              valueFromField = valueFromField[fieldName];
+            }
+          });
+        } else {
+          const localFieldName = updateFields[updateFieldName].valueFromField;
+          valueFromField = allReferenceData.value[newValue][localFieldName];
+        }
+        formValues.value[updateFieldName] = valueFromField;
+      }
     });
   });
 
