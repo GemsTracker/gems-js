@@ -1,14 +1,17 @@
 <template>
   <div class="rte-editor">
-    <tip-tap-menu v-if="editor" :editor="editor" :quick-texts="quickTexts"></tip-tap-menu>
+    <tip-tap-menu v-if="editor" :editor="editor" :quick-texts="quickTexts">
+      <slot name="menu-buttons"></slot>
+    </tip-tap-menu>
     <editor-content :editor="editor" class="editor" />
   </div>
 </template>
 <script>
-import { watch } from 'vue';
+import { provide, watch } from 'vue';
+import Link from '@tiptap/extension-link';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
-import TipTapMenu from './TipTapMenu.vue';
+import TipTapMenu from './TipTap/TipTapMenu.vue';
 
 export default {
   props: {
@@ -35,11 +38,16 @@ export default {
       content: props.modelValue,
       extensions: [
         StarterKit,
+        Link.configure({
+          openOnClick: false,
+        }),
       ],
       onUpdate: () => {
         emit('update:modelValue', editor.value.getHTML());
       },
     });
+
+    provide('editor', editor);
 
     watch(() => props.modelValue, (newValue) => {
       if (newValue !== editor.value.getHTML()) {
@@ -56,6 +64,7 @@ export default {
 <style lang="scss">
 
 .rte-editor {
+  background: white;
   .menu {
     border: #aaa 1px solid;
     border-bottom: none;
@@ -65,7 +74,7 @@ export default {
       color: black;
       border: none;
       padding: .25rem .5rem;
-      margin: .25rem;
+      margin: 0 .25rem;
       &:hover {
         background: #eee;
       }
@@ -78,6 +87,12 @@ export default {
         &:hover {
           background: white;
         }
+      }
+    }
+    .tip-tap-menu-group {
+      display: inline-block;
+      button {
+        margin: 0;
       }
     }
   }

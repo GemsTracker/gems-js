@@ -16,7 +16,9 @@
 import LoadingScreen from './LoadingScreen.vue';
 
 export default {
-  components: {LoadingScreen},
+  components: {
+    LoadingScreen,
+  },
   props: {
     label: {
       type: String,
