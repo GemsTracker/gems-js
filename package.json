@@ -26,6 +26,7 @@
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
     "@tiptap/starter-kit": "^2.1.12",
+    "@tiptap/extension-link": "^2.1.12",
     "@tiptap/vue-3": "^2.1.12",
     "twig": "^1.16.0",
     "vue": "^3.3.6",
