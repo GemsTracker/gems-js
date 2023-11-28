@@ -17,6 +17,7 @@ const formElements = {
   TextareaElement: defineAsyncComponent(() => import('../components/GemsForm/Element/TextareaElement.vue')),
   TextSuggestionsElement: defineAsyncComponent(() => import('../components/GemsForm/Element/TextSuggestionsElement.vue')),
   CommTemplateTranslationsElement: defineAsyncComponent(() => import('../components/GemsForm/Element/CommTemplateTranslationsElement.vue')),
+  EmailNowMessageElement: defineAsyncComponent(() => import('../components/GemsForm/Element/EmailNowMessageElement.vue')),
 };
 
 const addFormElement = ((name, component) => {
