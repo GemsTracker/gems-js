@@ -181,7 +181,7 @@ export default class Model {
   }
 
   clear() {
-    this.store.clearModel(this.name, this.initialState);
+    this.store.clearModelData(this.name, this.initialState);
   }
 
   async deleteById(id, data) {
