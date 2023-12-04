@@ -50,6 +50,7 @@ const useTipTapFunctions = ((editor) => {
   return {
     activeBold,
     activeItalic,
+    activeLink,
     breakLink,
     doRedo,
     doUndo,
