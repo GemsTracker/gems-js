@@ -1,21 +1,22 @@
 <template>
-    <div class="form-group">
-        <gems-form-label :elementId="elementId" :options="options" />
-        <div class="element-container">
-            <label class="radio-inline" v-for="(formOption, index) in formOptions" :key="index">
-                <input type="radio" v-model="formValue" :name="formOption.value"
-                   :value="formOption.key" :disabled="disabled" />
-                {{formOption.value}}
-            </label>
-            <loading-screen v-if="loadingReferenceData" size="1.25rem" />
-            <gems-form-validator-messages :validator="validator"
-              :serverValidator="serverValidator" />
-            <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
-        </div>
+  <div class="form-group">
+    <gems-form-label :elementId="elementId" :options="options" />
+    <div class="element-container">
+      <div v-for="(formOption, index) in formOptions" :key="index" class="form-check">
+        <label class="form-check-label">
+          <input type="checkbox" v-model="checkboxValues[formOption.key]"
+            :value="formOption.key" :disabled="disabled" class="form-check-input" />
+          {{formOption.value}}
+        </label>
+      </div>
+      <loading-screen v-if="loadingReferenceData" size="1.25rem" />
+      <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
+      <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
     </div>
+  </div>
 </template>
 <script>
-import { onMounted } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
@@ -49,14 +50,24 @@ export default {
 
     const {
       formOptions,
-      getAllReferenceData,
+      initMultipleAnswerElement,
       loadingReferenceData,
     } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
 
     onMounted(() => {
-      if ('multiOptionSettings' in props.options) {
-        getAllReferenceData(props.options.multiOptionSettings);
-      }
+      initMultipleAnswerElement();
+    });
+
+    const checkboxValues = ref({});
+
+    watch(checkboxValues.value, (newValues) => {
+      const values = [];
+      Object.keys(newValues).forEach((key) => {
+        if (newValues[key] === true) {
+          values.push(key);
+        }
+      });
+      formValue.value = values;
     });
 
     return {
@@ -69,6 +80,7 @@ export default {
       validator,
       validatorClass,
       previousValue,
+      checkboxValues,
     };
   },
 };
