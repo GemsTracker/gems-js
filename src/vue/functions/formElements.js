@@ -3,6 +3,7 @@ import { defineAsyncComponent, shallowReadonly } from 'vue';
 const formElements = {
   CheckboxElement: defineAsyncComponent(() => import('../components/GemsForm/Element/CheckboxElement.vue')),
   DateElement: defineAsyncComponent(() => import('../components/GemsForm/Element/DateElement.vue')),
+  EndlessKeyValueElement: defineAsyncComponent(() => import('../components/GemsForm/Element/EndlessKeyValueElement.vue')),
   ExhibitorElement: defineAsyncComponent(() => import('../components/GemsForm/Element/ExhibitorElement.vue')),
   HiddenElement: defineAsyncComponent(() => import('../components/GemsForm/Element/HiddenElement.vue')),
   HtmlElement: defineAsyncComponent(() => import('../components/GemsForm/Element/HtmlElement.vue')),
