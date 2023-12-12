@@ -2,8 +2,8 @@
   <div class="form-group" :class="validatorClass">
     <gems-form-label :elementId="elementId" :options="options" :for="elementId" />
     <div class="element-container">
-      <div v-for="(row, index) in keyValues" :key="index">
-        <key-value-sub-element v-model="keyValues[index]" />
+      <div v-for="(row, index) in formValue" :key="index">
+        <key-value-sub-element v-model="formValue[index]" />
         <button type="button" @click="removeRow(index)" class="btn btn-danger btn-sm">
             <font-awesome-icon icon="xmark" />
         </button>
@@ -17,7 +17,12 @@
   </div>
 </template>
 <script>
-import { computed, onMounted, ref, watch } from 'vue';
+import {
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -59,41 +64,89 @@ export default {
       return null;
     });
 
-    const keyValues = ref([]);
+    // const keyValues = ref([]);
 
     const newKeyValue = {
       key: null,
       value: null,
     };
 
+    // const externalValueChange = ref(true);
+
+    /* watch(formValue, (newValues, oldValues) => {
+      /* console.log('Mooooioiosdfjklsdfhj', oldValues, newValues);
+      if (newValues !== null && externalValueChange.value === true && typeof newValues === 'object') {
+        console.log('EXTERNAL CHANGE~');
+        const pairs = [];
+        Object.keys(newValues).forEach((key) => {
+          const value = newValues[key];
+          pairs.push({
+            key,
+            value,
+          });
+        });
+        console.log(pairs);
+        keyValues.value = pairs;
+      }
+    }); */
+
+    /* const keyValues = computed({
+      get() {
+        if (formValue.value !== null) {
+          const pairs = [];
+          Object.keys(formValue.value).forEach((key) => {
+            const value = formValue.value[key];
+            pairs.push({
+              key,
+              value,
+            });
+          });
+          return pairs;
+        }
+        return [];
+      },
+      set(values) {
+        const pairs = {};
+        values.forEach((row) => {
+          if (row.key !== null) {
+            pairs[row.key] = row.value;
+          }
+        });
+        formValue.value = pairs;
+      },
+    }); */
+
+    /* watch(keyValues, (newValues, oldValues) => {
+      console.log('CHANGING KEY VALUES', newValues, oldValues);
+      if (externalValueChange.value === true && Array.isArray(newValues)) {
+        const pairs = {};
+        console.log('XXXXX');
+        console.log(newValues);
+        newValues.forEach((row) => {
+          pairs[row.key] = row.value;
+        });
+        externalValueChange.value = false;
+        formValue.value = pairs;
+        externalValueChange.value = true;
+      }
+    }, { deep: true }); */
+
     const addNewRow = (() => {
-      keyValues.value.push({ ...newKeyValue });
+
+      formValue.value.push({ ...newKeyValue });
     });
 
     const removeRow = ((index) => {
-      keyValues.value.splice(index, 1);
+      formValue.value.splice(index, 1);
     });
 
     onMounted(() => {
-      addNewRow();
-      if (formValue.value !== null) {
-        const keyValueObjects = [];
-        Object.keys(formValue.value).forEach((key) => {
-          keyValueObjects.push({
-            key,
-            value: formValue.value[key],
-          });
-        });
-        keyValues.value = keyValueObjects;
+      if (formValue.value === null) {
+        formValue.value = [];
       }
-    });
-
-    watch(keyValues.value, (newValues) => {
-      const pairs = {};
-      newValues.forEach((row) => {
-        pairs[row.key] = row.value;
-      });
-      formValue.value = pairs;
+      if (formValue.value.length === 0) {
+        addNewRow();
+      }
     });
 
     return {
@@ -101,7 +154,6 @@ export default {
       disabled,
       elementId,
       formValue,
-      keyValues,
       removeRow,
       serverValidator,
       size,

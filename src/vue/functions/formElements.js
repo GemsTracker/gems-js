@@ -4,6 +4,7 @@ const formElements = {
   CheckboxElement: defineAsyncComponent(() => import('../components/GemsForm/Element/CheckboxElement.vue')),
   DateElement: defineAsyncComponent(() => import('../components/GemsForm/Element/DateElement.vue')),
   EndlessKeyValueElement: defineAsyncComponent(() => import('../components/GemsForm/Element/EndlessKeyValueElement.vue')),
+  EndlessSubformsElement: defineAsyncComponent(() => import('../components/GemsForm/Element/EndlessSubformsElement.vue')),
   ExhibitorElement: defineAsyncComponent(() => import('../components/GemsForm/Element/ExhibitorElement.vue')),
   HiddenElement: defineAsyncComponent(() => import('../components/GemsForm/Element/HiddenElement.vue')),
   HtmlElement: defineAsyncComponent(() => import('../components/GemsForm/Element/HtmlElement.vue')),
