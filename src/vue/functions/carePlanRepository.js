@@ -28,9 +28,17 @@ const useCarePlanRepository = (() => {
     return augmentedCarePlans.sort(sortFieldsFunction(['-start']));
   });
 
+  const getCarePlan = (async (carePlanId) => {
+    loading.value = true;
+    const carePlan = await carePlanModel.findById(carePlanId);
+    loading.value = false;
+    return carePlan;
+  });
+
   return {
     loading,
     getAllCarePlans,
+    getCarePlan,
   };
 });
 
