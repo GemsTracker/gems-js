@@ -102,6 +102,14 @@ const useTokenRepository = (() => {
     return null;
   });
 
+  const getOneToken = (async (tokenId) => {
+    const token = await tokenModel.findById(tokenId);
+    if (token !== null) {
+      return token;
+    }
+    return null;
+  });
+
   const groupByCarePlans = ((tokens) => {
     const groupedTokens = {};
     Object.keys(tokens).forEach((tokenId) => {
@@ -210,6 +218,7 @@ const useTokenRepository = (() => {
     getAllTokens,
     groupByCarePlans,
     getCarePlanTokens,
+    getOneToken,
     getToken,
     groupByCareplanyMeasureMoment,
     groupByDate,

@@ -25,8 +25,16 @@ const useTrackRepository = (() => {
     return tracks.sort(sortFieldsFunction(['name']));
   });
 
+  const getTrack = (async (trackId) => {
+    loading.value = true;
+    const carePlan = await trackModel.findById(trackId);
+    loading.value = false;
+    return carePlan;
+  });
+
   return {
     loading,
+    getTrack,
     getTracksForOrganization,
   };
 });
