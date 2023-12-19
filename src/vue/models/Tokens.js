@@ -9,4 +9,11 @@ export default class Token extends PatientModelAbstract {
 
     this.filters.per_page = 200;
   }
+
+  async findById(id, filters = null, refresh = false) {
+    this.addRespondentData = false;
+    const result = super.findById(id, filters, refresh);
+    this.addRespondentData = true;
+    return result;
+  }
 }

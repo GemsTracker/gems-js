@@ -12,6 +12,8 @@ export default class PatientModelAbstract extends Model {
 
     this.delimiter = this.patientStore.delimiter;
 
+    this.addRespondentData = true;
+
     this.addRespondentDataToFilters();
   }
 
@@ -30,6 +32,8 @@ export default class PatientModelAbstract extends Model {
   }
 
   withPatientNrOrganizationCombination() {
-    this.filters[this.patientField] = this.patientStore.patientOrganizationCombination;
+    if (this.addRespondentData) {
+      this.filters[this.patientField] = this.patientStore.patientOrganizationCombination;
+    }
   }
 }
