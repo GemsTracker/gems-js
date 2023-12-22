@@ -1,5 +1,4 @@
 import './authenticated/auth-idle-checker';
-import './authenticated/autofocus';
 import './authenticated/autosubmit';
 import './authenticated/on-behave';
 import './authenticated/on-off-edit';

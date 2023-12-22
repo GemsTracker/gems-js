@@ -1,3 +1,4 @@
+import './general/autofocus';
 import './general/functions';
 import './general/datepicker';
 import './general/menu';
