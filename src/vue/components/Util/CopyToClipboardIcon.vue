@@ -1,8 +1,9 @@
 <template>
-  <span class="copy-to-clipboard" :class="buttonClass"
-    title="Copy to Clipboard" @click="copyToClipboard">
+  <div class="copy-to-clipboard" :class="buttonClass"
+    :title="title" @click="copyToClipboard">
     <font-awesome-icon :icon="iconOptions[icon]" />
-  </span>
+    {{ label }}
+  </div>
 </template>
 <script>
 import { computed, ref } from 'vue';
@@ -22,7 +23,11 @@ export default {
     },
     title: {
       type: String,
-      default: null,
+      default: 'Copy to Clipboard',
+    },
+    label: {
+      type: String,
+      default: '',
     },
   },
   emit: [
