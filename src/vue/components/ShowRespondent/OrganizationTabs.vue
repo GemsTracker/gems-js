@@ -38,7 +38,7 @@ export default {
     }); */
 
     onMounted(async () => {
-      organizations.value = await otherOrgModel.all();
+      organizations.value = await otherOrgModel.all({ detailed: 1});
     });
 
     return {
