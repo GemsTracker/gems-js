@@ -3,11 +3,11 @@
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <div class="input-group">
-        <div class="input-group-addon">
+        <div class="input-group-text">
           <font-awesome-icon :icon="['far', 'calendar-alt']" />
         </div>
         <datepicker v-if="dateLocale !== null" v-model="formDateObject" class="form-control"
-          :disabled="disabled" :locale="dateLocale" />
+          :disabled="disabled" />
       </div>
       <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
       <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
@@ -16,8 +16,6 @@
 </template>
 <script>
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { enUS, nl } from 'date-fns/locale';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -41,21 +39,6 @@ export default {
     Datepicker, FontAwesomeIcon, GemsFormLabel, GemsFormValidatorMessages,
   },
   setup(props) {
-    const { locale } = useI18n({ useScope: 'global' });
-
-    const availableLanguages = {
-      en: enUS,
-      nl,
-    };
-
-    const dateLocale = computed(() => {
-      if (locale.value !== null && locale.value in availableLanguages) {
-        const currentLocale = availableLanguages[locale.value];
-        return currentLocale;
-      }
-      return null;
-    });
-
     const {
       disabled,
       elementId,
@@ -82,8 +65,6 @@ export default {
     });
 
     return {
-      availableLanguages,
-      dateLocale,
       disabled,
       elementId,
       formDateObject,
