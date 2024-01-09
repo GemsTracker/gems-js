@@ -1,5 +1,6 @@
 <template>
   <label v-if="'label' in options" :for="elementId"
+         class="element-label"
       :class="{required: options.required === true}">
     {{options.label}}
   </label>

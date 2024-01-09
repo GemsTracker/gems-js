@@ -1,8 +1,10 @@
 <template>
   <div class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
-    <textarea v-model="formValue" :id="elementId" :name="elementId" class="form-control"
-      :disabled="disabled" :cols="options.cols" :rows="options.rows" />
+    <div class="element-container">
+      <textarea v-model="formValue" :id="elementId" :name="elementId" class="form-control"
+        :disabled="disabled" :cols="options.cols" :rows="options.rows" />
+    </div>
     <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
     <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
   </div>
