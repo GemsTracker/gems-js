@@ -7,7 +7,7 @@
         <th>{{ t('Track')}}</th>
         <th>{{ t('Description')}}</th>
         <th>{{ t('Start')}}</th>
-        <th>{{ t('Progress')}}</th>
+        <th v-if="showTokenProgress || showTokenStatusBar">{{ t('Progress')}}</th>
         <th>{{ t('Added by')}}</th>
         <th></th>
       </tr>
@@ -21,10 +21,12 @@
           <td>{{ carePlan.title }}</td>
           <td>{{ carePlan.description }}</td>
           <td>{{ formatJsonDate(carePlan.start) }}</td>
-          <td>
+          <td v-if="showTokenProgress || showTokenStatusBar">
               <span v-if="carePlan.id in carePlanTasks">
-                  <token-progress :tokens="carePlanTasks[carePlan.id]" />
-                  <token-status-bar :tokens="carePlanTasks[carePlan.id]" />
+                  <token-progress v-if="showTokenProgress"
+                                  :tokens="carePlanTasks[carePlan.id]" />
+                  <token-status-bar v-if="showTokenStatusBar"
+                                  :tokens="carePlanTasks[carePlan.id]" />
               </span>
           </td>
           <td>{{ getCarePlanCreator(carePlan) }}</td>
@@ -55,6 +57,14 @@ export default {
     showDeleted: {
       type: Boolean,
       default: true,
+    },
+    showTokenProgress: {
+      type: Boolean,
+      default: false,
+    },
+    showTokenStatusBar: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
