@@ -121,7 +121,7 @@ export default {
     });
 
     onMounted(async () => {
-      commFields.value = await getCommFieldsForTarget('token', formData.value.id);
+      commFields.value = await getCommFieldsForTarget('token', { id: formData.value.id });
     });
 
     return {
