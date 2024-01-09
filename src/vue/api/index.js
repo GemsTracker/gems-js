@@ -107,14 +107,16 @@ export default class Api {
       });
   }
 
-  update(data) {
-    console.log(`UPDATING: ${this.endpoint}`, data);
-    return this.client.patch(`/${this.endpoint}`, data)
-      .then((response) => response).catch((error) => {
-        console.log(error);
-        console.log(error.response.data);
-        return error.response;
-      });
+  update(data, filters = null) {
+    console.log(`UPDATING: ${this.url}/${this.endpoint}?${this.constructor.getTextFilters(filters)}`, data);
+    console.log(filters);
+    return this.client.patch(`/${this.endpoint}`, data, {
+      params: filters,
+    })
+        .then((response) => response).catch((error) => {
+          console.log(error);
+          console.log(error.response.data);
+        });
   }
 
   getResponse(/* filters */) {

@@ -102,9 +102,9 @@ export default defineStore('modelRepository', {
       return apiCall;
     },
 
-    updateModelData(modelName, { endpoint, data }) {
+    updateModelData(modelName, { endpoint, data, filters }) {
       const api = new Api({ apiUrl: this.apiUrl, endpoint, locale: this.locale });
-      const apiCall = api.update(data)
+      const apiCall = api.update(data, filters)
         .then((returnData) => returnData);
       return apiCall;
     },

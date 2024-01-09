@@ -209,10 +209,11 @@ export default class Model {
       && obj.constructor === Object;
   }
 
-  async updateById(id, data) {
+  async updateById(id, data, filters = null) {
     const updateData = {
       endpoint: `${this.endpoint}/${id}`,
       data,
+      filters,
     };
     this.updating = this.store.updateModelData(this.name, updateData);
 
