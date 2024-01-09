@@ -52,6 +52,8 @@ const useUrlHelper = (() => {
     const { checkedPatientNr, checkedOrganizationId } = checkPatientData(patientNr, organizationId);
     return `${baseStore.baseUrl}respondent/${checkedPatientNr}/${checkedOrganizationId}`;
   });
+  const getRespondentEditUrl = (() => `${baseStore.baseUrl}respondent/edit/${patientStore.patientNr}/${patientStore.organizationId}`);
+
   const getRespondentDeleteUrl = (() => `${baseStore.baseUrl}respondent/delete/${patientStore.patientNr}/${patientStore.organizationId}`);
   const getRespondentUndeleteUrl = (() => `${baseStore.baseUrl}respondent/undelete/${patientStore.patientNr}/${patientStore.organizationId}`);
 
@@ -69,6 +71,7 @@ const useUrlHelper = (() => {
     getTokenShowUrl,
     getTrackCreateUrl,
     getRespondentDeleteUrl,
+    getRespondentEditUrl,
     getRespondentShowUrl,
     getRespondentUndeleteUrl,
   };
