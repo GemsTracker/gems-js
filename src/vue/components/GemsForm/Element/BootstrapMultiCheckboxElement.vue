@@ -4,7 +4,7 @@
     <div class="element-container">
       <div v-for="(formOption, index) in formOptions" :key="index" class="form-check">
         <label class="form-check-label">
-          <input type="checkbox" v-model="checkboxValues[formOption.key]"
+          <input type="checkbox" v-model="formValue"
             :value="formOption.key" :disabled="disabled" class="form-check-input" />
           {{formOption.value}}
         </label>
@@ -16,7 +16,7 @@
   </div>
 </template>
 <script>
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
@@ -58,18 +58,6 @@ export default {
       initMultipleAnswerElement();
     });
 
-    const checkboxValues = ref({});
-
-    watch(checkboxValues.value, (newValues) => {
-      const values = [];
-      Object.keys(newValues).forEach((key) => {
-        if (newValues[key] === true) {
-          values.push(key);
-        }
-      });
-      formValue.value = values;
-    });
-
     return {
       disabled,
       elementId,
@@ -80,7 +68,6 @@ export default {
       validator,
       validatorClass,
       previousValue,
-      checkboxValues,
     };
   },
 };
