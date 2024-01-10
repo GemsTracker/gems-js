@@ -134,6 +134,9 @@ export default class Api {
 
   static getTextFilters(filters) {
     let textFilter = '';
+    if (filters === null) {
+      return textFilter;
+    }
     Object.keys(filters).forEach((field) => {
       let value = filters[field];
       if (Array.isArray(value)) {
