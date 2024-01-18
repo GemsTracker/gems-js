@@ -88,45 +88,4 @@ export default {
 };
 </script>
 <style lang="scss">
-.data-table {
-  display: flex;
-  flex-flow: column nowrap;
-  flex: 1 1 auto;
-  border: 1px solid #d0d0d0;
-  border-bottom: 0;
-
-  .table-row {
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    column-gap: 1px;
-    &:nth-of-type(even) {
-      background-color: #f2f2f2;
-    }
-    &:nth-of-type(odd) {
-      background-color: white;
-    }
-    .column {
-      display: flex;
-      flex-flow: row nowrap;
-      flex-grow: 1;
-      flex-basis: 0;
-      word-break: break-word;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      min-width: 0;
-      white-space: nowrap;
-      border-bottom: 1px solid #d0d0d0;
-      padding: .25rem .5rem;
-    }
-
-    &.header {
-      .column {
-        background-color: #616265;
-        color: white;
-        font-weight: bold;
-      }
-    }
-  }
-}
 </style>
