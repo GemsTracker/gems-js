@@ -97,9 +97,15 @@ const useGemsFormElementFunctions = ((elementOptions) => {
   });
 
   const disabled = computed(() => {
-    if ('disable' in elementOptions) {
-      if ('otherField' in elementOptions.disable) {
-        return otherFieldDependency(elementOptions.disable.otherField);
+    if ('disabled' in elementOptions) {
+      if (elementOptions.disabled === true || elementOptions.disabled === 'disabled') {
+        return true;
+      }
+      if (elementOptions.disabled === false) {
+        return false;
+      }
+      if (typeof elementOptions.disabled === 'object' && 'otherField' in elementOptions.disabled) {
+        return otherFieldDependency(elementOptions.disabled.otherField);
       }
     }
     return false;
