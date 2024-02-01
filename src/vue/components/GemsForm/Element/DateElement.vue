@@ -6,7 +6,7 @@
         <div class="input-group-text">
           <font-awesome-icon :icon="['far', 'calendar-alt']" />
         </div>
-        <datepicker v-if="dateLocale !== null" v-model="formDateObject" class="form-control"
+        <datepicker v-model="formDateObject" class="form-control"
           :disabled="disabled" />
       </div>
       <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
