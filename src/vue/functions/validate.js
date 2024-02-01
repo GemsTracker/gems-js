@@ -25,27 +25,56 @@ const useValidate = ((formData, validationRules) => {
     messages.value = {};
   });
 
-  const validateField = ((fieldName) => {
-    if (fieldName in validationRules.value) {
-      console.log(`Validating ${fieldName}`);
-      let fieldValidations = validationRules.value[fieldName];
-      console.log(fieldValidations);
-      if (!Array.isArray(fieldValidations)) {
-        fieldValidations = [fieldValidations];
+  const validateField = ((fieldName, fieldValidations, value) => {
+    console.log(`Validating ${fieldName}`);
+    console.log(fieldValidations);
+    if (!Array.isArray(fieldValidations) && typeof fieldValidations === 'object') {
+      // Nested validators
+      const result = {
+        errors: {},
+        messages: {},
       }
-      fieldValidations.forEach((validationRule) => {
-        const { message, test } = validationRule;
-        console.log(validationRule);
-        if (test(formData.value[fieldName]) === false) {
-          console.log('VALIDATION ERRORS');
-          errors.value[fieldName] = true;
-          if (!(fieldName in messages.value)) {
-            messages.value[fieldName] = [];
-          }
-          messages.value[fieldName].push(message);
+      if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i += 1) {
+          const subRow = value[i];
+          Object.keys(fieldValidations).forEach((subFieldName) => {
+            const subResult = validateField(fieldName, fieldValidations[subFieldName], subRow[fieldName]);
+            if (!(i in result.errors)) {
+              result.errors[i] = {};
+            }
+            if (!(i in result.messages)) {
+              result.messages[i] = {};
+            }
+            result.errors[i][subFieldName] = true;
+            result.messages[i][subFieldName] = subResult.messages;
+          });
         }
-      });
+      }
+      if (Object.keys(result.errors).length) {
+        return result;
+      }
+      return { errors: false };
     }
+
+    const result = {
+      errors: false,
+      messages: [],
+    }
+
+    if (!Array.isArray(fieldValidations)) {
+      fieldValidations = [fieldValidations];
+    }
+
+    fieldValidations.forEach((validationRule) => {
+      const { message, test } = validationRule;
+      console.log(validationRule);
+      if (test(value) === false) {
+        console.log('VALIDATION ERRORS');
+        result.errors = true;
+        result.messages.push(message);
+      }
+    });
+    return result;
   });
 
   const fieldValidators = computed(() => {
@@ -69,7 +98,14 @@ const useValidate = ((formData, validationRules) => {
   const validate = (() => {
     console.log(formData.value);
     Object.keys(validationRules.value).forEach((fieldName) => {
-      validateField(fieldName);
+      const result = validateField(fieldName, validationRules.value[fieldName], formData.value[fieldName]);
+      console.log('VALIDATION RESULT!', fieldName, result);
+      delete errors.value[fieldName];
+      delete messages.value[fieldName];
+      if (result.errors) {
+        errors.value[fieldName] = true;
+        messages.value[fieldName] = result.messages;
+      }
     });
   });
 
@@ -88,6 +124,7 @@ const useValidate = ((formData, validationRules) => {
     $fields: fieldValidators,
     $dirtyFields: dirtyFields,
     formData,
+    validationRules,
   });
 
   return {

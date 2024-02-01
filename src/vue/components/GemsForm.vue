@@ -23,6 +23,7 @@
 <script>
 import {
   computed,
+  nextTick,
   onMounted,
   provide,
   ref,
@@ -92,7 +93,7 @@ export default {
 
     const changes = ref(false);
 
-    const { getInitialFormValues, validation } = useGemsFormFunctions(structure, formData);
+    const { getInitialFormValues, validation, validationRules, validate } = useGemsFormFunctions(structure, formData);
     const serverValidation = ref({});
 
     const getEndpointStructure = (async () => {
@@ -138,7 +139,8 @@ export default {
 
     const submit = (async () => {
       submitting.value = true;
-      // validate();
+      validate();
+      await nextTick();
       if (validation.value.$invalid === false) {
         const model = modelRepository.getEndpointModel(props.resource, props.endpoint);
         let response = null;
@@ -219,6 +221,7 @@ export default {
       submit,
       submitInfo,
       submitting,
+      validationRules,
     };
   },
 };

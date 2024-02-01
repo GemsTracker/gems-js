@@ -22,11 +22,13 @@ const useGemsFormFunctions = ((structureData, formData) => {
     return initialValues;
   });
 
-  const validationRules = computed(() => {
+  const getRulesForStructure = ((structure) => {
     const rules = {};
-    if (structureData.value !== null) {
-      Object.values(structureData.value).forEach((structureRow) => {
-        if ('required' in structureRow && structureRow.required === true) {
+    if (structure !== null) {
+      Object.values(structure).forEach((structureRow) => {
+        if ('required' in structureRow && structureRow.required === true
+            && (!('elementClass' in structureRow) || structureRow.elementClass.toLowerCase() !== 'hidden'))
+        {
           rules[structureRow.name] = [
             {
               name: 'required',
@@ -35,16 +37,23 @@ const useGemsFormFunctions = ((structureData, formData) => {
             },
           ];
         }
+        if ('structure' in structureRow) {
+          rules[structureRow.name] = getRulesForStructure(structureRow.structure);
+        }
       });
     }
     return rules;
+  });
+
+  const validationRules = computed(() => {
+    return getRulesForStructure(structureData.value);
   });
 
   const { result: validation } = useValidate(formData, validationRules);
 
   const validate = (() => {
     validation.value.$test();
-    validation.value.$touch();
+    //validation.value.$touch();
     // store.dispatch('gemsForm/resetServerValidation', true);
   });
 
