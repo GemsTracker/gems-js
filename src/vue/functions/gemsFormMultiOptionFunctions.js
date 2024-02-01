@@ -1,9 +1,11 @@
 import {
   computed,
   inject,
+  nextTick,
   ref,
   watch,
 } from 'vue';
+import { camelCase } from "lodash";
 import useGetModelRepository from './modelRepository';
 
 const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues) => {
@@ -18,8 +20,7 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
   const getAllReferenceData = (async (options) => {
     if ('reference' in options) {
       loadingReferenceData.value = true;
-      const referenceList = options.reference.split('/');
-      const referenceName = referenceList[referenceList.length - 1];
+      const referenceName = camelCase(options.reference);
       const model = modelRepository.getEndpointModel(
         referenceName,
         options.reference,
@@ -111,6 +112,10 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
                   dataRowValue = dataRow[dataRowFieldName];
                 }
 
+                if (Array.isArray(dataRowValue) && dataRowValue.includes(formValues.value[otherFieldName])) {
+                  filteredValues[dataRowKey] = dataRow;
+                }
+
                 if (dataRowValue === formValues.value[otherFieldName]) {
                   filteredValues[dataRowKey] = dataRow;
                 }
@@ -145,7 +150,19 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         if (options.length) {
           return options;
         }
+      } else {
+        const options = [];
+        Object.keys(referenceData).forEach((key) =>  {
+          options.push({
+            key: key,
+            value: referenceData[key],
+          });
+        });
+        if (options.length) {
+          return options;
+        }
       }
+
       if ('column' in elementOptions.multiOptionSettings) {
         const options = [];
         let referenceValues = referenceData;
@@ -197,9 +214,9 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     return options;
   });
 
-  const onChange = ((newValue) => {
+  const onChange = (async (newValue) => {
     const updateFields = elementOptions.multiOptionSettings.onChange;
-    Object.keys(updateFields).forEach((updateFieldName) => {
+    for (const updateFieldName of Object.keys(updateFields)) {
       if ('multiOptionSettings' in updateFields[updateFieldName]) {
         const newSettings = {};
 
@@ -217,6 +234,24 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
               referenceData: allReferenceData.value[newValue][localField],
             };
           }
+        }
+
+        if ('newSettings' in updateFields[updateFieldName].multiOptionSettings) {
+          console.log('TIME FOR NEW SETTINGS FOR ', updateFieldName);
+          delete structure.value[updateFieldName].multiOptionSettings;
+          await nextTick();
+          Object.keys(updateFields[updateFieldName].multiOptionSettings.newSettings).forEach((newSettingName) => {
+            if (!('multiOptionSettings' in structure.value[updateFieldName])) {
+              structure.value[updateFieldName].multiOptionSettings = {};
+            }
+            let newSettingValue = updateFields[updateFieldName].multiOptionSettings.newSettings[newSettingName];
+            if (newSettingValue.includes('{{current_value}}')) {
+              newSettingValue = newSettingValue.replace('{{current_value}}', newValue)
+            }
+
+            structure.value[updateFieldName].multiOptionSettings[newSettingName] = newSettingValue;
+          });
+          console.log(structure.value[updateFieldName]);
         }
 
         if (Object.keys(newSettings).length) {
@@ -247,7 +282,7 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         }
         formValues.value[updateFieldName] = valueFromField;
       }
-    });
+    }
   });
 
   if ('multiOptionSettings' in elementOptions && 'onChange' in elementOptions.multiOptionSettings) {
@@ -255,6 +290,20 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
       onChange(newValue);
     });
   }
+
+  const multiOptionReference = computed(() => {
+    if ('multiOptionSettings' in elementOptions && 'reference' in elementOptions.multiOptionSettings) {
+      return elementOptions.multiOptionSettings.reference;
+    }
+    return null;
+  });
+
+  watch(multiOptionReference, () => {
+    if (multiOptionReference.value !== null) {
+      console.log('REFERENCE CHANGE!', elementOptions.name, elementOptions.multiOptionSettings.reference);
+      getAllReferenceData(elementOptions.multiOptionSettings);
+    }
+  });
 
   const initSingleAnswerElement = (async () => {
     if ('multiOptionSettings' in elementOptions) {
@@ -266,12 +315,12 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
   });
 
   const initMultipleAnswerElement = (async () => {
-    /* if (!Array.isArray(formValue.value)) {
+    if (!Array.isArray(formValue.value)) {
       const value = formValue;
       console.log('SETTINGS VALUE');
       console.log(value.value);
       value.value = [];
-    } */
+    }
     if ('multiOptionSettings' in elementOptions) {
       await getAllReferenceData(elementOptions.multiOptionSettings);
       if (formValue.value !== null && 'multiOptionSettings' in elementOptions && 'onChange' in elementOptions.multiOptionSettings) {
@@ -288,6 +337,7 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     loadingReferenceData,
     // Debug
     referenceOptions,
+    multiOptionReference,
   };
 });
 export default useGemsFormMultiOptionFunctions;
