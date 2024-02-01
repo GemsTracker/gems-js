@@ -11,7 +11,18 @@
         <button type="button" @click="addNewRow" class="btn btn-success btn-sm">
             <font-awesome-icon icon="plus" />
         </button>
-      <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
+        <div v-if="isInvalid" class="errors alert alert-danger">
+            <div v-for="(fields, rowIndex) in validator.$messages" :key="rowIndex">
+              {{ t('Row')}}: {{rowIndex}}
+              <ul>
+                  <li v-for="(messages, fieldName, index) in fields" :key="index">
+                      {{getFieldLabel(fieldName)}}: {{messages.join(', ')}}
+                  </li>
+              </ul>
+            </div>
+        </div>
+
+<!--      <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />-->
       <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
     </div>
   </div>
@@ -21,6 +32,7 @@ import {
   computed,
   onMounted,
 } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -30,6 +42,7 @@ import GemsFormValidatorMessages from '../ValidatorMessages.vue';
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import useGemsFormFunctions from '../../../functions/gemsFormFunctions';
 import SubFormElement from './SubFormElement.vue';
+
 
 library.add(faPlus, faXmark);
 export default {
@@ -47,6 +60,8 @@ export default {
     GemsFormValidatorMessages,
   },
   setup(props) {
+
+    const { t } = useI18n();
     const {
       disabled,
       elementId,
@@ -86,6 +101,23 @@ export default {
       formValue.value.splice(index, 1);
     });
 
+    const isInvalid = computed(() => {
+      if (validator.value && '$invalid' in validator.value) {
+        return validator.value.$invalid;
+      }
+      return false;
+    });
+
+    const getFieldLabel = ((fieldName) => {
+      if ('structure' in props.options
+          && fieldName in props.options.structure
+          && 'label' in props.options.structure[fieldName]
+      ) {
+        props.options.structure[fieldName].label;
+      }
+      return fieldName;
+    });
+
     onMounted(() => {
       //console.log(getInitialFormValues());
       if (formValue.value === null) {
@@ -101,10 +133,13 @@ export default {
       disabled,
       elementId,
       formValue,
+      getFieldLabel,
+      isInvalid,
       removeRow,
       serverValidator,
       size,
       structure,
+      t,
       validator,
       validatorClass,
     };
