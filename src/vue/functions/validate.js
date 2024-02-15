@@ -26,8 +26,6 @@ const useValidate = ((formData, validationRules) => {
   });
 
   const validateField = ((fieldName, fieldValidations, value) => {
-    console.log(`Validating ${fieldName}`);
-    console.log(fieldValidations);
     if (!Array.isArray(fieldValidations) && typeof fieldValidations === 'object') {
       // Nested validators
       const result = {
@@ -38,15 +36,17 @@ const useValidate = ((formData, validationRules) => {
         for (let i = 0; i < value.length; i += 1) {
           const subRow = value[i];
           Object.keys(fieldValidations).forEach((subFieldName) => {
-            const subResult = validateField(fieldName, fieldValidations[subFieldName], subRow[fieldName]);
-            if (!(i in result.errors)) {
-              result.errors[i] = {};
+            const subResult = validateField(fieldName, fieldValidations[subFieldName], subRow[subFieldName]);
+            if ('errors' in subResult && subResult.errors === true) {
+              if (!(i in result.errors)) {
+                result.errors[i] = {};
+              }
+              if (!(i in result.messages)) {
+                result.messages[i] = {};
+              }
+              result.errors[i][subFieldName] = true;
+              result.messages[i][subFieldName] = subResult.messages;
             }
-            if (!(i in result.messages)) {
-              result.messages[i] = {};
-            }
-            result.errors[i][subFieldName] = true;
-            result.messages[i][subFieldName] = subResult.messages;
           });
         }
       }
@@ -99,7 +99,6 @@ const useValidate = ((formData, validationRules) => {
     console.log(formData.value);
     Object.keys(validationRules.value).forEach((fieldName) => {
       const result = validateField(fieldName, validationRules.value[fieldName], formData.value[fieldName]);
-      console.log('VALIDATION RESULT!', fieldName, result);
       delete errors.value[fieldName];
       delete messages.value[fieldName];
       if (result.errors) {
