@@ -52,12 +52,14 @@ export default {
 
     const allReferenceData = ref(null);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       initMultipleAnswerElement,
       loadingReferenceData,
       referenceOptions,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     const selectWidth = computed(() => {
       let length = 0;

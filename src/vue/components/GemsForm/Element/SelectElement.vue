@@ -57,13 +57,14 @@ export default {
       validatorClass,
     } = useGemsFormElementFunctions(props.options);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       initSingleAnswerElement,
       loadingReferenceData,
       referenceOptions,
-      testOptions,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     const selectWidth = computed(() => {
       let length = 0;
@@ -94,7 +95,6 @@ export default {
       validatorClass,
       testValue,
       referenceOptions,
-      testOptions,
     };
   },
 };

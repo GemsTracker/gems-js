@@ -16,7 +16,7 @@
   </div>
 </template>
 <script>
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
@@ -48,11 +48,13 @@ export default {
       previousValue,
     } = useGemsFormElementFunctions(props.options);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       initMultipleAnswerElement,
       loadingReferenceData,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     onMounted(() => {
       initMultipleAnswerElement();

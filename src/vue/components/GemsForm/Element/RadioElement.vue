@@ -15,7 +15,7 @@
     </div>
 </template>
 <script>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
@@ -47,11 +47,13 @@ export default {
       previousValue,
     } = useGemsFormElementFunctions(props.options);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       getAllReferenceData,
       loadingReferenceData,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     onMounted(() => {
       if ('multiOptionSettings' in props.options) {

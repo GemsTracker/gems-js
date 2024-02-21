@@ -12,6 +12,7 @@
 </template>
 <script>
 import {
+  computed,
   onMounted,
 } from 'vue';
 
@@ -51,13 +52,15 @@ export default {
       validatorClass,
     } = useGemsFormElementFunctions(props.options);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       initSingleAnswerElement,
       loadingReferenceData,
       referenceOptions,
       testOptions,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     const updateFormData = ((inputEvent) => {
       if ('input' in inputEvent) {

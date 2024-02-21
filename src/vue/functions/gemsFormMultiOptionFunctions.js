@@ -79,17 +79,17 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
 
   const referenceOptions = computed(() => {
     let referenceData = null;
-    if ('multiOptionSettings' in elementOptions && 'referenceData' in elementOptions.multiOptionSettings
-      && elementOptions.multiOptionSettings.referenceData !== null) {
-      referenceData = elementOptions.multiOptionSettings.referenceData;
+    if ('multiOptionSettings' in elementOptions.value && 'referenceData' in elementOptions.value.multiOptionSettings
+      && elementOptions.value.multiOptionSettings.referenceData !== null) {
+      referenceData = elementOptions.value.multiOptionSettings.referenceData;
     } else if (allReferenceData.value !== null) {
       referenceData = allReferenceData.value;
     }
 
     if (referenceData !== null) {
-      if ('multiOptionSettings' in elementOptions && 'filter' in elementOptions.multiOptionSettings) {
-        if ('otherFieldValueJoin' in elementOptions.multiOptionSettings.filter) {
-          const { otherFieldValueJoin } = elementOptions.multiOptionSettings.filter;
+      if ('multiOptionSettings' in elementOptions.value && 'filter' in elementOptions.value.multiOptionSettings) {
+        if ('otherFieldValueJoin' in elementOptions.value.multiOptionSettings.filter) {
+          const { otherFieldValueJoin } = elementOptions.value.multiOptionSettings.filter;
           Object.keys(otherFieldValueJoin).forEach((otherFieldName) => {
             if (otherFieldName in formValues.value
               && ((formValues.value[otherFieldName] !== null)
@@ -126,24 +126,24 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         }
       }
 
-      if ('order' in elementOptions.multiOptionSettings) {
+      if ('order' in elementOptions.value.multiOptionSettings) {
         referenceData = Object.values(referenceData)
-          .sort(sortFields(elementOptions.multiOptionSettings.order));
+          .sort(sortFields(elementOptions.value.multiOptionSettings.order));
       }
 
-      if ('key' in elementOptions.multiOptionSettings
-        && 'value' in elementOptions.multiOptionSettings) {
+      if ('key' in elementOptions.value.multiOptionSettings
+        && 'value' in elementOptions.value.multiOptionSettings) {
         const options = [];
         let referenceValues = referenceData;
         if (!Array.isArray(referenceData)) {
           referenceValues = Object.values(referenceData);
         }
         referenceValues.forEach((dataRow) => {
-          if (elementOptions.multiOptionSettings.key in dataRow
-            && elementOptions.multiOptionSettings.value in dataRow) {
+          if (elementOptions.value.multiOptionSettings.key in dataRow
+            && elementOptions.value.multiOptionSettings.value in dataRow) {
             options.push({
-              key: dataRow[elementOptions.multiOptionSettings.key],
-              value: dataRow[elementOptions.multiOptionSettings.value],
+              key: dataRow[elementOptions.value.multiOptionSettings.key],
+              value: dataRow[elementOptions.value.multiOptionSettings.value],
             });
           }
         });
@@ -163,15 +163,15 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         }
       }
 
-      if ('column' in elementOptions.multiOptionSettings) {
+      if ('column' in elementOptions.value.multiOptionSettings) {
         const options = [];
         let referenceValues = referenceData;
         if (!Array.isArray(referenceData)) {
           referenceValues = Object.values(referenceData);
         }
         referenceValues.forEach((dataRow) => {
-          if (elementOptions.multiOptionSettings.column in dataRow) {
-            options.push(dataRow[elementOptions.multiOptionSettings.column]);
+          if (elementOptions.value.multiOptionSettings.column in dataRow) {
+            options.push(dataRow[elementOptions.value.multiOptionSettings.column]);
           }
         });
         if (options.length) {
@@ -185,9 +185,9 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
 
   const formOptions = computed(() => {
     const options = [];
-    if ('multiOptions' in elementOptions) {
-      if (Array.isArray(elementOptions.multiOptions)) {
-        elementOptions.multiOptions.forEach((optionRow) => {
+    if ('multiOptions' in elementOptions.value) {
+      if (Array.isArray(elementOptions.value.multiOptions)) {
+        elementOptions.value.multiOptions.forEach((optionRow) => {
           if (optionRow.key !== '') {
             let correctKey = optionRow.key;
             if (!Number.isNaN(+correctKey)) {
@@ -197,25 +197,25 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
           }
         });
       } else {
-        Object.keys(elementOptions.multiOptions).forEach((key) => {
+        Object.keys(elementOptions.value.multiOptions).forEach((key) => {
           if (key !== '') {
             let correctKey = key;
             if (!Number.isNaN(+correctKey)) {
               correctKey = +correctKey;
             }
-            options.push({ key: correctKey, value: elementOptions.multiOptions[key] });
+            options.push({ key: correctKey, value: elementOptions.value.multiOptions[key] });
           }
         });
       }
     }
-    if ('multiOptionSettings' in elementOptions && referenceOptions.value !== null) {
+    if ('multiOptionSettings' in elementOptions.value && referenceOptions.value !== null) {
       return referenceOptions.value;
     }
     return options;
   });
 
   const onChange = (async (newValue) => {
-    const updateFields = elementOptions.multiOptionSettings.onChange;
+    const updateFields = elementOptions.value.multiOptionSettings.onChange;
     for (const updateFieldName of Object.keys(updateFields)) {
       if ('multiOptionSettings' in updateFields[updateFieldName]) {
         const newSettings = {};
@@ -285,30 +285,30 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     }
   });
 
-  if ('multiOptionSettings' in elementOptions && 'onChange' in elementOptions.multiOptionSettings) {
+  if ('multiOptionSettings' in elementOptions.value && 'onChange' in elementOptions.value.multiOptionSettings) {
     watch(formValue, (newValue) => {
       onChange(newValue);
     });
   }
 
   const multiOptionReference = computed(() => {
-    if ('multiOptionSettings' in elementOptions && 'reference' in elementOptions.multiOptionSettings) {
-      return elementOptions.multiOptionSettings.reference;
+    if ('multiOptionSettings' in elementOptions.value && 'reference' in elementOptions.value.multiOptionSettings) {
+      return elementOptions.value.multiOptionSettings.reference;
     }
     return null;
   });
 
   watch(multiOptionReference, () => {
     if (multiOptionReference.value !== null) {
-      console.log('REFERENCE CHANGE!', elementOptions.name, elementOptions.multiOptionSettings.reference);
-      getAllReferenceData(elementOptions.multiOptionSettings);
+      console.log('REFERENCE CHANGE!', elementOptions.value.name, elementOptions.value.multiOptionSettings.reference);
+      getAllReferenceData(elementOptions.value.multiOptionSettings);
     }
   });
 
   const initSingleAnswerElement = (async () => {
-    if ('multiOptionSettings' in elementOptions) {
-      await getAllReferenceData(elementOptions.multiOptionSettings);
-      if (formValue.value !== null && 'multiOptionSettings' in elementOptions && 'onChange' in elementOptions.multiOptionSettings) {
+    if ('multiOptionSettings' in elementOptions.value) {
+      await getAllReferenceData(elementOptions.value.multiOptionSettings);
+      if (formValue.value !== null && 'multiOptionSettings' in elementOptions.value && 'onChange' in elementOptions.value.multiOptionSettings) {
         onChange(formValue.value);
       }
     }
@@ -321,9 +321,9 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
       console.log(value.value);
       value.value = [];
     }
-    if ('multiOptionSettings' in elementOptions) {
-      await getAllReferenceData(elementOptions.multiOptionSettings);
-      if (formValue.value !== null && 'multiOptionSettings' in elementOptions && 'onChange' in elementOptions.multiOptionSettings) {
+    if ('multiOptionSettings' in elementOptions.value) {
+      await getAllReferenceData(elementOptions.value.multiOptionSettings);
+      if (formValue.value !== null && 'multiOptionSettings' in elementOptions.value && 'onChange' in elementOptions.value.multiOptionSettings) {
         onChange(formValue.value);
       }
     }

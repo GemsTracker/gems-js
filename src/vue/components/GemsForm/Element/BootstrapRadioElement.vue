@@ -49,11 +49,13 @@ export default {
       previousValue,
     } = useGemsFormElementFunctions(props.options);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       getAllReferenceData,
       loadingReferenceData,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     const inline = computed(() => {
       if ('elementOptions' in props.options && 'inline' in props.options.elementOptions) {

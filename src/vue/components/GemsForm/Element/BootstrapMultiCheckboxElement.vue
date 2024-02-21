@@ -48,11 +48,13 @@ export default {
       previousValue,
     } = useGemsFormElementFunctions(props.options);
 
+    const elementOptions = computed(() => props.options);
+
     const {
       formOptions,
       initMultipleAnswerElement,
       loadingReferenceData,
-    } = useGemsFormMultiOptionFunctions(props.options, formValue, formData);
+    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
     onMounted(() => {
       initMultipleAnswerElement();
