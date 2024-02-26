@@ -14,7 +14,7 @@
       </thead>
       <tbody>
         <tr v-for="(carePlan, index) in filteredCarePlans" :key="index"
-            :class="{deleted: carePlan.status === 'revoked'}">
+            :class="{deleted: isDeleted(carePlan)}">
           <td>
               <a :href="getCarePlanShowUrl(carePlan.id)" class="btn">{{ t('Show')}}</a>
           </td>
@@ -113,6 +113,10 @@ export default {
       return {};
     });
 
+    const isDeleted = ((carePlan) => {
+      return carePlan.status === 'revoked' || carePlan.status === 'unknown';
+    });
+
     onMounted(() => {
       getCarePlans();
       getAllTokens();
@@ -126,6 +130,7 @@ export default {
       getCarePlanCreator,
       getCarePlanEditUrl,
       getCarePlanShowUrl,
+      isDeleted,
       t,
     };
   },
