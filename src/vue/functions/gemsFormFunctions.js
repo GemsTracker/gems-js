@@ -27,7 +27,7 @@ const useGemsFormFunctions = ((structureData, formData) => {
     if (structure !== null) {
       Object.values(structure).forEach((structureRow) => {
         if ('required' in structureRow && structureRow.required === true
-            && (!('elementClass' in structureRow) || structureRow.elementClass.toLowerCase() !== 'hidden'))
+            && (!('elementClass' in structureRow) || (structureRow.elementClass.toLowerCase() !== 'hidden' && structureRow.elementClass.toLowerCase() !== 'none')))
         {
           rules[structureRow.name] = [
             {
