@@ -8,8 +8,9 @@
         </li>
       </drop-down>
       &nbsp;
+      <strong>{{ t('Add surveys for') }}</strong>
+      &nbsp;
       <div class="btn-group">
-        <button class="btn" type="button" disabled="disabled">Surveys for</button>
         <drop-down label="Patients" :loading="questionnaireLoading"
          :disabled="patientQuestionnaires === null || patientQuestionnaires.length === 0">
           <li v-for="(questionnaire, index) in patientQuestionnaires" :key="index">
