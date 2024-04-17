@@ -150,20 +150,7 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         if (options.length) {
           return options;
         }
-      } else {
-        const options = [];
-        Object.keys(referenceData).forEach((key) =>  {
-          options.push({
-            key: key,
-            value: referenceData[key],
-          });
-        });
-        if (options.length) {
-          return options;
-        }
-      }
-
-      if ('column' in elementOptions.value.multiOptionSettings) {
+      } else if ('column' in elementOptions.value.multiOptionSettings) {
         const options = [];
         let referenceValues = referenceData;
         if (!Array.isArray(referenceData)) {
@@ -173,6 +160,17 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
           if (elementOptions.value.multiOptionSettings.column in dataRow) {
             options.push(dataRow[elementOptions.value.multiOptionSettings.column]);
           }
+        });
+        if (options.length) {
+          return options;
+        }
+      } else {
+        const options = [];
+        Object.keys(referenceData).forEach((key) =>  {
+          options.push({
+            key: key,
+            value: referenceData[key],
+          });
         });
         if (options.length) {
           return options;
