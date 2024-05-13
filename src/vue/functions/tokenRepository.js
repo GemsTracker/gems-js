@@ -220,6 +220,7 @@ const useTokenRepository = (() => {
     getCarePlanTokens,
     getOneToken,
     getToken,
+    getTokenInfo,
     groupByCareplanyMeasureMoment,
     groupByDate,
     groupByMeasureMoment,
