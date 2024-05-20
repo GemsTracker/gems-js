@@ -6,7 +6,6 @@
         <input type="text"
                v-model="tokenId"
                pattern="[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}"
-               size="9"
                maxlength="9"
                class="form-control token-input" />
       </label>
@@ -95,11 +94,12 @@ watch(tokenId, async (newValue) => {
   --w: 1ch;   /* control the width for each letter */
   //--g: 0px;   /* control the gap between letter */
   //--b: .5px;   /* control the border */
-  //--n: 9;    /* control the number of letters*/
+  --n: 9;    /* control the number of letters*/
 
   .token-input {
     font-size: 50px;
     letter-spacing: var(--w);
+    width: calc((var(--n) + 1) * var(--w) * 2);
 
     font-family: monospace;
   }
