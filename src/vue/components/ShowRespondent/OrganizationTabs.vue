@@ -40,7 +40,7 @@ export default {
     onMounted(async () => {
       organizations.value = await otherOrgModel.all({
         detailed: 1,
-        'use-role': 1,
+        'allowed-organizations': 1,
       });
     });
 
