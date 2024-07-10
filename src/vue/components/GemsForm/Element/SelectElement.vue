@@ -70,7 +70,7 @@ export default {
       let length = 0;
       if (formOptions.value.length) {
         formOptions.value.forEach((option) => {
-          if (option.value.length > length) {
+          if (option.value !== null && option.value.length > length) {
             length = option.value.length;
           }
         });
