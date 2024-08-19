@@ -66,7 +66,12 @@ export default {
 
       if (element) {
         emit('startCopy');
-        copyValueToClipboard(element);
+        //copyValueToClipboard(element);
+        window.getSelection().selectAllChildren(element);
+        console.log('EXEC!!');
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+
         emit('endCopy');
 
         element.classList.add('copied');
