@@ -89,11 +89,11 @@ export default defineStore('modelRepository', {
       const apiCall = api.insert(data)
         .then((returnData) => {
           if ('location' in returnData.headers) {
-            let result = returnData.headers.location.replace(this.apiUrl, '').replace(endpoint, '');
-            while (result.charAt(0) === '/') {
-              result = result.substr(1);
-            }
-            result = result.split('/');
+            const result = returnData.headers.location
+                .replace(this.apiUrl, '')
+                .replace(endpoint, '')
+                .split('/') // Split by '/'
+                .filter(entry => entry !== ''); // Remove empty entries
 
             return { ...returnData, ...{ newId: result } };
           }
