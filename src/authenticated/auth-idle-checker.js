@@ -15,6 +15,9 @@ export default class AuthIdleChecker {
 
   init() {
     const buttonAlive = document.getElementById('authIdleCheckerWarningAlive');
+    if (! buttonAlive) {
+      return;
+    }
     buttonAlive?.addEventListener('click', () => {
       fetch(url('/auth/idle-alive'), { method: 'post' })
         .then((response) => {

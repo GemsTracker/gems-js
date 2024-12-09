@@ -7,7 +7,7 @@ export default class Token extends PatientModelAbstract {
     this.endpoint = 'fhir/questionnaire-task';
     this.idField = 'id';
 
-    this.filters.per_page = 200;
+    this.filters.per_page = 1000;
   }
 
   async findById(id, filters = null, refresh = false) {
