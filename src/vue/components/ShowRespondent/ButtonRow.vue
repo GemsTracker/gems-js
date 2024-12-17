@@ -1,11 +1,13 @@
 <template>
   <div class="button-row">
-      <add-tracks-dropdowns />
-      <a class="btn btn-primary ms-3" type="button" :href="disableButtonUrl"
-         :class="{disabled: disableButtonLabel === null}">
-          <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
-          {{ disableButtonLabel }}
-      </a>
+    <a class="btn btn-primary ms-3" type="button" :href="disableButtonUrl"
+       :class="{disabled: disableButtonLabel === null}">
+      <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
+      {{ disableButtonLabel }}
+    </a>
+
+    <add-tracks-dropdowns />
+
   </div>
 </template>
 <script>
