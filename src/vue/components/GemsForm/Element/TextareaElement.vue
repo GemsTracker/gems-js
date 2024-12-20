@@ -3,7 +3,7 @@
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <textarea v-model="formValue" :id="elementId" :name="elementId" class="form-control"
-        :disabled="disabled" :cols="options.cols" :rows="options.rows" />
+        :disabled="disabled" :cols="options.cols" :rows="options.rows" :class="options.class" :style="options.style" />
     </div>
     <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
     <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
