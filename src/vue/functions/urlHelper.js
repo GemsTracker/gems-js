@@ -41,6 +41,11 @@ const useUrlHelper = (() => {
 
   const getTokenAnswerUrl = ((tokenId, carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/track/${carePlanId}/token/answer/${tokenId}`);
   const getTokenAskUrl = ((tokenId) => `${baseStore.baseUrl}ask/to-survey/${tokenId}`);
+  const getTokenEditUrl = ((tokenId, carePlanId, patientNr = null, organizationId = null) => {
+    const { checkedPatientNr, checkedOrganizationId } = checkPatientData(patientNr, organizationId);
+    return `${baseStore.baseUrl}respondent/${checkedPatientNr}/${checkedOrganizationId}/track/${carePlanId}/token/edit/${tokenId}`;
+  });
+
   const getTokenShowUrl = ((tokenId, carePlanId, patientNr = null, organizationId = null) => {
     const { checkedPatientNr, checkedOrganizationId } = checkPatientData(patientNr, organizationId);
     return `${baseStore.baseUrl}respondent/${checkedPatientNr}/${checkedOrganizationId}/track/${carePlanId}/token/${tokenId}`;
@@ -68,6 +73,7 @@ const useUrlHelper = (() => {
     getInsertSurveyUrl,
     getTokenAnswerUrl,
     getTokenAskUrl,
+    getTokenEditUrl,
     getTokenShowUrl,
     getTrackCreateUrl,
     getRespondentDeleteUrl,

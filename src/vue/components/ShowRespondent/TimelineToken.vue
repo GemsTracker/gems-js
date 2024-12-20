@@ -55,12 +55,20 @@ export default {
     const tokenDisplay = ref(null);
     const copyTokenTooltip = ref('Copy');
 
-    const { getTokenShowUrl } = useUrlHelper();
+    const { getTokenAnswerUrl, getTokenEditUrl, getTokenShowUrl } = useUrlHelper();
+    const tokenAnswerUrl = getTokenAnswerUrl(props.token.id, props.token.carePlanId);
+    const tokenEditUrl = getTokenEditUrl(props.token.id, props.token.carePlanId);
     const tokenShowUrl = getTokenShowUrl(props.token.id, props.token.carePlanId);
 
     const tokenLink = computed(() => {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
         return props.token.surveyUrl;
+      }
+      if (props.token.status === 'draft' || props.token.status === 'rejected') {
+        return tokenEditUrl;
+      }
+      if (props.token.status === 'completed') {
+        return tokenAnswerUrl;
       }
       return null;
     });
