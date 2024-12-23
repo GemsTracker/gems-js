@@ -2,6 +2,7 @@ const useTimelineTokens = (() => {
   const getStatusClass = ((status) => {
     switch (status) {
       case 'in-progress':
+        return 'in-progress';
       case 'requested':
         return 'open';
       case 'rejected':
