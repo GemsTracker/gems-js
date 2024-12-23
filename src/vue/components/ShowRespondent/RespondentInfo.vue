@@ -14,7 +14,7 @@
       <dt>Email</dt><dd><a :href="`mailto:${email}`">{{ email }}</a>&nbsp;</dd>
     </div>
     <div class="info-block">
-      <dt>Phonenumber</dt><dd>{{ phoneNumber }}&nbsp;</dd>
+      <dt>Telefoonnummer</dt><dd>{{ phoneNumber }}&nbsp;</dd>
     </div>
   </div>
 </template>
