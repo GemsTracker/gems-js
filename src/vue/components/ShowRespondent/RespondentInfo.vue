@@ -2,24 +2,25 @@
   <div class="patient-info">
     <loading-screen v-if="loading === true" size="3rem" />
     <div class="info-block">
-      <dt>Patient nr</dt><dd>{{ patientNr }}&nbsp;</dd>
+      <dt>{{ t('Patient nr') }}</dt><dd>{{ patientNr }}&nbsp;</dd>
     </div>
     <div class="info-block">
-      <dt>Patient</dt><dd>{{ fullName }}&nbsp;</dd>
+      <dt>{{ t('Patient') }}</dt><dd>{{ fullName }}&nbsp;</dd>
     </div>
     <div class="info-block">
-      <dt>Geboortedatum</dt><dd>{{ birthdayDmy }}&nbsp;</dd>
+      <dt>{{ t('Birthdate') }}</dt><dd>{{ birthdayDmy }}&nbsp;</dd>
     </div>
     <div class="info-block">
-      <dt>Email</dt><dd><a :href="`mailto:${email}`">{{ email }}</a>&nbsp;</dd>
+      <dt>{{ t('Email') }}</dt><dd><a :href="`mailto:${email}`">{{ email }}</a>&nbsp;</dd>
     </div>
     <div class="info-block">
-      <dt>Phonenumber</dt><dd>{{ phoneNumber }}&nbsp;</dd>
+      <dt>{{ t('Phone number') }}</dt><dd>{{ phoneNumber }}&nbsp;</dd>
     </div>
   </div>
 </template>
 <script>
 import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import usePatientRepository from '../../functions/patientRepository';
 import LoadingScreen from '../Util/LoadingScreen.vue';
@@ -29,6 +30,8 @@ export default {
     LoadingScreen,
   },
   setup() {
+    const { t } = useI18n();
+
     const {
       birthdayDmy,
       email,
@@ -50,6 +53,7 @@ export default {
       loading,
       patientNr,
       phoneNumber,
+      t,
     };
   },
 };
