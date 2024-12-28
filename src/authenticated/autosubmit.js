@@ -17,10 +17,10 @@ export default class Autosubmit {
   }
 
   addInput(form, inputElement) {
-    const eType = inputElement.getAttribute('eType');
+    const eType = inputElement.getAttribute('type');
     // console.log(inputElement.getAttribute('name'), inputElement.getAttribute('eType'));
 
-    if (['hidden'].includes(eType)) {
+    if (['hidden', 'submit'].includes(eType)) {
       return;
     }
 
@@ -35,11 +35,14 @@ export default class Autosubmit {
       inputElement.addEventListener('click', call);
       return;
     }
-    const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
-    inputElement.setAttribute('auto-submit:value', inputElement.getAttribute('value'));
-    inputElement.addEventListener('callKey', call);
-    inputElement.addEventListener('callKey', call);
-    // inputElement.addEventListener('change', call);
+
+    if (['text'].includes(eType)) {
+      inputElement.setAttribute('auto-submit-value', inputElement.getAttribute('value'));
+      const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
+      inputElement.addEventListener('keyup', callKey);
+      inputElement.addEventListener('input', callKey);
+      // inputElement.addEventListener('change', callKey);
+    }
   }
 
   addSelect(form, selectElement) {
@@ -48,19 +51,19 @@ export default class Autosubmit {
   }
 
   submitOnMinimalChange(form, inputElement, event) {
-    const orig = inputElement.getAttribute('auto-submit:value');
-    const input = inputElement.getAttribute('value');
+    const orig = inputElement.getAttribute('auto-submit-value');
+    const input = inputElement.value;
     const maxLength = Math.max(orig.length, input.length);
+    let diffCount = 0;
 
-    if ((maxLength - orig.length >= 3) || (maxLength - input.length >= -3)) {
+    if (Math.abs(orig.length - input.length) >= 3) {
       this.submitOnElement(form, inputElement, event);
       return;
     }
 
-    var diffCount = 0;
     Array.from({ length: maxLength }).forEach((_, i) => {
       if (orig[i] !== input[i]) {
-        diffCount++;
+        diffCount += 1;
       }
       if (diffCount > 3) {
         this.submitOnElement(form, inputElement, event);
