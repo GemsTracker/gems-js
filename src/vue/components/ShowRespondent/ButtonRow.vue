@@ -1,12 +1,14 @@
 <template>
   <div class="button-row">
-    <a class="btn btn-primary ms-3" type="button" :href="disableButtonUrl"
-       :class="{disabled: disableButtonLabel === null}">
-      <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
-      {{ disableButtonLabel }}
-    </a>
+    <div v-if="showButtons">
+      <a class="btn btn-primary ms-3" type="button" :href="disableButtonUrl"
+         :class="{disabled: disableButtonLabel === null}">
+        <loading-screen v-if="disableButtonLabel === null" size="1rem" color="white" />
+        {{ disableButtonLabel }}
+      </a>
+    </div>
 
-    <add-tracks-dropdowns />
+    <add-tracks-dropdowns v-if="showDropdownAdd" />
 
   </div>
 </template>
@@ -20,6 +22,16 @@ import useUrlHelper from '../../functions/urlHelper';
 
 export default {
   components: { LoadingScreen, AddTracksDropdowns },
+  props: {
+    showButtons: {
+      type: Boolean,
+      default: true,
+    },
+    showDropdownAdd: {
+      type: Boolean,
+      default: true,
+    },
+  },
   setup() {
     const { t } = useI18n();
     const { active, getPatientData } = usePatientRepository();
