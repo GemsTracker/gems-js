@@ -31,18 +31,42 @@ export default class Autosubmit {
     }
 
     const call = (event) => this.submitOnElement(form, inputElement, event);
-    if (['checkbos', 'radio'].includes(eType)) {
+    if (['checkbox', 'radio'].includes(eType)) {
       inputElement.addEventListener('click', call);
       return;
     }
-    inputElement.addEventListener('keyup', call);
-    inputElement.addEventListener('input', call);
+    const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
+    inputElement.setAttribute('auto-submit:value', inputElement.getAttribute('value'));
+    inputElement.addEventListener('callKey', call);
+    inputElement.addEventListener('callKey', call);
     // inputElement.addEventListener('change', call);
   }
 
   addSelect(form, selectElement) {
     const call = (event) => this.submitOnElement(form, selectElement, event);
     selectElement.addEventListener('change', call);
+  }
+
+  submitOnMinimalChange(form, inputElement, event) {
+    const orig = inputElement.getAttribute('auto-submit:value');
+    const input = inputElement.getAttribute('value');
+    const maxLength = Math.max(orig.length, input.length);
+
+    if ((maxLength - orig.length >= 3) || (maxLength - input.length >= -3)) {
+      this.submitOnElement(form, inputElement, event);
+      return;
+    }
+
+    var diffCount = 0;
+    Array.from({ length: maxLength }).forEach((_, i) => {
+      if (orig[i] !== input[i]) {
+        diffCount++;
+      }
+      if (diffCount > 3) {
+        this.submitOnElement(form, inputElement, event);
+        return;
+      }
+    });
   }
 
   submitOnChange(form, inputElement, event) {
@@ -57,6 +81,7 @@ export default class Autosubmit {
 
     // Ajax does not yet work (from the GT side)
     // var targetId = form.getAttribute('auto-submit-target-id');
+
     // var targetUrl = form.getAttribute('auto-submit-url');
     // var eClass = inputElement.getAttribute('class');
     //
