@@ -19,9 +19,12 @@ const useInsertableQuestionnaireRepository = (() => {
       per_page: 200,
     };
     const questionnaires = await insertableQuestionnaireModel.all(filter);
-    console.log(questionnaires);
+    // console.log(questionnaires);
 
     loading.value = false;
+    if (questionnaires == null) {
+      return [];
+    }
     return questionnaires.sort(sortFieldsFunction(['name']));
   });
 
