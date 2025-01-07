@@ -15,6 +15,18 @@ const useDateFunctions = (() => {
     return enGB;
   });
 
+  const formatIsoDate = ((dateItem) => {
+    if (dateItem === null) {
+      return null;
+    }
+    let newDate = dateItem;
+    if (!(dateItem instanceof Date)) {
+      newDate = new Date(dateItem);
+    }
+
+    return format(newDate, "yyyy-MM-dd'T'HH:mm:ssxxx");
+  });
+
   const formatJsonDateTime = ((dateString, dateFormat = 'dd-MM-yyyy HH:mm:ss') => {
     if (dateString === null) {
       return null;
@@ -25,6 +37,7 @@ const useDateFunctions = (() => {
   const formatJsonDate = ((dateString) => formatJsonDateTime(dateString, 'dd-MM-yyyy'));
 
   return {
+    formatIsoDate,
     formatJsonDate,
     formatJsonDateTime,
   };

@@ -1,10 +1,21 @@
 <template>
-  <input type="text" ref="dateElement" :disabled="disabled" />
+  <input
+      type="text"
+      ref="dateElement"
+      :disabled="disabled"
+      :value="modelValue"
+      @input="updateValue"
+  />
 </template>
 <script>
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
-import { onMounted, ref } from 'vue';
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import localeDe from 'air-datepicker/locale/de';
 import localeEn from 'air-datepicker/locale/en';
@@ -13,13 +24,19 @@ import localeNl from 'air-datepicker/locale/nl';
 
 export default {
   props: {
+    modelValue: {
+      type: Date,
+      default: null,
+    },
     disabled: {
       type: Boolean,
       default: false,
     },
   },
-  setup() {
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
     const dateElement = ref(null);
+    const datepicker = ref(null);
 
     const { locale } = useI18n({ useScope: 'global' });
 
@@ -33,18 +50,51 @@ export default {
     availableLocales.de.dateFormat = availableLocales.nl.dateFormat;
     availableLocales.fr.dateFormat = availableLocales.nl.dateFormat;
 
-    onMounted(() => {
-      const options = {};
+    const updateValue = (event) => {
+      emit('update:modelValue', event.target.value);
+    };
 
-      if (locale.value in availableLocales) {
-        options.locale = availableLocales[locale.value];
+    const initDatePicker = () => {
+      if (datepicker.value) {
+        datepicker.value.destroy();
       }
 
-      const datePicker = new AirDatepicker(dateElement.value, options);
+      let startDate = [];
+      if (props.modelValue) {
+        startDate = props.modelValue;
+      }
+
+      datepicker.value = new AirDatepicker(dateElement.value, {
+        locale: availableLocales[locale.value] || localeEn,
+        dateFormat: props.dateFormat,
+        selectedDates: startDate,
+        onSelect: ({ date, formattedDate }) => {
+          console.log('NEW DATE MF!', date, formattedDate);
+          emit('update:modelValue', date);
+        },
+      });
+    };
+
+    watch(() => props.modelValue, (newValue) => {
+      if (datepicker.value) {
+        datepicker.value.selectDate(newValue);
+      }
+    });
+
+    onMounted(() => {
+      initDatePicker();
+    });
+
+    onBeforeUnmount(() => {
+      if (datepicker.value) {
+        datepicker.value.destroy();
+      }
     });
 
     return {
       dateElement,
+      updateValue,
+      datepicker,
     };
   },
 };

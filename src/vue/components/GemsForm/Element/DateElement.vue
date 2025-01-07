@@ -23,6 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Datepicker from '../../Util/DatePicker.vue';
 import GemsFormLabel from '../Label.vue';
 import GemsFormValidatorMessages from '../ValidatorMessages.vue';
+import useDateFunctions from '../../../functions/DateFunctions';
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 
 library.add(faCalendarAlt);
@@ -48,6 +49,8 @@ export default {
       validatorClass,
     } = useGemsFormElementFunctions(props.options);
 
+    const { formatIsoDate } = useDateFunctions();
+
     const formDateObject = computed({
       get: () => {
         if (formValue.value !== null) {
@@ -57,7 +60,7 @@ export default {
       },
       set: (value) => {
         if (value instanceof Date) {
-          formValue.value = value.toISOString();
+          formValue.value = formatIsoDate(value);
         } else {
           formValue.value = value;
         }
