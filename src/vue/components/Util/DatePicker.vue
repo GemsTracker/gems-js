@@ -29,6 +29,9 @@ export default {
       fr: localeFr,
       nl: localeNl,
     };
+    availableLocales.en.dateFormat = availableLocales.nl.dateFormat;
+    availableLocales.de.dateFormat = availableLocales.nl.dateFormat;
+    availableLocales.fr.dateFormat = availableLocales.nl.dateFormat;
 
     onMounted(() => {
       const options = {};
