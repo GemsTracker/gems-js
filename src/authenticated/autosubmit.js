@@ -17,10 +17,10 @@ export default class Autosubmit {
   }
 
   addInput(form, inputElement) {
-    const eType = inputElement.getAttribute('eType');
+    const eType = inputElement.getAttribute('type');
     // console.log(inputElement.getAttribute('name'), inputElement.getAttribute('eType'));
 
-    if (['hidden'].includes(eType)) {
+    if (['hidden', 'submit'].includes(eType)) {
       return;
     }
 
@@ -31,18 +31,45 @@ export default class Autosubmit {
     }
 
     const call = (event) => this.submitOnElement(form, inputElement, event);
-    if (['checkbos', 'radio'].includes(eType)) {
+    if (['checkbox', 'radio'].includes(eType)) {
       inputElement.addEventListener('click', call);
       return;
     }
-    inputElement.addEventListener('keyup', call);
-    inputElement.addEventListener('input', call);
-    // inputElement.addEventListener('change', call);
+
+    if (['text'].includes(eType)) {
+      inputElement.setAttribute('auto-submit-value', inputElement.getAttribute('value'));
+      const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
+      inputElement.addEventListener('keyup', callKey);
+      inputElement.addEventListener('input', callKey);
+      // inputElement.addEventListener('change', callKey);
+    }
   }
 
   addSelect(form, selectElement) {
     const call = (event) => this.submitOnElement(form, selectElement, event);
     selectElement.addEventListener('change', call);
+  }
+
+  submitOnMinimalChange(form, inputElement, event) {
+    const orig = inputElement.getAttribute('auto-submit-value');
+    const input = inputElement.value;
+    const maxLength = Math.max(orig.length, input.length);
+    let diffCount = 0;
+
+    if (Math.abs(orig.length - input.length) >= 3) {
+      this.submitOnElement(form, inputElement, event);
+      return;
+    }
+
+    Array.from({ length: maxLength }).forEach((_, i) => {
+      if (orig[i] !== input[i]) {
+        diffCount += 1;
+      }
+      if (diffCount > 3) {
+        this.submitOnElement(form, inputElement, event);
+        return;
+      }
+    });
   }
 
   submitOnChange(form, inputElement, event) {
@@ -57,6 +84,7 @@ export default class Autosubmit {
 
     // Ajax does not yet work (from the GT side)
     // var targetId = form.getAttribute('auto-submit-target-id');
+
     // var targetUrl = form.getAttribute('auto-submit-url');
     // var eClass = inputElement.getAttribute('class');
     //

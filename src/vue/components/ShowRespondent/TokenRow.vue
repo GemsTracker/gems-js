@@ -1,5 +1,5 @@
 <template>
-  <tr class="token-row">
+  <tr class="token-row" :class="{'text-decoration-line-through': disabledToken}">
     <td>{{ token.focus.display }}</td>
     <td>{{ token.carePlan.display }}</td>
     <td>{{ token.owner.type }}</td>
@@ -82,6 +82,8 @@ export default {
     const tokenAskUrl = getTokenAskUrl(props.token.id);
     const tokenShowUrl = getTokenShowUrl(props.token.id, props.token.carePlanId);
 
+    const disabledToken = computed(() => props.token.status === 'unknown');
+
     const toTokenInfo = (() => {
       console.log('Show token info');
     });
@@ -90,6 +92,7 @@ export default {
       answerable,
       continuable,
       currentLocale,
+      disabledToken,
       tokenAnswerUrl,
       tokenAskUrl,
       tokenShowUrl,

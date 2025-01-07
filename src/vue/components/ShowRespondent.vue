@@ -1,9 +1,9 @@
 <template>
   <div>
-    <organization-tabs />
+    <organization-tabs v-if="showOrganizationTabs"></organization-tabs>
     <respondent-info v-if="showRespondentInfo"></respondent-info>
-    <button-row></button-row>
-    <div class="display-picker text-end">
+    <button-row v-if="showButtonRows" :showButtons="showButtons" :showAddDropdown="showAddDropdown" />
+    <div v-if="showDisplayPicker" class="display-picker text-end">
       <span v-for="(label, optionName, index) in displayOptions" :key="index">
         <a @click.prevent="currentDisplay = optionName"
           href="" v-if="currentDisplay !== optionName">
@@ -47,6 +47,30 @@ export default {
       type: String,
       required: false,
       default: 'en',
+    },
+    showAddDropdown: {
+      type: Boolean,
+      default: true,
+    },
+    showButtons: {
+      type: Boolean,
+      default: true,
+    },
+    showButtonRows: {
+      type: Boolean,
+      default: true,
+    },
+    showDisplayPicker: {
+      type: Boolean,
+      default: true,
+    },
+    showOrganizationTabs: {
+      type: Boolean,
+      default: true,
+    },
+    showPicker: {
+      type: Boolean,
+      default: true,
     },
     showRespondentInfo: {
       type: Boolean,

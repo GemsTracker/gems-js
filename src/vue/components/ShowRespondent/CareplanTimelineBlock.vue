@@ -29,6 +29,7 @@
       </h4>
       <div class="row">
         <div class="col">
+          <div class="description">{{ carePlan.description }}</div>
         <div>{{ t('Start date') }}: {{ startDate }}</div>
         </div>
         <div class="token-status-bar col-3 align-self-end">

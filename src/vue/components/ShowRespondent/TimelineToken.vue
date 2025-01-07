@@ -9,10 +9,16 @@
         <span class="token-display" ref="tokenDisplay">{{ token.id }}</span>
       </div>
       <div class="token-utils col-4">
-        <tool-tip @click="copyToken" data-bs-toggle="tooltip"
+        <tool-tip @click="copyToken" v-if="token.status !== 'completed'"
+          data-bs-toggle="tooltip"
           :data-bs-title="copyTokenTooltip" class="icon">
           <!-- <font-awesome-icon  icon="fa-regular fa-clipboard" /> -->
           <copy-to-clipboard-icon></copy-to-clipboard-icon>
+        </tool-tip>
+        <tool-tip v-if="token.status === 'completed'" content="Correct" class="icon">
+          <a :href="tokenCorrectUrl">
+            <font-awesome-icon icon="fa-solid fa-pen" />
+          </a>
         </tool-tip>
         <tool-tip content="Details" class="icon">
           <a :href="tokenShowUrl">
@@ -28,7 +34,7 @@ import { computed, ref } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faPen } from '@fortawesome/free-solid-svg-icons';
 import useUrlHelper from '../../functions/urlHelper';
 import CopyToClipboardIcon from '../Util/CopyToClipboardIcon.vue';
 import ToolTip from '../Util/ToolTip.vue';
@@ -36,7 +42,7 @@ import useTimelineTokens from '../../functions/useTimelineTokens';
 import useCopyToClipboard from '../../functions/ClipboardFunctions';
 import useModelStore from '../../stores/modelRepository';
 
-library.add(faClipboard, faEllipsis);
+library.add(faClipboard, faEllipsis, faPen);
 
 export default {
   props: {
@@ -55,12 +61,26 @@ export default {
     const tokenDisplay = ref(null);
     const copyTokenTooltip = ref('Copy');
 
-    const { getTokenShowUrl } = useUrlHelper();
+    const {
+      getTokenAnswerUrl,
+      getTokenCorrectUrl,
+      getTokenEditUrl,
+      getTokenShowUrl,
+    } = useUrlHelper();
+    const tokenAnswerUrl = getTokenAnswerUrl(props.token.id, props.token.carePlanId);
+    const tokenCorrectUrl = getTokenCorrectUrl(props.token.id, props.token.carePlanId);
+    const tokenEditUrl = getTokenEditUrl(props.token.id, props.token.carePlanId);
     const tokenShowUrl = getTokenShowUrl(props.token.id, props.token.carePlanId);
 
     const tokenLink = computed(() => {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
         return props.token.surveyUrl;
+      }
+      if (props.token.status === 'draft' || props.token.status === 'rejected') {
+        return tokenEditUrl;
+      }
+      if (props.token.status === 'completed') {
+        return tokenAnswerUrl;
       }
       return null;
     });
@@ -91,6 +111,7 @@ export default {
       copyToken,
       copyTokenTooltip,
       statusClass,
+      tokenCorrectUrl,
       tokenDisplay,
       tokenLink,
       tokenShowUrl,
