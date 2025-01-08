@@ -74,6 +74,11 @@ export default {
       type: String,
       default: 'Save',
     },
+    afterSaveUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   components: {
     BaseForm,
@@ -156,6 +161,14 @@ export default {
               icon: 'check',
               status: 'success',
             };
+
+            if (props.afterSaveUrl !== null) {
+              window.location.href = props.afterSaveUrl;
+            }
+
+            initialFormValues.value = cloneDeep(formData.value);
+            changes.value = false;
+
           } else {
             if ('error' in response.data && response.data.error === 'validation_error') {
               const serverValidationMessages = {};
