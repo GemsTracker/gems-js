@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <simple-typeahead v-model="testValue" :items="formOptions" @onInput="updateFormData"
@@ -50,6 +50,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
     } = useGemsFormElementFunctions(props.options);
 
     const elementOptions = computed(() => props.options);
@@ -88,6 +89,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
       testValue,
       referenceOptions,
       testOptions,

@@ -117,7 +117,7 @@ const useGemsFormElementFunctions = ((elementOptions) => {
         return !otherFieldDependency(elementOptions.hidden.otherField);
       }
     }
-    return false;
+    return true;
   });
 
   const previousValue = ref(null);

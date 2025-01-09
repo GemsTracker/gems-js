@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <vue-select multiple v-model="formValue" :options="formOptions" label="value"
@@ -48,6 +48,7 @@ export default {
       validator,
       validatorClass,
       previousValue,
+      visible,
     } = useGemsFormElementFunctions(props.options);
 
     const allReferenceData = ref(null);
@@ -89,6 +90,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
       previousValue,
     };
   },

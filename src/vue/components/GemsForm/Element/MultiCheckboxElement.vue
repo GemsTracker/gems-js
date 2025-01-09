@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <div v-for="(formOption, index) in formOptions" :key="index">
@@ -45,6 +45,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
       previousValue,
     } = useGemsFormElementFunctions(props.options);
 
@@ -81,6 +82,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
       previousValue,
       checkboxValues,
     };

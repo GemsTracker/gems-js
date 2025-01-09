@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group">
+  <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="value">{{formValue}}</div>
   </div>
@@ -21,11 +21,12 @@ export default {
     GemsFormLabel,
   },
   setup(props) {
-    const { elementId, formValue } = useGemsFormElementFunctions(props.options);
+    const { elementId, formValue, visible } = useGemsFormElementFunctions(props.options);
 
     return {
       elementId,
       formValue,
+      visible,
     };
   },
 };

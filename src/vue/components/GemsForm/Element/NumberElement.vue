@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group" :class="validatorClass">
+  <div v-if="visible" class="form-group" :class="validatorClass">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <input v-model="formValue" type="number" :id="elementId"
@@ -34,6 +34,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
     } = useGemsFormElementFunctions(props.options);
 
     return {
@@ -43,6 +44,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
     };
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group" :class="validatorClass">
+  <div v-if="visible" class="form-group" :class="validatorClass">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
       <div class="input-group">
@@ -47,6 +47,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
     } = useGemsFormElementFunctions(props.options);
 
     const { formatIsoDate } = useDateFunctions();
@@ -75,6 +76,7 @@ export default {
       serverValidator,
       validator,
       validatorClass,
+      visible,
     };
   },
 };
