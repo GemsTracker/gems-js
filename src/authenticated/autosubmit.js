@@ -37,11 +37,11 @@ export default class Autosubmit {
     }
 
     if (['text'].includes(eType)) {
-      inputElement.setAttribute('auto-submit-value', inputElement.getAttribute('value'));
-      const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
-      inputElement.addEventListener('keyup', callKey);
-      inputElement.addEventListener('input', callKey);
-      // inputElement.addEventListener('change', callKey);
+      //inputElement.setAttribute('auto-submit-value', inputElement.getAttribute('value'));
+      // const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
+      //inputElement.addEventListener('keyup', callKey);
+      //inputElement.addEventListener('input', callKey);
+      inputElement.addEventListener('change', call);
     }
   }
 
@@ -50,6 +50,7 @@ export default class Autosubmit {
     selectElement.addEventListener('change', call);
   }
 
+  /*
   submitOnMinimalChange(form, inputElement, event) {
     const orig = inputElement.getAttribute('auto-submit-value');
     const input = inputElement.value;
@@ -70,7 +71,7 @@ export default class Autosubmit {
         return;
       }
     });
-  }
+  } // */
 
   submitOnChange(form, inputElement, event) {
     // console.log(inputElement.value, inputElement.getAttribute('value'));
