@@ -1,7 +1,7 @@
 <template>
   <div class="track-buttons">
       <strong>{{ t('Add') }}&nbsp;</strong>
-      <drop-down label="Tracks" :disabled="tracks === null || tracks.length === 0"
+      <drop-down :label="t('Tracks')" :disabled="tracks === null || tracks.length === 0"
                  :loading="trackLoading">
         <li v-for="(track, index) in tracks" :key="index">
           <a class="dropdown-item" :href="getTrackCreateUrl(track.id)">{{ track.name }}</a>
@@ -11,7 +11,7 @@
       <strong>{{ t('Add surveys for') }}</strong>
       &nbsp;
       <div class="btn-group">
-        <drop-down label="Patients" :loading="questionnaireLoading"
+        <drop-down :label="t('Respondents')" :loading="questionnaireLoading"
          :disabled="patientQuestionnaires === null || patientQuestionnaires.length === 0">
           <li v-for="(questionnaire, index) in patientQuestionnaires" :key="index">
             <a class="dropdown-item" :href="getInsertSurveyUrl(questionnaire.id)">
@@ -19,7 +19,7 @@
             </a>
           </li>
         </drop-down>
-        <drop-down label="Staff" :loading="questionnaireLoading"
+        <drop-down :label="t('Staff')" :loading="questionnaireLoading"
          :disabled="practitionerQuestionnaires === null || practitionerQuestionnaires.length === 0">
           <li v-for="(questionnaire, index) in practitionerQuestionnaires" :key="index">
             <a class="dropdown-item" :href="getInsertSurveyUrl(questionnaire.id)">
