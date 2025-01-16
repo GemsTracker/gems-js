@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="show-respondent">
     <organization-tabs v-if="showOrganizationTabs"></organization-tabs>
     <respondent-info v-if="showRespondentInfo"></respondent-info>
     <button-row v-if="showButtonRows" :showButtons="showButtons" :showAddDropdown="showAddDropdown" />
