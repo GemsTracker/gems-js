@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import {computed, inject, onMounted, ref, watch} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSquareCaretLeft, faSquareCaretDown } from '@fortawesome/free-regular-svg-icons';
@@ -120,8 +120,20 @@ export default {
       return null;
     });
 
+    const getCommFields = (async (tokenId) => {
+      commFields.value = await getCommFieldsForTarget('token', { id: tokenId });
+    });
+
+    watch(formData, (newData) => {
+      if ('id' in newData && newData.id !== null) {
+        getCommFields(newData.id);
+      }
+    });
+
     onMounted(async () => {
-      commFields.value = await getCommFieldsForTarget('token', { id: formData.value.id });
+      if ('id' in formData.value && formData.value.id !== null) {
+        getCommFields(formData.value.id);
+      }
     });
 
     return {
