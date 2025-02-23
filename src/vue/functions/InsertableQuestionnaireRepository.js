@@ -33,14 +33,14 @@ const useInsertableQuestionnaireRepository = (() => {
     const practitionerQuestionnaires = [];
 
     questionnaires.forEach((questionnaire) => {
-      console.log('SORTING QUESTIONNAIRE', questionnaire);
+      // console.log('SORTING QUESTIONNAIRE', questionnaire);
       if ('subjectType' in questionnaire) {
         if (questionnaire.subjectType.includes('Patient')) {
-          console.log('FOR PATIENTS!');
+          // console.log('FOR PATIENTS!');
           patientQuestionnaires.push(questionnaire);
         }
         if (questionnaire.subjectType.includes('Practitioner')) {
-          console.log('FOR PRACTITIONERS!');
+          // console.log('FOR PRACTITIONERS!');
           practitionerQuestionnaires.push(questionnaire);
         }
       }

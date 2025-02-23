@@ -85,7 +85,7 @@ const useTokenRepository = (() => {
 
   const getCarePlanTokens = (async (carePlanId) => {
     const allTokens = await getAllTokens();
-    console.log(allTokens, carePlanId);
+    // console.log(allTokens, carePlanId);
     return allTokens.filter((token) => token.carePlanId === carePlanId);
   });
 
