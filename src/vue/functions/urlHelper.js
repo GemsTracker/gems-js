@@ -30,8 +30,8 @@ const useUrlHelper = (() => {
     return `${baseStore.baseUrl}respondent/${checkedPatientNr}/${checkedOrganizationId}/appointments/edit/${appointmentId}`;
   });
 
-  const getCarePlanDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/delete/${carePlanId}`);
-  const getCarePlanUnDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/undelete/${carePlanId}`);
+  const getCarePlanDeleteUrl = ((carePlanId, organizationId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${organizationId}/tracks/delete/${carePlanId}`);
+  const getCarePlanUnDeleteUrl = ((carePlanId, organizationId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${organizationId}/tracks/undelete/${carePlanId}`);
   const getCarePlanEditUrl = ((carePlanId, organizationId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${organizationId}/tracks/edit/${carePlanId}`);
   const getCarePlanShowUrl = ((carePlanId, organizationId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${organizationId}/tracks/${carePlanId}`);
 
