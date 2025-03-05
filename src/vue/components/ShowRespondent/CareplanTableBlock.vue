@@ -32,7 +32,7 @@
           <td>{{ getCarePlanCreator(carePlan) }}</td>
           <td>
               <a v-if="carePlan.status === 'active'"
-                 :href="getCarePlanEditUrl(carePlan.id)"
+                 :href="getCarePlanEditUrl(carePlan.id, carePlan.organizationId)"
                  class="btn">
                 {{ t('Edit')}}
               </a>

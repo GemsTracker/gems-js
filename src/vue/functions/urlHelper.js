@@ -32,7 +32,7 @@ const useUrlHelper = (() => {
 
   const getCarePlanDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/delete/${carePlanId}`);
   const getCarePlanUnDeleteUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/undelete/${carePlanId}`);
-  const getCarePlanEditUrl = ((carePlanId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${patientStore.organizationId}/tracks/edit/${carePlanId}`);
+  const getCarePlanEditUrl = ((carePlanId, organizationId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${organizationId}/tracks/edit/${carePlanId}`);
   const getCarePlanShowUrl = ((carePlanId, organizationId) => `${baseStore.baseUrl}respondent/${patientStore.patientNr}/${organizationId}/tracks/${carePlanId}`);
 
   const getChangeConsentUrl = (() => `${baseStore.baseUrl}respondent/change-consent/${patientStore.patientNr}/${patientStore.organizationId}`);

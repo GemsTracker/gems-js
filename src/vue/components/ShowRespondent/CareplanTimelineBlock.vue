@@ -120,7 +120,7 @@ export default {
     const { getCarePlanDeleteUrl, getCarePlanEditUrl, getCarePlanUnDeleteUrl } = useUrlHelper();
 
     const carePlanDeleteUrl = getCarePlanDeleteUrl(props.carePlan.id);
-    const carePlanEditUrl = getCarePlanEditUrl(props.carePlan.id);
+    const carePlanEditUrl = getCarePlanEditUrl(props.carePlan.id, props.carePlan.organizationId);
     const carePlanUnDeleteUrl = getCarePlanUnDeleteUrl(props.carePlan.id);
 
     const activeCarePlan = computed(() => 'status' in props.carePlan && props.carePlan.status === 'active');
