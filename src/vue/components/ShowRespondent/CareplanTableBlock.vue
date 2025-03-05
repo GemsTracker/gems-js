@@ -16,7 +16,7 @@
         <tr v-for="(carePlan, index) in filteredCarePlans" :key="index"
             :class="{deleted: isDeleted(carePlan)}">
           <td>
-              <a :href="getCarePlanShowUrl(carePlan.id)" class="btn">{{ t('Show')}}</a>
+              <a :href="getCarePlanShowUrl(carePlan.id,carePlan.organizationId)" class="btn">{{ t('Show')}}</a>
           </td>
           <td>{{ carePlan.title }}</td>
           <td>{{ carePlan.description }}</td>
@@ -32,7 +32,7 @@
           <td>{{ getCarePlanCreator(carePlan) }}</td>
           <td>
               <a v-if="carePlan.status === 'active'"
-                 :href="getCarePlanEditUrl(carePlan.id)"
+                 :href="getCarePlanEditUrl(carePlan.id, carePlan.organizationId)"
                  class="btn">
                 {{ t('Edit')}}
               </a>

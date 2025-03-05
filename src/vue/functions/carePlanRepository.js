@@ -13,7 +13,7 @@ const useCarePlanRepository = (() => {
 
   const getAllCarePlans = (async () => {
     loading.value = true;
-    const carePlanArray = await carePlanModel.all({ per_page: 200 });
+    const carePlanArray = await carePlanModel.all({ per_page: 200, allAllowedOrgs: true });
     if (carePlanArray === null) {
       loading.value = false;
       return [];
