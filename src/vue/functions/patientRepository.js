@@ -46,6 +46,24 @@ const usePatientRepository = (() => {
   const givenName = computed(() => {
     if (patientData.value && 'name' in patientData.value && patientData.value.name.length
       && 'given' in patientData.value.name[0]) {
+      if (Array.isArray(patientData.value.name[0].given)) {
+        let given = null;
+        patientData.value.name[0].given.forEach((givenItem) => {
+          if ('value' in givenItem && 'extension' in givenItem && Array.isArray(givenItem.extension)) {
+            givenItem.extension.forEach((type) => {
+              if ('url' in type && type.url === 'http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier' && 'valueCode' in type) {
+                if (type.valueCode === 'LS') {
+                  given = givenItem.value;
+                }
+                if (type.valueCode === 'IN' && given === null) {
+                  given = givenItem.value;
+                }
+              }
+            });
+          }
+        });
+        return given;
+      }
       return patientData.value.name[0].given;
     }
     return null;
