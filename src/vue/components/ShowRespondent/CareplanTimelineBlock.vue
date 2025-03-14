@@ -3,8 +3,8 @@
     <div class="card-header header" @click="toggleExpand">
       <h4 class="card-title row">
         <div class="col">
-          <tool-tip content="Edit" class="action-icon">
-            <a :href="carePlanEditUrl">
+          <tool-tip :content="t('Edit')" class="action-icon">
+            <a :href="carePlanEditUrl" v-on:click.stop>
               <font-awesome-icon icon="pencil" />
             </a>
           </tool-tip>
@@ -15,13 +15,13 @@
           <font-awesome-icon v-if="expanded" icon="chevron-down" class="title-collapse" />
         </div>
         <div class="col-3 text-end">
-          <tool-tip v-if="activeCarePlan" content="Delete track!" class="action-icon">
-            <a :href="carePlanDeleteUrl">
+          <tool-tip v-if="activeCarePlan" :content="t('Delete track!')" class="action-icon">
+            <a :href="carePlanDeleteUrl" v-on:click.stop>
               <font-awesome-icon icon="trash-can" />
             </a>
           </tool-tip>
-          <tool-tip v-if="!activeCarePlan" content="Restore track!" class="action-icon">
-            <a :href="carePlanUnDeleteUrl">
+          <tool-tip v-if="!activeCarePlan" :content="t('Restore track!')" class="action-icon">
+            <a :href="carePlanUnDeleteUrl" v-on:click.stop>
               <font-awesome-icon icon="recycle" />
             </a>
           </tool-tip>
