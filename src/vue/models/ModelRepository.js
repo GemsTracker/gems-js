@@ -23,7 +23,7 @@ export default class ModelRepository {
 
   createModel(modelName, model) {
     if (modelName in this.store.models) {
-      console.log(`Direct return of ${modelName}`);
+      // console.log(`Direct return of ${modelName}`);
       return this.store.models[modelName];
     }
     this.store.addModel(modelName, model);
@@ -46,7 +46,7 @@ export default class ModelRepository {
 
   getModel(modelName) {
     if (modelName in this.store.models) {
-      console.log(`Direct return of ${modelName}`);
+      // console.log(`Direct return of ${modelName}`);
       return this.store.models[modelName];
     }
 

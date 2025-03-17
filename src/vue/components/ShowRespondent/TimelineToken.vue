@@ -15,12 +15,12 @@
           <!-- <font-awesome-icon  icon="fa-regular fa-clipboard" /> -->
           <copy-to-clipboard-icon></copy-to-clipboard-icon>
         </tool-tip>
-        <tool-tip v-if="token.status === 'completed'" content="Correct" class="icon">
+        <tool-tip v-if="token.status === 'completed'" :content="t('Correct answers')" class="icon">
           <a :href="tokenCorrectUrl">
             <font-awesome-icon icon="fa-solid fa-pen" />
           </a>
         </tool-tip>
-        <tool-tip content="Details" class="icon">
+        <tool-tip :content="t('Show token')" class="icon">
           <a :href="tokenShowUrl">
             <font-awesome-icon icon="fa-solid fa-ellipsis" />
           </a>
@@ -31,6 +31,7 @@
 </template>
 <script>
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons';
@@ -55,11 +56,13 @@ export default {
     CopyToClipboardIcon, FontAwesomeIcon, ToolTip,
   },
   setup(props) {
+    const { t } = useI18n();
+
     const { getStatusClass } = useTimelineTokens();
     const modelStore = useModelStore();
     const currentLocale = computed(() => modelStore.locale);
     const tokenDisplay = ref(null);
-    const copyTokenTooltip = ref('Copy');
+    const copyTokenTooltip = ref(t('Copy token to clipboard'));
 
     const {
       getTokenAnswerUrl,
@@ -89,7 +92,7 @@ export default {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
         if ('executionPeriod' in props.token && 'end' in props.token.executionPeriod && props.token.executionPeriod.end !== null) {
           const date = new Date(props.token.executionPeriod.end);
-          return `Open until ${date.toLocaleDateString(currentLocale.value)}`;
+          return t('Open until') + ' ' + date.toLocaleDateString(currentLocale.value);
         }
         return null;
       }
@@ -111,6 +114,7 @@ export default {
       copyToken,
       copyTokenTooltip,
       statusClass,
+      t,
       tokenCorrectUrl,
       tokenDisplay,
       tokenLink,
