@@ -32,7 +32,7 @@
           <div class="description">{{ carePlan.description }}</div>
         <div>{{ t('Start date') }}: {{ startDate }}</div>
         </div>
-        <div class="token-status-bar col-3 align-self-end">
+        <div class="token-status-bar col-6 col-xxl-3 align-self-end">
           <div v-if="tokenStatusCounts !== null" class="progress">
             <tool-tip :content="`${tokenStatusCounts.rejected} rejected`"
               v-if="'rejected' in tokenStatusCounts"
