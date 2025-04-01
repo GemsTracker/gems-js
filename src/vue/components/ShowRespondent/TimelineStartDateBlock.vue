@@ -1,15 +1,15 @@
 <template>
   <div class="start-date-block">
     <h6 class="start-date">{{ displayDate }}</h6>
-    <template v-for="owner, index in tokens" :key="index">
-      <timeline-owner-block  v-if="'tokens' in owner && owner.tokens.length" :owner="owner" />
+    <template v-for="answerer, index in tokens" :key="index">
+      <timeline-answerer-block  v-if="'tokens' in answerer && answerer.tokens.length" :answerer="answerer" />
     </template>
   </div>
 </template>
 <script>
 import { computed } from 'vue';
 import useTokenRepository from '../../functions/tokenRepository';
-import TimelineOwnerBlock from './TimelineOwnerBlock.vue';
+import TimelineAnswererBlock from './TimelineAnswererBlock.vue';
 import useDateFunctions from '../../functions/DateFunctions';
 
 export default {
@@ -20,10 +20,10 @@ export default {
     },
   },
   components: {
-    TimelineOwnerBlock,
+    TimelineAnswererBlock,
   },
   setup(props) {
-    const { groupByOwner } = useTokenRepository();
+    const { groupByAnswerer } = useTokenRepository();
 
     const { formatJsonDate } = useDateFunctions();
 
@@ -34,7 +34,7 @@ export default {
       return null;
     });
 
-    const tokens = computed(() => groupByOwner(props.startDate.tokens));
+    const tokens = computed(() => groupByAnswerer(props.startDate.tokens));
 
     return {
       displayDate,

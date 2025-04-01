@@ -1,30 +1,32 @@
 <template>
   <div class="token-item card" :class="statusClass">
-    <div class="tokenwrapper row">
-      <div class="token-link col">
-        <tool-tip :content="tokenTooltip">
-          <a v-if="tokenLink !== null" :href="tokenLink">{{ token.focus.display }}</a>
-        </tool-tip>
-        <span v-if="tokenLink === null">{{ token.focus.display }}</span>
-        <span class="token-display" ref="tokenDisplay">{{ token.id }}</span>
-      </div>
-      <div class="token-utils col-4">
-        <tool-tip @click="copyToken" v-if="token.status !== 'completed'"
-          data-bs-toggle="tooltip"
-          :data-bs-title="copyTokenTooltip" class="icon">
-          <!-- <font-awesome-icon  icon="fa-regular fa-clipboard" /> -->
-          <copy-to-clipboard-icon></copy-to-clipboard-icon>
-        </tool-tip>
-        <tool-tip v-if="token.status === 'completed'" :content="t('Correct answers')" class="icon">
-          <a :href="tokenCorrectUrl">
-            <font-awesome-icon icon="fa-solid fa-pen" />
-          </a>
-        </tool-tip>
-        <tool-tip :content="t('Show token')" class="icon">
-          <a :href="tokenShowUrl">
-            <font-awesome-icon icon="fa-solid fa-ellipsis" />
-          </a>
-        </tool-tip>
+    <div class="token-border">
+      <div class="tokenwrapper row">
+        <div class="token-link col">
+          <tool-tip :content="tokenTooltip">
+            <a v-if="tokenLink !== null" :href="tokenLink">{{ token.focus.display }}</a>
+          </tool-tip>
+          <span v-if="tokenLink === null">{{ token.focus.display }}</span>
+          <span class="token-display" ref="tokenDisplay">{{ token.id }}</span>
+        </div>
+        <div class="token-utils col-4">
+          <tool-tip @click="copyToken" v-if="token.status !== 'completed'"
+            data-bs-toggle="tooltip"
+            :data-bs-title="copyTokenTooltip" class="icon">
+            <!-- <font-awesome-icon  icon="fa-regular fa-clipboard" /> -->
+            <copy-to-clipboard-icon></copy-to-clipboard-icon>
+          </tool-tip>
+          <tool-tip v-if="token.status === 'completed'" :content="t('Correct answers')" class="icon">
+            <a :href="tokenCorrectUrl">
+              <font-awesome-icon icon="fa-solid fa-pen" />
+            </a>
+          </tool-tip>
+          <tool-tip :content="t('Show token')" class="icon">
+            <a :href="tokenShowUrl">
+              <font-awesome-icon icon="fa-solid fa-ellipsis" />
+            </a>
+          </tool-tip>
+        </div>
       </div>
     </div>
   </div>
@@ -89,15 +91,20 @@ export default {
     });
 
     const tokenTooltip = computed(() => {
-      if (props.token.status === 'in-progress' || props.token.status === 'requested') {
-        if ('executionPeriod' in props.token && 'end' in props.token.executionPeriod && props.token.executionPeriod.end !== null) {
-          const date = new Date(props.token.executionPeriod.end);
-          return t('Open until') + ' ' + date.toLocaleDateString(currentLocale.value);
-        }
-        return null;
+      if (props.token.statusDescription) {
+        return props.token.statusDescription;
       }
-      return null;
     });
+    // const tokenTooltip = computed(() => {
+    //   if (props.token.status === 'in-progress' || props.token.status === 'requested') {
+    //     if ('executionPeriod' in props.token && 'end' in props.token.executionPeriod && props.token.executionPeriod.end !== null) {
+    //       const date = new Date(props.token.executionPeriod.end);
+    //       return t('Open until') + ' ' + date.toLocaleDateString(currentLocale.value);
+    //     }
+    //     return null;
+    //   }
+    //   return null;
+    // });
 
     const statusClass = computed(() => getStatusClass(props.token.status));
 

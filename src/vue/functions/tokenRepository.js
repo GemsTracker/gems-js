@@ -12,7 +12,7 @@ const useTokenRepository = (() => {
   const loading = ref(null);
 
   const getTokenInfo = ((token) => {
-    let roundDescription = null;
+    let roundDescription = '';
     let roundOrder = null;
     let carePlan = null;
     let carePlanId = null;
@@ -22,7 +22,7 @@ const useTokenRepository = (() => {
         if ('type' in infoItem) {
           switch (infoItem.type) {
             case 'roundDescription':
-              roundDescription = infoItem.value;
+              roundDescription = infoItem.value ?? '';
               break;
             case 'roundOrder':
               roundOrder = infoItem.value;
@@ -59,6 +59,10 @@ const useTokenRepository = (() => {
       url,
     } = getTokenInfo(token);
     const augmentedToken = token;
+    const answerer = token.info.find(o => o.type === 'answerer');
+    const statusDescription = token.info.find(o => o.type === 'statusDescription');
+
+    augmentedToken.answerer = (answerer && 'value' in answerer) ? answerer.value : null;
     augmentedToken.carePlan = carePlan;
     augmentedToken.carePlanId = carePlanId;
     augmentedToken.roundDescription = roundDescription;
@@ -67,6 +71,7 @@ const useTokenRepository = (() => {
     augmentedToken.start = token.executionPeriod.start;
     augmentedToken.ownerType = token.owner.type;
     augmentedToken.status = token.status;
+    augmentedToken.statusDescription = (statusDescription && 'value' in statusDescription) ? statusDescription.value : null;
     return augmentedToken;
   }));
 
@@ -110,6 +115,23 @@ const useTokenRepository = (() => {
     return null;
   });
 
+  const groupByAnswerer = ((tokens) => {
+    const groupedTokens = [];
+    const foundAnswerers = [];
+    tokens.sort(sortFieldsFunction(['answerer', 'roundOrder'])).forEach((token) => {
+      if (token.answerer !== null) {
+        if (!foundAnswerers.includes(token.answerer)) {
+          foundAnswerers.push(token.answerer);
+          groupedTokens.push({ type: token.answerer, tokens: [] });
+        }
+
+        groupedTokens[foundAnswerers.indexOf(token.answerer)].tokens.push(token);
+      }
+    });
+
+    return groupedTokens;
+  });
+
   const groupByCarePlans = ((tokens) => {
     const groupedTokens = {};
     Object.keys(tokens).forEach((tokenId) => {
@@ -146,17 +168,23 @@ const useTokenRepository = (() => {
   const groupByMeasureMoment = ((tokens) => {
     const groupedTokens = [];
     const foundMoments = [];
-    Object.values(tokens).forEach((token) => {
-      const { roundDescription } = getTokenInfo(token);
+    let currentOrder = null;
+    let currentDescription = null;
 
-      if (roundDescription !== null) {
-        if (!foundMoments.includes(roundDescription)) {
-          foundMoments.push(roundDescription);
-          groupedTokens.push({ name: roundDescription, tokens: [] });
+    Object.values(tokens).forEach((token) => {
+      const { roundOrder, roundDescription } = getTokenInfo(token);
+
+      if ((null === currentDescription) || (roundDescription !== currentDescription)) {
+        currentDescription = roundDescription;
+        currentOrder = roundOrder;
+
+        if (!foundMoments.includes(currentOrder)) {
+          foundMoments.push(currentOrder);
+          groupedTokens.push({ id: currentOrder, name: currentDescription, tokens: [] });
         }
 
-        groupedTokens[foundMoments.indexOf(roundDescription)].tokens.push(token);
       }
+      groupedTokens[foundMoments.indexOf(currentOrder)].tokens.push(token);
     });
     return groupedTokens;
   });
@@ -221,6 +249,7 @@ const useTokenRepository = (() => {
     getOneToken,
     getToken,
     getTokenInfo,
+    groupByAnswerer,
     groupByCareplanyMeasureMoment,
     groupByDate,
     groupByMeasureMoment,

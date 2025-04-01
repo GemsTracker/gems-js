@@ -3,7 +3,7 @@ import usePatientStore from '../stores/patientStore';
 
 export default class PatientModelAbstract extends Model {
   constructor(name, store) {
-    console.log(name);
+    // console.log(name);
     super(name, store);
 
     this.respondentData = true;
