@@ -117,7 +117,7 @@ const getCarePlanOrganization = ((carePlan) => {
 
 const getCarePlanPatientNr = ((carePlan) => {
   if ('subject' in carePlan && 'id' in carePlan.subject) {
-    return carePlan.subject.subject.id;
+    return carePlan.subject.id;
   }
   return null;
 })
