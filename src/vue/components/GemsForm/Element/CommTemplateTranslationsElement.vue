@@ -14,7 +14,18 @@
         <div v-if="currentTabData !== null"
           :class="{col: (visiblePreview && previewPosition === 'right')}">
           <text-element :options="structure.subject" />
-          <ck-editor :options="structure.body" />
+          <r-t-e-element :options="structure.body">
+              <template #menu-buttons>
+              <tip-tap-link />
+              <tip-tap-all-list-functions />
+              <tip-tap-insert-text-drop-down
+                  :label="t('Variables')"
+                  :items="commFieldsWithDelimiters" :size="20"
+                  insert-type="key"
+              />
+            </template>
+          </r-t-e-element>
+
           <validator-messages :validator="validator" :serverValidator="serverValidator" />
         </div>
         <div class="preview" :class="{col: (visiblePreview && previewPosition === 'right')}">
@@ -62,6 +73,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSquareCaretLeft, faSquareCaretDown } from '@fortawesome/free-regular-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useI18n } from 'vue-i18n';
 import CkEditor from './CkEditorElement.vue';
 // import SubForm from './SubForm.vue';
 import CommTemplatePreview from '../CommTemplatePreview.vue';
@@ -73,6 +85,10 @@ import ValidatorMessages from '../ValidatorMessages.vue';
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import useGemsFormFunctions from '../../../functions/gemsFormFunctions';
 import CommFieldsRepository from '../../../functions/CommFieldsRepository';
+import RTEElement from './RTEElement.vue';
+import TipTapAllListFunctions from '../../Util/TipTap/TipTapAllListFunctions.vue';
+import TipTapLink from '../../Util/TipTap/TipTapLink.vue';
+import TipTapInsertTextDropDown from '../../Util/TipTap/TipTapInsertTextDropDown.vue';
 
 library.add(faEye, faEyeSlash, faSquareCaretLeft, faSquareCaretDown);
 
@@ -85,6 +101,8 @@ export default {
     },
   },
   components: {
+    TipTapInsertTextDropDown, TipTapLink, TipTapAllListFunctions,
+    RTEElement,
     CkEditor,
     CommFieldFilter,
     CommTemplateFields,
@@ -103,6 +121,8 @@ export default {
       validator,
       // validatorClass,
     } = useGemsFormElementFunctions(props.options);
+
+    const { t } = useI18n();
 
     const formType = inject('formType');
     const structure = computed(() => {
@@ -169,6 +189,18 @@ export default {
     provide('fieldFilter', fieldFilter);
 
     const commFields = ref({});
+
+    const commFieldsWithDelimiters = computed(() => {
+      if (commFields.value !== null) {
+        const withDelimiters = {};
+        Object.keys(commFields.value).forEach((keyName) => {
+          const newKey = `{{${keyName}}}`;
+          withDelimiters[newKey] = commFields.value[keyName];
+        });
+        return withDelimiters;
+      }
+      return null;
+    });
 
     const commFieldsEmpty = ref(false);
 
@@ -248,6 +280,7 @@ export default {
       commFields,
       commFieldsEmpty,
       commFieldsLoading,
+      commFieldsWithDelimiters,
       commTarget,
       currentTab,
       currentTabData,
@@ -260,6 +293,7 @@ export default {
       previewPosition,
       serverValidator,
       structure,
+      t,
       tabs,
       validator,
       visiblePreview,

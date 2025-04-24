@@ -2,7 +2,13 @@
   <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
-      <tip-tap-editor v-model="formValue" />
+
+      <tip-tap-editor v-model="formValue">
+        <template #menu-buttons>
+          <slot name="menu-buttons"></slot>
+        </template>
+      </tip-tap-editor>
+      <textarea v-model="formValue" style="width: 100%"/>
       <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
       <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
     </div>
