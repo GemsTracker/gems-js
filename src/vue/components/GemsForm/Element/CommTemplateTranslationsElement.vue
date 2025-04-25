@@ -56,6 +56,7 @@
         <comm-template-fields :comm-fields="commFields" />
       </template>
       <loading-screen v-if="commFieldsLoading"/>
+      <comm-template-mailer v-if="'subject' in currentTabData && 'body' in currentTabData" :subject="currentTabData.subject" :body="currentTabData.body" :comm-fields="commFields" />
     </div>
   </div>
 </template>
@@ -89,6 +90,7 @@ import RTEElement from './RTEElement.vue';
 import TipTapAllListFunctions from '../../Util/TipTap/TipTapAllListFunctions.vue';
 import TipTapLink from '../../Util/TipTap/TipTapLink.vue';
 import TipTapInsertTextDropDown from '../../Util/TipTap/TipTapInsertTextDropDown.vue';
+import CommTemplateMailer from '../CommTemplateMailer.vue';
 
 library.add(faEye, faEyeSlash, faSquareCaretLeft, faSquareCaretDown);
 
@@ -101,6 +103,7 @@ export default {
     },
   },
   components: {
+    CommTemplateMailer,
     TipTapInsertTextDropDown, TipTapLink, TipTapAllListFunctions,
     RTEElement,
     CkEditor,
