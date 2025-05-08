@@ -51,16 +51,20 @@
         </div>
       </div>
       <comm-field-filter v-if="commTarget !== null" :comm-target="commTarget" />
+      <comm-template-mailer v-if="showTestEmail && 'subject' in currentTabData && 'body' in currentTabData"
+                            :subject="currentTabData.subject"
+                            :body="currentTabData.body"
+                            :comm-target="commTarget"
+                            :field-filter="fieldFilter" />
       <template v-if="!commFieldsLoading">
         <span v-if="commFieldsEmpty" class="text-danger">No fields found for input value</span>
         <comm-template-fields :comm-fields="commFields" />
       </template>
       <loading-screen v-if="commFieldsLoading"/>
-      <comm-template-mailer v-if="'subject' in currentTabData && 'body' in currentTabData" :subject="currentTabData.subject" :body="currentTabData.body" :comm-fields="commFields" />
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import {
   computed,
   inject,
@@ -75,8 +79,6 @@ import { faSquareCaretLeft, faSquareCaretDown } from '@fortawesome/free-regular-
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useI18n } from 'vue-i18n';
-import CkEditor from './CkEditorElement.vue';
-// import SubForm from './SubForm.vue';
 import CommTemplatePreview from '../CommTemplatePreview.vue';
 import CommFieldFilter from '../CommFieldFilter.vue';
 import CommTemplateFields from '../CommTemplateFields.vue';
@@ -91,218 +93,191 @@ import TipTapAllListFunctions from '../../Util/TipTap/TipTapAllListFunctions.vue
 import TipTapLink from '../../Util/TipTap/TipTapLink.vue';
 import TipTapInsertTextDropDown from '../../Util/TipTap/TipTapInsertTextDropDown.vue';
 import CommTemplateMailer from '../CommTemplateMailer.vue';
+import useBaseStore from '../../../stores/baseStore';
 
 library.add(faEye, faEyeSlash, faSquareCaretLeft, faSquareCaretDown);
 
-export default {
-  props: {
-    options: {
-      // type: Object,
-      required: true,
-      default: () => {},
-    },
+const props = defineProps({
+  options: {
+    // type: Object,
+    required: true,
+    default: () => {},
   },
-  components: {
-    CommTemplateMailer,
-    TipTapInsertTextDropDown, TipTapLink, TipTapAllListFunctions,
-    RTEElement,
-    CkEditor,
-    CommFieldFilter,
-    CommTemplateFields,
-    CommTemplatePreview,
-    FontAwesomeIcon,
-    LoadingScreen,
-    TextElement,
-    ValidatorMessages,
-  },
-  setup(props) {
-    const {
-      // disabled,
-      elementId,
-      formValue,
-      serverValidator,
-      validator,
-      // validatorClass,
-    } = useGemsFormElementFunctions(props.options);
+});
 
-    const { t } = useI18n();
+const {
+  // disabled,
+  elementId,
+  formValue,
+  serverValidator,
+  validator,
+  // validatorClass,
+} = useGemsFormElementFunctions(props.options);
 
-    const formType = inject('formType');
-    const structure = computed(() => {
-      if ('structure' in props.options) {
-        return props.options.structure;
+const { t } = useI18n();
+
+const formType = inject('formType');
+const structure = computed(() => {
+  if ('structure' in props.options) {
+    return props.options.structure;
+  }
+  return null;
+});
+
+const label = computed(() => {
+  if ('label' in props.options) {
+    return props.options.label;
+  }
+  return ' ';
+});
+
+const currentTab = ref(null);
+const tabs = computed(() => {
+  if ('language' in structure.value && 'multiOptions' in structure.value.language) {
+    return structure.value.language.multiOptions;
+  }
+  return null;
+});
+
+const currentTabData = computed(() => {
+  if (Array.isArray(formValue.value)) {
+    let currentData = {};
+    for (let i = 0; i < formValue.value.length; i += 1) {
+      if ('language' in formValue.value[i] && formValue.value[i].language === currentTab.value) {
+        currentData = formValue.value[i];
+        break;
       }
-      return null;
+    }
+    return currentData;
+  }
+
+  return {};
+});
+
+const parentFormData = inject('formData');
+
+const commTarget = computed(() => {
+  if ('mailTarget' in parentFormData.value) {
+    return parentFormData.value.mailTarget;
+  }
+  return null;
+});
+
+provide('formData', currentTabData);
+
+const visiblePreview = ref(true);
+const previewPosition = ref('right');
+const changePreviewPosition = ((position) => {
+  previewPosition.value = position;
+  visiblePreview.value = true;
+});
+
+// Comm fields
+
+const { getCommFieldsForTarget, loading: commFieldsLoading } = CommFieldsRepository();
+
+const fieldFilter = ref({});
+
+provide('fieldFilter', fieldFilter);
+
+const commFields = ref({});
+
+const commFieldsWithDelimiters = computed(() => {
+  if (commFields.value !== null) {
+    const withDelimiters = {};
+    Object.keys(commFields.value).forEach((keyName) => {
+      const newKey = `{{${keyName}}}`;
+      withDelimiters[newKey] = commFields.value[keyName];
     });
+    return withDelimiters;
+  }
+  return null;
+});
 
-    const label = computed(() => {
-      if ('label' in props.options) {
-        return props.options.label;
-      }
-      return ' ';
-    });
+const commFieldsEmpty = ref(false);
 
-    const currentTab = ref(null);
-    const tabs = computed(() => {
-      if ('language' in structure.value && 'multiOptions' in structure.value.language) {
-        return structure.value.language.multiOptions;
-      }
-      return null;
-    });
+const getCommFields = (async (target, filter = null) => {
+  if (target === null) {
+    return;
+  }
 
-    const currentTabData = computed(() => {
-      if (Array.isArray(formValue.value)) {
-        let currentData = {};
-        for (let i = 0; i < formValue.value.length; i += 1) {
-          if ('language' in formValue.value[i] && formValue.value[i].language === currentTab.value) {
-            currentData = formValue.value[i];
-            break;
-          }
-        }
-        return currentData;
-      }
+  commFieldsEmpty.value = false;
+  const newCommfields = await getCommFieldsForTarget(target, filter);
+  if (newCommfields !== null) {
+    commFields.value = newCommfields;
+    return;
+  }
+  commFieldsEmpty.value = true;
+});
 
-      return {};
-    });
+const initValues = (() => {
+  if ('name' in props.options && props.options.name !== null && props.options.name in parentFormData.value) {
+    let newData = parentFormData.value[props.options.name];
+    if (newData === null) {
+      newData = [];
+    }
 
-    const parentFormData = inject('formData');
-
-    const commTarget = computed(() => {
-      if ('mailTarget' in parentFormData.value) {
-        return parentFormData.value.mailTarget;
-      }
-      return null;
-    });
-
-    provide('formData', currentTabData);
-
-    const visiblePreview = ref(true);
-    const previewPosition = ref('right');
-    const changePreviewPosition = ((position) => {
-      previewPosition.value = position;
-      visiblePreview.value = true;
-    });
-
-    // Comm fields
-
-    const { getCommFieldsForTarget, loading: commFieldsLoading } = CommFieldsRepository();
-
-    const fieldFilter = ref({});
-
-    provide('fieldFilter', fieldFilter);
-
-    const commFields = ref({});
-
-    const commFieldsWithDelimiters = computed(() => {
-      if (commFields.value !== null) {
-        const withDelimiters = {};
-        Object.keys(commFields.value).forEach((keyName) => {
-          const newKey = `{{${keyName}}}`;
-          withDelimiters[newKey] = commFields.value[keyName];
-        });
-        return withDelimiters;
-      }
-      return null;
-    });
-
-    const commFieldsEmpty = ref(false);
-
-    const getCommFields = (async (target, filter = null) => {
-      if (target === null) {
-        return;
-      }
-
-      commFieldsEmpty.value = false;
-      const newCommfields = await getCommFieldsForTarget(target, filter);
-      if (newCommfields !== null) {
-        commFields.value = newCommfields;
-        return;
-      }
-      commFieldsEmpty.value = true;
-    });
-
-    const initValues = (() => {
-      if ('name' in props.options && props.options.name !== null && props.options.name in parentFormData.value) {
-        let newData = parentFormData.value[props.options.name];
-        if (newData === null) {
-          newData = [];
-        }
-
-        const addedLanguages = [];
-        newData.forEach((row) => {
-          if ('language' in row) {
-            addedLanguages.push(row.language);
-          }
-        });
-
-        const { getInitialFormValues } = useGemsFormFunctions(
-          structure,
-          currentTabData,
-        );
-
-        Object.keys(tabs.value).forEach((language) => {
-          if (!addedLanguages.includes(language)) {
-            const newRow = getInitialFormValues();
-            newRow.language = language;
-            newData.push(newRow);
-            addedLanguages.push(language);
-          }
-        });
-
-        parentFormData.value[props.options.name] = newData;
+    const addedLanguages = [];
+    newData.forEach((row) => {
+      if ('language' in row) {
+        addedLanguages.push(row.language);
       }
     });
 
-    onMounted(() => {
-      const tabIndexes = Object.keys(tabs.value);
-      if (tabIndexes.length) {
-        [currentTab.value] = tabIndexes;
-      }
-      getCommFields(commTarget.value);
-
-      initValues();
-    });
-
-    watch(commTarget, (newTarget) => {
-      getCommFields(newTarget);
-    });
-
-    watch(fieldFilter, (newFilter) => {
-      const filter = toRaw(newFilter);
-      getCommFields(commTarget.value, filter);
-    });
-
-    watch(parentFormData, (newData, oldData) => {
-      if (oldData !== null && !(props.options.name in oldData) && props.options.name in newData) {
-        initValues();
-      }
-    });
-
-    return {
-      changePreviewPosition,
-      commFields,
-      commFieldsEmpty,
-      commFieldsLoading,
-      commFieldsWithDelimiters,
-      commTarget,
-      currentTab,
-      currentTabData,
-      elementId,
-      fieldFilter,
-      formType,
-      formValue,
-      label,
-      parentFormData,
-      previewPosition,
-      serverValidator,
+    const { getInitialFormValues } = useGemsFormFunctions(
       structure,
-      t,
-      tabs,
-      validator,
-      visiblePreview,
-    };
-  },
-};
+      currentTabData,
+    );
+
+    Object.keys(tabs.value).forEach((language) => {
+      if (!addedLanguages.includes(language)) {
+        const newRow = getInitialFormValues();
+        newRow.language = language;
+        newData.push(newRow);
+        addedLanguages.push(language);
+      }
+    });
+
+    parentFormData.value[props.options.name] = newData;
+  }
+});
+
+const baseStore = useBaseStore();
+const showTestEmail = computed(() => {
+  if (baseStore.baseProps && 'testEmail' in baseStore.baseProps) {
+    return Boolean(baseStore.baseProps.testEmail);
+  }
+  return false;
+});
+
+onMounted(() => {
+  const tabIndexes = Object.keys(tabs.value);
+  if (tabIndexes.length) {
+    [currentTab.value] = tabIndexes;
+  }
+  getCommFields(commTarget.value);
+
+  initValues();
+
+
+  console.log(baseStore.baseProps);
+
+});
+
+watch(commTarget, (newTarget) => {
+  getCommFields(newTarget);
+});
+
+watch(fieldFilter, (newFilter) => {
+  const filter = toRaw(newFilter);
+  getCommFields(commTarget.value, filter);
+});
+
+watch(parentFormData, (newData, oldData) => {
+  if (oldData !== null && !(props.options.name in oldData) && props.options.name in newData) {
+    initValues();
+  }
+});
 </script>
 <style scoped>
   .preview {
