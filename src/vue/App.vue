@@ -1,36 +1,30 @@
 <template>
   <component :is="currentElement" v-bind="baseProps"/>
 </template>
-<script>
+<script setup>
+import useBasePropStorer from './functions/basePropStorer';
 
-export default {
-  props: {
-
-    tag: {
-      type: String,
-      required: true,
-    },
-    appSettings: {
-      type: Object,
-      required: true,
-    },
-    baseProps: {
-      type: Object,
-      required: true,
-    },
+const props = defineProps({
+  tag: {
+    type: String,
+    required: true,
   },
-  setup(props) {
-    // kebab-case to PascalCase
-    const toPascalCase = (s) => (s ? (s.replace(/(^\w)|(-\w)/g, (gr0, gr1, gr2) => gr1?.toUpperCase() ?? gr2[gr2.length - 1].toUpperCase())) : s);
-
-    const currentElementName = toPascalCase(props.tag);
-
-    const currentElement = props.appSettings.components[currentElementName] ?? null;
-
-    return {
-      currentElement,
-      currentElementName,
-    };
+  appSettings: {
+    type: Object,
+    required: true,
   },
-};
+  baseProps: {
+    type: Object,
+    required: true,
+  },
+});
+
+useBasePropStorer(props.baseProps);
+
+// kebab-case to PascalCase
+const toPascalCase = (s) => (s ? (s.replace(/(^\w)|(-\w)/g, (gr0, gr1, gr2) => gr1?.toUpperCase() ?? gr2[gr2.length - 1].toUpperCase())) : s);
+const currentElementName = toPascalCase(props.tag);
+
+const currentElement = props.appSettings.components[currentElementName] ?? null;
+
 </script>
