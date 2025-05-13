@@ -15,6 +15,10 @@ const i18n = createI18n({
 
 const baseProps = rootAttributesToProps('app', appSettings);
 
+if ('locale' in baseProps) {
+  i18n.global.locale.value = baseProps.locale;
+}
+
 const app = createApp(BaseApp, baseProps);
 const pinia = createPinia();
 app.use(pinia);

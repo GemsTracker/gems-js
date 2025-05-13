@@ -5,6 +5,11 @@ const useTipTapFunctions = ((editor) => {
   const activeItalic = computed(() => editor.value && editor.value.isActive('italic'));
   const activeLink = computed(() => editor.value && editor.value.isActive('link'));
 
+  const activeBulletList = computed(() => editor.value && editor.value.isActive('bulletList'));
+  const activeOrderedList = computed(() => editor.value && editor.value.isActive('orderedList'));
+
+  const activeListItem = computed(() => editor.value && editor.value.isActive('listItem'));
+
   const doRedo = (() => {
     editor.value.chain().focus().redo().run();
   });
@@ -26,6 +31,22 @@ const useTipTapFunctions = ((editor) => {
 
   const setItalic = (() => {
     editor.value.chain().focus().toggleItalic().run();
+  });
+
+  const setBulletList = (() => {
+    editor.value.chain().focus().toggleBulletList().run();
+  });
+
+  const setOrderedList = (() => {
+    editor.value.chain().focus().toggleOrderedList().run();
+  });
+
+  const sinkList = (() => {
+    editor.value.chain().focus().sinkListItem().run();
+  });
+
+  const liftList = (() => {
+    editor.value.chain().focus().liftListItem().run();
   });
 
   const setLink = ((url) => {
@@ -51,6 +72,9 @@ const useTipTapFunctions = ((editor) => {
     activeBold,
     activeItalic,
     activeLink,
+    activeBulletList,
+    activeOrderedList,
+    activeListItem,
     breakLink,
     doRedo,
     doUndo,
@@ -61,6 +85,10 @@ const useTipTapFunctions = ((editor) => {
     setBold,
     setItalic,
     setLink,
+    setBulletList,
+    setOrderedList,
+    sinkList,
+    liftList,
   };
 });
 

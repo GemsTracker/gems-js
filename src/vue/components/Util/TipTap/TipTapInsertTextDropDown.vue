@@ -5,7 +5,7 @@
         class="dropdown-button"
         type="button"
         :title="title">
-      {{ label }}<font-awesome-icon icon="caret-down" />
+      {{ label }} <font-awesome-icon icon="caret-down" />
     </button>
     <div class="dropdown-items" :class="{open: dropDownOpen}"
        ref="dropDownList" :style="dropDownListSize">

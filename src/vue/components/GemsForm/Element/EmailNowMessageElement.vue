@@ -6,7 +6,7 @@
         <tip-tap-editor v-model="formValue">
           <template #menu-buttons>
             <tip-tap-link />
-
+            <tip-tap-all-list-functions />
             <tip-tap-insert-text-drop-down
               :label="t('Variables')"
               :items="commFieldsWithDelimiters" :size="20"
@@ -61,6 +61,8 @@ import GemsFormLabel from '../Label.vue';
 import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunctions';
 import TipTapInsertTextDropDown from '../../Util/TipTap/TipTapInsertTextDropDown.vue';
 import TipTapLink from '../../Util/TipTap/TipTapLink.vue';
+import TipTapBulletList from '../../Util/TipTap/TipTapBulletList.vue';
+import TipTapAllListFunctions from '../../Util/TipTap/TipTapAllListFunctions.vue';
 
 library.add(faEye, faEyeSlash, faSquareCaretLeft, faSquareCaretDown);
 export default {
@@ -72,6 +74,8 @@ export default {
     },
   },
   components: {
+    TipTapAllListFunctions,
+    TipTapBulletList,
     TipTapLink,
     TipTapInsertTextDropDown,
     GemsFormLabel,
