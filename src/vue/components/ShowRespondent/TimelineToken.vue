@@ -79,7 +79,10 @@ export default {
 
     const tokenLink = computed(() => {
       if (props.token.status === 'in-progress' || props.token.status === 'requested') {
-        return props.token.surveyUrl;
+        if (props.token.ownerType === 'Organization') {
+          return props.token.surveyUrl;
+        }
+        return tokenShowUrl;
       }
       if (props.token.status === 'draft' || props.token.status === 'rejected') {
         return tokenEditUrl;
