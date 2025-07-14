@@ -32,7 +32,7 @@ const useDateFunctions = (() => {
       return null;
     }
     const dateObject = new Date(dateString);
-    return format(dateObject, dateFormat, getDateFnsLocale());
+    return format(dateObject, dateFormat, { locale: getDateFnsLocale() });
   });
   const formatJsonDate = ((dateString) => formatJsonDateTime(dateString, 'dd-MM-yyyy'));
 
