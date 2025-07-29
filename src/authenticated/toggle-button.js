@@ -45,6 +45,12 @@ export default class ToggleButton {
         checkbox.checked = !currentState;
       }
     });
+    const checkboxLast = targetElements[targetElements.length -1];
+    // console.log(checkboxLast);
+    
+    // Trigger potential auto submit
+    checkboxLast.checked = currentState;
+    checkboxLast.click();
   }
 }
 
