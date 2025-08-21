@@ -22,6 +22,7 @@ export default class Model {
       loading: false,
       data: {},
       structure: null,
+      headers: {},
     };
 
     this.init();
@@ -36,6 +37,18 @@ export default class Model {
 
   async all(filters = null, refresh = false) {
     const currentFilters = { ...this.filters, ...filters };
+
+    let page = 1;
+    if ('page' in currentFilters) {
+      page = currentFilters.page;
+      delete currentFilters.page;
+    }
+    let perPage = null;
+    if ('per_page' in currentFilters) {
+      perPage = currentFilters.per_page;
+      delete currentFilters.per_page;
+    }
+
     const loadingHash = this.constructor.getLoadingHash(currentFilters);
     if (refresh === true
       || ((Object.keys(this.state.data).length === 0 || (!(loadingHash in this.state.data)))
@@ -43,13 +56,55 @@ export default class Model {
       const loadData = this.getLoadData();
       loadData.loadingHash = loadingHash;
       loadData.filters = this.constructor.checkFilters(currentFilters);
+      loadData.page = page;
+      loadData.perPage = perPage;
+
       this.loadingAll[loadingHash] = this.store.getModelData(this.name, loadData);
-      const data = await this.loadingAll[loadingHash];
+      const returnData = await this.loadingAll[loadingHash];
+      console.log('RETURN DATA', returnData);
       this.afterLoad();
 
       delete this.loadingAll[loadingHash];
 
-      return data;
+      return returnData.data;
+    }
+
+    if (this.loadingAll[loadingHash] !== undefined) {
+      const returnValues = await this.loadingAll[loadingHash];
+      return returnValues.data;
+    }
+
+    if (loadingHash in this.state.data) {
+      return this.state.data[loadingHash].data;
+    }
+
+    return null;
+  }
+
+  async getPageData(filters, page, perPage, refresh = false) {
+    filters['page'] = page;
+    filters['per_page'] = perPage;
+
+    const currentFilters = { ...filters, ...this.filters };
+
+    const loadingHash = this.constructor.getLoadingHash(currentFilters);
+    if (refresh === true
+        || ((Object.keys(this.state.data).length === 0 || (!(loadingHash in this.state.data)))
+            && this.loadingAll[loadingHash] === undefined)) {
+      const loadData = this.getLoadData();
+      loadData.loadingHash = loadingHash;
+      loadData.filters = this.constructor.checkFilters(currentFilters);
+      loadData.page = page;
+      loadData.perPage = perPage;
+
+      this.loadingAll[loadingHash] = this.store.getModelData(this.name, loadData);
+      const returnData = await this.loadingAll[loadingHash];
+      console.log('RETURN DATA', returnData);
+      this.afterLoad();
+
+      delete this.loadingAll[loadingHash];
+
+      return returnData;
     }
 
     if (this.loadingAll[loadingHash] !== undefined) {
@@ -94,7 +149,9 @@ export default class Model {
         }
         loadData.id = id;
 
-        this.loadingIds[id] = this.store.getModelData(this.name, loadData);
+        const { data: returnData } = this.store.getModelData(this.name, loadData);
+
+        this.loadingIds[id] = returnData;
         const data = await this.loadingIds[id];
 
         // delete this.loadingIds[id];
@@ -147,6 +204,7 @@ export default class Model {
     keys.forEach((filterKey) => {
       sortedFilter[filterKey] = filters[filterKey];
     });
+    console.log('LOADING HASH FILTER', sortedFilter);
     return Model.hashString(JSON.stringify(sortedFilter));
   }
 
