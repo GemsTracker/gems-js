@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{'inline-block': formClass = 'inline'}" >
     <form v-if="!loading" :class="formClass">
       <gems-form-element v-for="(elementOptions, index) in structure"
         :key="index"
