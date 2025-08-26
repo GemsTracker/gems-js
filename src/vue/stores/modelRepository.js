@@ -123,11 +123,22 @@ export default defineStore('modelRepository', {
       }
       const apiCall = api.load(fullFilters)
         .then((response) => {
+          if (response === null) {
+            return {
+              data: null,
+              totalCount: null
+            };
+          }
           const { data, headers } = response;
+
+
           console.log('HEADER DATA', Object.keys(headers));
 
           if (data === null ) {
-            return null;
+            return {
+              data: null,
+              totalCount: null
+            };
           }
           let returnData = data;
           if (perPage == null) {
@@ -155,6 +166,7 @@ export default defineStore('modelRepository', {
 
           const returnInfo = {
             data: returnData,
+            totalCount: null,
           };
 
           if ('x-total-count' in headers) {
