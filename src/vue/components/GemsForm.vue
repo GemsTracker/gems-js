@@ -18,6 +18,7 @@
       <!-- <div class="actionlink btn" @click="cancel">Cancel</div> -->
     </div>
     <loading-screen v-if="loading" />
+    <slot name="footer" :form-data="formData" />
   </div>
 </template>
 <script setup>
