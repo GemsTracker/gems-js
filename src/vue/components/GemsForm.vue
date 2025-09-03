@@ -15,9 +15,10 @@
       </span>
       <br />
       <!-- <div class="actionlink btn" @click="validate">validate</div><br /> -->
-      <!-- <div class="actionlink btn" @click="cancel">Cancel</div> -->
+      <div v-if="cancel" class="actionlink btn" @click="cancel">Cancel</div>
     </div>
     <loading-screen v-if="loading" />
+    <slot name="footer" :form-data="formData" />
   </div>
 </template>
 <script setup>
@@ -77,6 +78,11 @@ const props = defineProps({
       required: false,
       default: null,
     },
+    cancelUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
   });
 
 const { getModelRepository } = useGetModelRepository();
@@ -123,11 +129,9 @@ const loading = computed(() => {
 });
 
 const cancel = (() => {
-  console.log(window.location);
-  const currentUrl = window.location.href;
-  const newUrl = currentUrl.replace('/create', '').replace(`/edit/id/${props.edit}`, '').replace(window.location.search, '');
-  console.log(newUrl);
-  window.location.href = newUrl;
+  if (props.cancel !== null) {
+    window.location.href = props.cancel;
+  }
 });
 
 const submitting = ref(false);

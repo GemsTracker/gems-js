@@ -38,10 +38,6 @@
           <comm-template-preview v-if="visiblePreview"
                                  :form-data="formData" :comm-fields="commFields" />
       </div>
-      <template v-if="!commFieldsLoading">
-          <span v-if="commFieldsEmpty" class="text-danger">No fields found</span>
-          <comm-template-fields :comm-fields="commFields" />
-      </template>
     </div>
   </div>
 </template>
