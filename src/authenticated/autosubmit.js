@@ -78,6 +78,10 @@ export default class Autosubmit {
     const targetReplace = document.getElementById(targetId);
     const targetUrl = form.getAttribute('auto-submit-url');
 
+    if (inputElement.getAttribute('class').includes('auto-submit-force')) {
+      form.submit();
+      return;
+    }
     // console.log(inputElement.getAttribute('name'));
 
     // console.log(targetId, targetUrl);
@@ -85,14 +89,14 @@ export default class Autosubmit {
       // asynch class
       // console.log(Object.fromEntries(formData), formData);
 
-      if (null != this.#request) {
+      if (this.#request != null) {
         this.#newRequest = true;
         // No two queries at the same time
         // console.log('double dipped');
         return;
       }
       this.#request = new XMLHttpRequest();
-      this.#request.responseType = "document";
+      this.#request.responseType = 'document';
       this.#request.addEventListener('load', (event) => {
         const response = this.#request.response;
         const newHtml = response.getElementById(targetId);
