@@ -16,6 +16,7 @@ const useTrackRepository = (() => {
     const filter = {
       organization: organizationId,
       active: 1,
+      valid: 1,
       per_page: 200,
     };
     const tracks = await trackModel.all(filter);
