@@ -1,4 +1,8 @@
 export default class Autosubmit {
+  #newRequest = false;
+
+  #request = null;
+
   constructor() {
     this.init();
   }
@@ -62,12 +66,14 @@ export default class Autosubmit {
 
   submitOnTextChange(form, inputElement, event) {
     // console.log(inputElement.value, inputElement.getAttribute('value'));
-    if (inputElement.value && (inputElement.value.length >= 1) && (inputElement.value !== inputElement.getAttribute('value'))) {
+    // Option for extra filtering, but decided this is unpractical
+    if (inputElement.value !== inputElement.getAttribute('value')) {
       this.submitOnElement(form, inputElement, event);
     }
   }
 
   submitOnElement(form, inputElement, event) {
+    const formData = new FormData(form);
     const targetId = form.getAttribute('auto-submit-target');
     const targetReplace = document.getElementById(targetId);
     const targetUrl = form.getAttribute('auto-submit-url');
@@ -77,13 +83,18 @@ export default class Autosubmit {
     // console.log(targetId, targetUrl);
     if (targetId && targetUrl && targetReplace) {
       // asynch class
-      var formData = new FormData(form);
       // console.log(Object.fromEntries(formData), formData);
 
-      var request = new XMLHttpRequest();
-      request.responseType = "document";
-      request.addEventListener('load', (event) => {
-        const response = request.response;
+      if (null != this.#request) {
+        this.#newRequest = true;
+        // No two queries at the same time
+        // console.log('double dipped');
+        return;
+      }
+      this.#request = new XMLHttpRequest();
+      this.#request.responseType = "document";
+      this.#request.addEventListener('load', (event) => {
+        const response = this.#request.response;
         const newHtml = response.getElementById(targetId);
         // console.log(targetId, request.response);
 
@@ -92,13 +103,20 @@ export default class Autosubmit {
           // console.log(htmlOutput);
           targetReplace.setHTMLUnsafe(newHtml.innerHTML);
         }
+
+        this.#request = null;
+        if (this.#newRequest) {
+          this.#newRequest = false;
+          this.submitOnElement(form, inputElement, event);
+        }
       });
-      request.addEventListener('error', (event) => {
+      this.#request.addEventListener('error', (event) => {
         console.log(event.error);
         // document.querySelector(targetId).setHtml(request.response);
+        this.#request = null;
       });
-      request.open('POST', targetUrl);
-      request.send(formData);
+      this.#request.open('POST', targetUrl);
+      this.#request.send(formData);
       return;
     }
 
