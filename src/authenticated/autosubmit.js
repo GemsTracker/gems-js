@@ -18,6 +18,8 @@ export default class Autosubmit {
 
   addInput(form, inputElement) {
     const eType = inputElement.getAttribute('type');
+    const targetId = form.getAttribute('auto-submit-target');
+    const targetUrl = form.getAttribute('auto-submit-url');
     // console.log(inputElement.getAttribute('name'), inputElement.getAttribute('eType'));
 
     if (['hidden', 'submit'].includes(eType)) {
@@ -37,12 +39,12 @@ export default class Autosubmit {
     }
 
     if (['text'].includes(eType)) {
-      // inputElement.setAttribute('auto-submit-value', inputElement.getAttribute('value'));
-      // inputElement.addEventListener('change', call);
-      // const callKey = (event) => this.submitOnMinimalChange(form, inputElement, event);
-      // inputElement.addEventListener('keyup', callKey);
-      // inputElement.addEventListener('input', callKey);
-      inputElement.addEventListener('blur', (event) => this.submitOnChange(form, inputElement, event));
+      if (targetId && targetUrl) {
+        inputElement.addEventListener('input', (event) => this.submitOnTextChange(form, inputElement, event));
+
+      } else {
+        inputElement.addEventListener('blur', (event) => this.submitOnChange(form, inputElement, event));
+      }
     }
   }
 
@@ -51,29 +53,6 @@ export default class Autosubmit {
     selectElement.addEventListener('change', call);
   }
 
-  /*
-  submitOnMinimalChange(form, inputElement, event) {
-    const orig = inputElement.getAttribute('auto-submit-value');
-    const input = inputElement.value;
-    const maxLength = Math.max(orig.length, input.length);
-    let diffCount = 0;
-
-    if (Math.abs(orig.length - input.length) >= 3) {
-      this.submitOnElement(form, inputElement, event);
-      return;
-    }
-
-    Array.from({ length: maxLength }).forEach((_, i) => {
-      if (orig[i] !== input[i]) {
-        diffCount += 1;
-      }
-      if (diffCount > 3) {
-        this.submitOnElement(form, inputElement, event);
-        return;
-      }
-    });
-  } // */
-
   submitOnChange(form, inputElement, event) {
     // console.log(inputElement.value, inputElement.getAttribute('value'));
     if (inputElement.value && (inputElement.value !== inputElement.getAttribute('value'))) {
@@ -81,32 +60,47 @@ export default class Autosubmit {
     }
   }
 
+  submitOnTextChange(form, inputElement, event) {
+    // console.log(inputElement.value, inputElement.getAttribute('value'));
+    if (inputElement.value && (inputElement.value.length >= 1) && (inputElement.value !== inputElement.getAttribute('value'))) {
+      this.submitOnElement(form, inputElement, event);
+    }
+  }
+
   submitOnElement(form, inputElement, event) {
+    const targetId = form.getAttribute('auto-submit-target');
+    const targetReplace = document.getElementById(targetId);
+    const targetUrl = form.getAttribute('auto-submit-url');
+
     // console.log(inputElement.getAttribute('name'));
 
-    // Ajax does not yet work (from the GT side)
-    // var targetId = form.getAttribute('auto-submit-target-id');
+    // console.log(targetId, targetUrl);
+    if (targetId && targetUrl && targetReplace) {
+      // asynch class
+      var formData = new FormData(form);
+      // console.log(Object.fromEntries(formData), formData);
 
-    // var targetUrl = form.getAttribute('auto-submit-url');
-    // var eClass = inputElement.getAttribute('class');
-    //
-    // console.log(targetId, targetUrl, eClass);
-    // if (targetId && targetUrl) {
-    //   if (! (eClass && eClass.includes('force'))) {
-    //     // asynch class
-    //     // console.log(form-serialize(from));
-    //     var formData = new FormData(form);
-    //     console.log(Object.fromEntries(formData));
-    //
-    //     var request = new XMLHttpRequest();
-    //     request.addEventListener('load', (event) => {
-    //       console.log(request.response);
-    //       // document.querySelector(targetId).setHtml(request.response);
-    //     });
-    //     request.open('POST', targetUrl);
-    //     request.send(FormData);
-    //   }
-    // }
+      var request = new XMLHttpRequest();
+      request.responseType = "document";
+      request.addEventListener('load', (event) => {
+        const response = request.response;
+        const newHtml = response.getElementById(targetId);
+        // console.log(targetId, request.response);
+
+        // console.log(newHtml, targetReplace);
+        if (newHtml) {
+          // console.log(htmlOutput);
+          targetReplace.setHTMLUnsafe(newHtml.innerHTML);
+        }
+      });
+      request.addEventListener('error', (event) => {
+        console.log(event.error);
+        // document.querySelector(targetId).setHtml(request.response);
+      });
+      request.open('POST', targetUrl);
+      request.send(formData);
+      return;
+    }
 
     form.submit();
   }
