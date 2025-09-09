@@ -78,7 +78,7 @@ export default class Autosubmit {
     const targetReplace = document.getElementById(targetId);
     const targetUrl = form.getAttribute('auto-submit-url');
 
-    if (inputElement.getAttribute('class').includes('auto-submit-force')) {
+    if (inputElement.getAttribute('class') && inputElement.getAttribute('class').includes('auto-submit-force')) {
       form.submit();
       return;
     }
