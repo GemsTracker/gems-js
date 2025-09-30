@@ -14,7 +14,7 @@
             data-bs-toggle="tooltip"
             :data-bs-title="copyTokenTooltip" class="icon">
             <!-- <font-awesome-icon  icon="fa-regular fa-clipboard" /> -->
-            <copy-to-clipboard-icon></copy-to-clipboard-icon>
+            <copy-to-clipboard-icon :value="token.id" :plain="true"></copy-to-clipboard-icon>
           </tool-tip>
           <tool-tip v-if="token.status === 'completed'" :content="t('Correct answers')" class="icon">
             <a :href="tokenCorrectUrl">

@@ -19,7 +19,13 @@ library.add(faCheck, faClipboard);
 
 export default {
   props: {
-    targetElement: {
+    value: {
+      type: String,
+      required: true,
+    },
+    plain: {
+      type: Boolean,
+      default: false,
     },
     title: {
       type: String,
@@ -43,13 +49,10 @@ export default {
       ['fas', 'check'],
     ];
 
-    const copied = ref(false);
+    const { copyRich, copyText, copied } = useCopyToClipboard();
 
     const icon = computed(() => {
-      if (copied.value === true) {
-        return 1;
-      }
-      return 0;
+      return copied.value === true ? 1 : 0;
     });
 
     const buttonClass = computed(() => {
@@ -59,18 +62,16 @@ export default {
       return null;
     });
 
-    const { copyValueToClipboard } = useCopyToClipboard();
-
     const copyToClipboard = (async () => {
-      const element = props.targetElement;
 
-      if (element) {
+      if (props.value) {
         emit('startCopy');
-        //copyValueToClipboard(element);
-        window.getSelection().selectAllChildren(element);
-        console.log('EXEC!!');
-        document.execCommand('copy');
-        window.getSelection().removeAllRanges();
+
+        if (!props.plain) {
+          copyRich(props.value);
+        } else {
+          copyText(props.value);
+        }
 
         emit('endCopy');
 
@@ -79,8 +80,6 @@ export default {
           element.classList.remove('copied');
         }, 200);
       }
-
-      copied.value = true;
 
       setTimeout(() => {
         copied.value = false;

@@ -1,59 +1,76 @@
+import { ref } from 'vue';
+
 const useCopyToClipboard = (() => {
 
-  const fallbackCopyTextToClipboard = ((text) => {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
+  const copied = ref(false);
 
-    // Avoid scrolling to bottom
-    textArea.style.top = '0';
-    textArea.style.left = '0';
-    textArea.style.position = 'fixed';
+  const fallbackCopyText = (text) => {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.style.position = 'fixed'
+    textarea.style.left = '-9999px'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+  }
 
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
+  const copyText = async (text) => {
     try {
-      const successful = document.execCommand('copy');
-      const msg = successful ? 'successful' : 'unsuccessful';
-      console.log(`Fallback: Copying text command was ${msg}`);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        fallbackCopyText(text)
+      }
+      copied.value = true
+      setTimeout(() => (copied.value = false), 500)
     } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
+      console.error('Plain copy failed:', err)
+      copied.value = false
     }
+  }
 
-    document.body.removeChild(textArea);
-  });
+  const fallbackCopyRich = (html) => {
+    const el = document.createElement('div')
+    el.innerHTML = html
+    el.style.position = 'fixed'
+    el.style.left = '-9999px'
+    document.body.appendChild(el)
 
-  const copy = ((element) => {
-    console.log(element);
-    console.log(navigator.clipboard);
-    if (!navigator.clipboard) {
-      fallbackCopyTextToClipboard(element.innerHTML);
-      return;
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    const sel = window.getSelection()
+    sel?.removeAllRanges()
+    sel?.addRange(range)
+
+    document.execCommand('copy')
+    document.body.removeChild(el)
+  }
+
+  const copyRich = async (html, plainText) => {
+    try {
+      if (navigator.clipboard?.write && window.ClipboardItem) {
+        const item = new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob(
+              [plainText ?? html.replace(/<[^>]+>/g, '')],
+              { type: 'text/plain' }
+          ),
+        })
+        await navigator.clipboard.write([item])
+      } else {
+        fallbackCopyRich(html);
+      }
+
+      copied.value = true
+      setTimeout(() => (copied.value = false), 500)
+    } catch (err) {
+      console.error('Rich copy failed:', err)
+      copied.value = false
     }
+  }
 
-    navigator.clipboard.writeText(element.innerHTML).then(() => {
-      console.log('Copied using navigator clipboard');
-    }, (err) => {
-      console.error('navigator clipboard could not copy text: ', err);
-
-      // Try the fallback
-      fallbackCopyTextToClipboard(element.innerHTML);
-    });
-  });
-
-  const copyValueToClipboard = ((element) => {
-    console.log(element);
-    if (element) {
-      console.log('HI!');
-      console.log(element);
-      copy(element);
-    }
-  });
-
-  return {
-    copyValueToClipboard,
-  };
+  return { copyText, copyRich, copied }
 });
 
 export default useCopyToClipboard;
