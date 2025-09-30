@@ -30,7 +30,8 @@ import {
   ref,
   watch,
 } from 'vue';
-import { cloneDeep, isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
