@@ -1,8 +1,10 @@
 <template>
   <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
-    <div class="value">{{formValue}}</div>
+    <div class="element-container">
+      <div class="value">{{formValue}}</div>
       <input type="hidden" :name="elementId" :value="formValue" />
+    </div>
   </div>
 </template>
 <script>
