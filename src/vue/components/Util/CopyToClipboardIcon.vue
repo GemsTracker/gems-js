@@ -75,10 +75,10 @@ export default {
 
         emit('endCopy');
 
-        element.classList.add('copied');
+        /*element.classList.add('copied');
         setTimeout(() => {
           element.classList.remove('copied');
-        }, 200);
+        }, 200);*/
       }
 
       setTimeout(() => {
