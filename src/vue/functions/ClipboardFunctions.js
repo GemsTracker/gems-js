@@ -18,7 +18,12 @@ const useCopyToClipboard = (() => {
   const copyText = async (text) => {
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text)
+        try {
+          await navigator.clipboard.writeText(text)
+        } catch (err) {
+          console.error("Clipboard write failed:", err);
+          fallbackCopyText(html);
+        }
       } else {
         fallbackCopyText(text)
       }
@@ -50,14 +55,19 @@ const useCopyToClipboard = (() => {
   const copyRich = async (html, plainText) => {
     try {
       if (navigator.clipboard?.write && window.ClipboardItem) {
-        const item = new ClipboardItem({
-          'text/html': new Blob([html], { type: 'text/html' }),
-          'text/plain': new Blob(
-              [plainText ?? html.replace(/<[^>]+>/g, '')],
-              { type: 'text/plain' }
-          ),
-        })
-        await navigator.clipboard.write([item])
+        try {
+          const item = new ClipboardItem({
+            'text/html': new Blob([html], {type: 'text/html'}),
+            'text/plain': new Blob(
+                [plainText ?? html.replace(/<[^>]+>/g, '')],
+                {type: 'text/plain'}
+            ),
+          })
+          await navigator.clipboard.write([item])
+        } catch (err) {
+          console.error("Clipboard write failed:", err);
+          fallbackCopyRich(html);
+        }
       } else {
         fallbackCopyRich(html);
       }
