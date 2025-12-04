@@ -131,9 +131,6 @@ export default defineStore('modelRepository', {
           }
           const { data, headers } = response;
 
-
-          console.log('HEADER DATA', Object.keys(headers));
-
           if (data === null ) {
             return {
               data: null,
@@ -172,7 +169,6 @@ export default defineStore('modelRepository', {
           if ('x-total-count' in headers) {
             returnInfo.totalCount = Number(headers['x-total-count']);
           }
-          console.log('returnInfo', returnInfo);
           return returnInfo;
         });
 

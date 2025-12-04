@@ -61,7 +61,6 @@ export default class Model {
 
       this.loadingAll[loadingHash] = this.store.getModelData(this.name, loadData);
       const returnData = await this.loadingAll[loadingHash];
-      console.log('RETURN DATA', returnData);
       this.afterLoad();
 
       delete this.loadingAll[loadingHash];
@@ -99,7 +98,6 @@ export default class Model {
 
       this.loadingAll[loadingHash] = this.store.getModelData(this.name, loadData);
       const returnData = await this.loadingAll[loadingHash];
-      console.log('RETURN DATA', returnData);
       this.afterLoad();
 
       delete this.loadingAll[loadingHash];
@@ -149,10 +147,8 @@ export default class Model {
         }
         loadData.id = id;
 
-        const { data: returnData } = this.store.getModelData(this.name, loadData);
-
-        this.loadingIds[id] = returnData;
-        const data = await this.loadingIds[id];
+        this.loadingIds[id] = this.store.getModelData(this.name, loadData);
+        const { data } = await this.loadingIds[id];
 
         // delete this.loadingIds[id];
         if (data === null) {
@@ -167,7 +163,7 @@ export default class Model {
       }
 
       if (this.loadingIds[id] !== undefined) {
-        const data = await this.loadingIds[id];
+        const { data } = await this.loadingIds[id];
         if (!this.storeOne) {
           if (!this.storeAllAsId) {
             return data[id];
