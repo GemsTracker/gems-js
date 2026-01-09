@@ -1,7 +1,7 @@
 import { ref, readonly } from 'vue';
 
 const order = ref('');
-const filterColumns = ref([]);
+const filterColumns = ref({});
 const searchData = ref(null);
 
 export function useDataTableInfo() {

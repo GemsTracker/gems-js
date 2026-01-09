@@ -16,7 +16,7 @@ import useGemsFormFunctions from "../../functions/gemsFormFunctions";
 
 const { filterColumns, setSearchData } = useDataTableInfo();
 
-const hasFilterColumns = computed(() => Object.keys(filterColumns).length > 0);
+const hasFilterColumns = computed(() => Object.keys(filterColumns.value).length > 0);
 
 const formData = ref({});
 
