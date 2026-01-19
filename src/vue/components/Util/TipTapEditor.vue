@@ -6,60 +6,57 @@
     <editor-content :editor="editor" class="editor" />
   </div>
 </template>
-<script>
+<script setup>
 import { provide, watch } from 'vue';
 import Link from '@tiptap/extension-link';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import TipTapMenu from './TipTap/TipTapMenu.vue';
 
-export default {
-  props: {
-    modelValue: {
-      type: String,
-      default: '',
-    },
-    menu: {
-      type: Boolean,
-      default: true,
-    },
-    quickTexts: {
-      type: Array,
-      default: [],
-    },
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
   },
-  emits: ['update:modelValue'],
-  components: {
-    TipTapMenu,
-    EditorContent,
+  menu: {
+    type: Boolean,
+    default: true,
   },
-  setup(props, { emit }) {
-    const editor = useEditor({
-      content: props.modelValue,
-      extensions: [
-        StarterKit,
-        Link.configure({
-          openOnClick: false,
-        }),
-      ],
-      onUpdate: () => {
-        emit('update:modelValue', editor.value.getHTML());
-      },
-    });
-
-    provide('editor', editor);
-
-    watch(() => props.modelValue, (newValue) => {
-      if (newValue !== editor.value.getHTML()) {
-        editor.value.commands.setContent(newValue, false);
-      }
-    });
-
-    return {
-      editor,
-    };
+  quickTexts: {
+    type: Array,
+    default: [],
   },
-};
+  preventEmit: {
+    type: Boolean,
+    default: true,
+  }
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const editor = useEditor({
+  content: props.modelValue,
+  extensions: [
+    StarterKit,
+    Link.configure({
+      openOnClick: false,
+    }),
+  ],
+  onUpdate: () => {
+    if (!props.preventEmit) {
+      emit('update:modelValue', editor.value.getHTML());
+    }
+  },
+});
+
+provide('editor', editor);
+
+watch(() => props.modelValue, (newValue) => {
+  if (newValue !== editor.value.getHTML()) {
+    editor.value?.commands.setContent(newValue, false);
+  }
+});
+
 </script>
 <style lang="scss">
 
