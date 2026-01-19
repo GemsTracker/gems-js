@@ -2,14 +2,20 @@
   <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
-      <tip-tap-editor v-model="formValue">
+      <tip-tap-editor v-model="formValue" :prevent-emit="isEditingSource">
         <template #menu-buttons>
           <slot name="menu-buttons"></slot>
         </template>
       </tip-tap-editor>
       <div class="source">
         <a href="#" class="toggle-button" @click.prevent="toggleSource">{{ sourceButtonLabel }}</a>
-        <textarea v-if="showSource" v-model="formValue" style="width: 100%;" rows="6"/>
+        <textarea v-if="showSource"
+                  v-model="formValue"
+                  @focus="isEditingSource = true"
+                  @blur="isEditingSource = false"
+                  style="width: 100%;"
+                  rows="6"
+        />
       </div>
       <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
       <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
@@ -36,6 +42,7 @@ const props = defineProps({
 const { t } = useI18n();
 
 const showSource = ref(false);
+const isEditingSource = ref(false);
 
 const toggleSource = (() => {
   showSource.value = !showSource.value;
