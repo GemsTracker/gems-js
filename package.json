@@ -20,7 +20,7 @@
     "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
     "date-fns": "^4.1.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "pinia": "^3.0.3",
     "@tiptap/starter-kit": "^3.5.0",
     "@tiptap/extension-link": "^3.5.0",
