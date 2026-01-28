@@ -231,6 +231,16 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
             newSettings.multiOptionSettings = {
               referenceData: allReferenceData.value[newValue][localField],
             };
+          } else if ('referenceData' in elementOptions.value.multiOptionSettings) {
+            const keyFieldName = elementOptions.value.multiOptionSettings.key;
+            const localField = updateFields[updateFieldName].multiOptionSettings.referenceData;
+
+            const result = elementOptions.value.multiOptionSettings.referenceData.find((item) => item[keyFieldName] === newValue);
+            if (result && localField in result) {
+              newSettings.multiOptionSettings = {
+                referenceData: result[localField],
+              }
+            }
           }
         }
 
