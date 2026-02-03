@@ -28,7 +28,7 @@ const props = defineProps({
   },
   preventEmit: {
     type: Boolean,
-    default: true,
+    default: false,
   }
 });
 
