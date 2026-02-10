@@ -39,14 +39,10 @@ const getLinkClasses = ((link) => {
 })
 
 const renderUrl = ((url, variables, hideNull = false) => {
-  console.log('RENDER URL:', url, variables, hideNull);
-
   let missing = false;
   const result = url.replace(/\{([a-zA-Z0-9_\-]+)\}/g, (_, key) => {
     if (key in variables && variables[key] !== null) {
       return String(variables[key]);
-    } else {
-      console.log('MISSING!!!', key in variables, key, variables);
     }
     missing = true;
     return `{${key}}`;
