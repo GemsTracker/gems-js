@@ -2,8 +2,8 @@
   <span>{{ newValue }}</span>
 </template>
 <script setup>
-import {computed} from "vue";
-import useDateFunctions from "../../functions/DateFunctions";
+import { computed } from "vue";
+import useDateFunctions from "../../../functions/DateFunctions";
 
 const props = defineProps({
   rawValue: {
