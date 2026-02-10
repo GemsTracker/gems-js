@@ -4,6 +4,7 @@
        :raw-value="rawValue"
        :other-values="otherValues"
        :structure-data="structureData"
+       :index="index"
     />
   </div>
 </template>
@@ -23,14 +24,23 @@ const props = defineProps({
   otherValues: {
     type: Object,
     required: true,
+  },
+  index: {
+    type: Number,
+    required: true,
   }
 });
 
 const { defaultComponent, valueComponents } = useDataTableElementComponents();
 
 const currentComponentName = computed(() => {
-  if ('valueComponent' in props.structureData && props.structureData.valueComponent in valueComponents) {
-    return props.structureData.valueComponent;
+  if ('valueComponent' in props.structureData) {
+    if (props.structureData.valueComponent in valueComponents) {
+      return props.structureData.valueComponent;
+    }
+    if (props.structureData.valueComponent === null) {
+      return null;
+    }
   }
   return defaultComponent;
 });
