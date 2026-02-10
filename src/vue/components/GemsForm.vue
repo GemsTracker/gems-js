@@ -15,7 +15,7 @@
       </span>
       <br />
       <!-- <div class="actionlink btn" @click="validate">validate</div><br /> -->
-      <div v-if="cancel" class="actionlink btn" @click="cancel">Cancel</div>
+      <div v-if="cancelUrl !== null" class="actionlink btn" @click="cancel">Cancel</div>
     </div>
     <loading-screen v-if="loading" />
     <slot name="footer" :form-data="formData" />
@@ -130,8 +130,8 @@ const loading = computed(() => {
 });
 
 const cancel = (() => {
-  if (props.cancel !== null) {
-    window.location.href = props.cancel;
+  if (props.cancelUrl !== null) {
+    window.location.href = props.cancelUrl;
   }
 });
 

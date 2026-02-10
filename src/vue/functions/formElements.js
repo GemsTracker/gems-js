@@ -13,6 +13,7 @@ const formElements = {
   NumberElement: defineAsyncComponent(() => import('../components/GemsForm/Element/NumberElement.vue')),
   RadioElement: defineAsyncComponent(() => import('../components/GemsForm/Element/BootstrapRadioElement.vue')),
   RTEElement: defineAsyncComponent(() => import('../components/GemsForm/Element/RTEElement.vue')),
+  RTEWithVariablesElement: defineAsyncComponent(() => import('../components/GemsForm/Element/RTEWithVariablesElement.vue')),
   SelectElement: defineAsyncComponent(() => import('../components/GemsForm/Element/SelectElement.vue')),
   SubformsElement: defineAsyncComponent(() => import('../components/GemsForm/Element/SubformsElement.vue')),
   TextElement: defineAsyncComponent(() => import('../components/GemsForm/Element/TextElement.vue')),
