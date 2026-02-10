@@ -1,10 +1,10 @@
 <template>
-  <div v-if="visible" class="form-group">
+  <div v-if="visible" class="form-group" :class="groupClass">
     <gems-form-label :elementId="elementId" :options="options" />
-    <div class="element-container">
+    <div class="element-container max-w-full">
       <vue-select v-model="testValue" :options="formOptions" label="value"
         :reduce="value => value.key" :style="'width: '+ selectWidth +'rem; max-width: 100%;'"
-        :disabled="disabled" />
+        :disabled="disabled" :placeholder="placeholder"/>
       <!-- <select v-model="formValue">
         <option :value="null"></option>
         <option v-for="(option, index) in formOptions" :key="index" :value="option.key">
@@ -17,9 +17,10 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import {
-  computed, onMounted,
+  computed,
+  onMounted,
 } from 'vue';
 
 // import Multiselect from 'vue-multiselect';
@@ -34,72 +35,52 @@ import GemsFormValidatorMessages from '../ValidatorMessages.vue';
 import LoadingScreen from '../../Util/LoadingScreen.vue';
 import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
 
-export default {
-  props: {
-    options: {
-      type: Object,
-      required: true,
-      default: () => {},
-    },
+const props = defineProps({
+  options: {
+    type: Object,
+    required: true,
+    default: () => {},
   },
-  components: {
-    GemsFormLabel, GemsFormValidatorMessages, LoadingScreen, VueSelect,
-  },
-  setup(props) {
-    const {
-      disabled,
-      elementId,
-      formValue,
-      formValue: testValue,
-      formData,
-      serverValidator,
-      validator,
-      validatorClass,
-      visible,
-    } = useGemsFormElementFunctions(props.options);
+});
+const {
+  disabled,
+  elementId,
+  formValue,
+  formValue: testValue,
+  formData,
+  serverValidator,
+  validator,
+  validatorClass,
+  visible,
+} = useGemsFormElementFunctions(props.options);
 
-    const elementOptions = computed(() => props.options);
+const elementOptions = computed(() => props.options);
 
-    const {
-      formOptions,
-      initSingleAnswerElement,
-      loadingReferenceData,
-      referenceOptions,
-    } = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
+const {
+  formOptions,
+  initSingleAnswerElement,
+  loadingReferenceData,
+  referenceOptions,
+} = useGemsFormMultiOptionFunctions(elementOptions, formValue, formData);
 
-    const selectWidth = computed(() => {
-      let length = 0;
-      if (formOptions.value.length) {
-        formOptions.value.forEach((option) => {
-          if (option.value !== null && option.value.length > length) {
-            length = option.value.length;
-          }
-        });
+const selectWidth = computed(() => {
+  let length = 0;
+  if (formOptions.value.length) {
+    formOptions.value.forEach((option) => {
+      if (option.value !== null && option.value.length > length) {
+        length = option.value.length;
       }
-      return length;
     });
+  }
+  return length;
+});
 
-    onMounted(() => {
-      initSingleAnswerElement();
-    });
+const placeholder = computed(() => props.options.elementOptions?.placeholder ?? '');
+const groupClass = computed(() => props.options.elementOptions?.groupClass ?? '');
 
-    return {
-      disabled,
-      elementId,
-      formOptions,
-      formValue,
-      formData,
-      loadingReferenceData,
-      selectWidth,
-      serverValidator,
-      validator,
-      validatorClass,
-      visible,
-      testValue,
-      referenceOptions,
-    };
-  },
-};
+onMounted(() => {
+  initSingleAnswerElement();
+});
 </script>
 <style>
 .v-select {
