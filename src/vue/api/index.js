@@ -81,7 +81,7 @@ export default class Api {
           return null;
         }
         console.log(response.data);
-        return response.data;
+        return response;
       }).catch((e) => {
         console.log(e.response);
         console.log(e);
@@ -116,6 +116,7 @@ export default class Api {
         .then((response) => response).catch((error) => {
           console.log(error);
           console.log(error.response.data);
+          return error.response;
         });
   }
 

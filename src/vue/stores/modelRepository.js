@@ -110,16 +110,38 @@ export default defineStore('modelRepository', {
     },
 
     getModelData(modelName, {
-      endpoint, groupBy, idField, id, storeOne, filters, loadingHash, /* callback, */
+      endpoint, groupBy, idField, id, storeOne, filters, loadingHash, perPage, page/* callback, */
     }) {
       const api = new Api({ apiUrl: this.apiUrl, endpoint, locale: this.locale });
       this.modelData[modelName].loading = true;
-      const apiCall = api.load(filters)
-        .then((data) => {
-          if (data === null) {
-            return data;
+      const fullFilters = { ...filters };
+      if (perPage) {
+        fullFilters['per_page'] = perPage;
+      }
+      if (page) {
+        fullFilters['page'] = page;
+      }
+      const apiCall = api.load(fullFilters)
+        .then((response) => {
+          if (response === null) {
+            return {
+              data: null,
+              totalCount: null
+            };
+          }
+          const { data, headers } = response;
+
+          if (data === null ) {
+            return {
+              data: null,
+              totalCount: null
+            };
           }
           let returnData = data;
+          if (perPage == null) {
+            perPage = returnData.length;
+          }
+
           if (groupBy) {
             returnData = groupDataBy(groupBy, idField, returnData);
           } else if (idField) {
@@ -133,10 +155,21 @@ export default defineStore('modelRepository', {
           }
 
           if (loadingHash !== null) {
-            this.modelData[modelName].data[loadingHash] = returnData;
+            let paginatedHash = `${loadingHash}_${perPage}_${page}`;
+
+            this.modelData[modelName].data[paginatedHash] = returnData;
+            this.modelData[modelName].headers[loadingHash] = headers;
           }
 
-          return returnData;
+          const returnInfo = {
+            data: returnData,
+            totalCount: null,
+          };
+
+          if ('x-total-count' in headers) {
+            returnInfo.totalCount = Number(headers['x-total-count']);
+          }
+          return returnInfo;
         });
 
       return apiCall;

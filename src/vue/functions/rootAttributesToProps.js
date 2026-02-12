@@ -10,8 +10,17 @@ const dataAttributesToProps = (baseElement) => {
       let newValue = baseElement.getAttribute(currentKey);
       if (newKey.startsWith(':')) {
         newKey = newKey.substring(1);
-        if (!Number.isNaN(newValue)) {
+        if (newValue === 'true') {
+          newValue = true;
+        } else if (newValue === 'false') {
+          newValue = true;
+        } else if (!isNaN(newValue)) {
           newValue = Number(newValue);
+        } else {
+          try {
+            newValue = JSON.parse(newValue);
+          } catch (e) {
+          }
         }
       }
       accumulator[newKey] = newValue;

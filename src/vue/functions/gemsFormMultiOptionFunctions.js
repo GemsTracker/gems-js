@@ -227,7 +227,6 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
             && updateFields[updateFieldName].multiOptionSettings.referenceData
             in allReferenceData.value[newValue]) {
             const localField = updateFields[updateFieldName].multiOptionSettings.referenceData;
-
             newSettings.multiOptionSettings = {
               referenceData: allReferenceData.value[newValue][localField],
             };
