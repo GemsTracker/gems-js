@@ -1,7 +1,7 @@
 <template>
   <div>
     <data-table-search-form v-if="hasSearchFields"/>
-    <table class="table min-w-full block md:table border-collapse" role="table">
+    <table class="table browser data-table min-w-full block md:table border-collapse" role="table">
       <data-table-header :headers="transformedHeaders"/>
       <tbody v-if="loading" class="loading">
         <tr>
