@@ -13,9 +13,10 @@
   </div>
 </template>
 <script setup>
+import { computed, onMounted, ref, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
 import DataTable from './GemsDataTable/DataTable.vue';
 import TablePagination from './GemsDataTable/TablePagination.vue';
-import { computed, onMounted, ref, watch } from 'vue';
 import useGetModelRepository from '../functions/modelRepository';
 import {useDataTableInfo} from '../functions/GemsDataTable/dataTableInfo';
 import { useLocalStorage } from "@vueuse/core";
@@ -108,7 +109,10 @@ const getData = (async () => {
     totalDataCount.value = totalCount;
   }
   if (Array.isArray(fetchedData)) {
-    tableData.value = fetchedData;
+    tableData.value = fetchedData.map(row => ({
+      ...row,
+      __key: row.__key ?? uuid()
+    }));
   }
   if (fetchedData && fetchedData.length < itemsPerPage.value) {
     totalDataCount.value = itemsPerPage.value * (page.value - 1) + fetchedData.length;

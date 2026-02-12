@@ -5,7 +5,7 @@
       <td v-for="(column, columnIndex) in headers" :key="`${rowIndex}_${columnIndex}`"
           class="p-2 md:border md:border-gray-200 block md:table-cell align-top">
         <data-table-value-container v-for="(subColumn, subIndex) in column"
-            :key="`${rowIndex}_${columnIndex}_${subIndex}`"
+            :key="`${row.__key ?? rowIndex}_${columnIndex}_${subIndex}`"
             :raw-value="row[subColumn.name]"
             :other-values="row"
             :structure-data="subColumn"
