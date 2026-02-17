@@ -31,7 +31,11 @@ const useDateFunctions = (() => {
     if (dateString === null) {
       return null;
     }
-    const dateObject = new Date(dateString);
+    // Safari 14.1 requires ISO 8601 format with T separator between date and time
+    const sanitizedDateString = typeof dateString === 'string'
+      ? dateString.replace(' ', 'T')
+      : dateString;
+    const dateObject = new Date(sanitizedDateString);
     return format(dateObject, dateFormat, { locale: getDateFnsLocale() });
   });
   const formatJsonDate = ((dateString) => formatJsonDateTime(dateString, 'dd-MM-yyyy'));
