@@ -1,18 +1,20 @@
 import { useI18n } from 'vue-i18n';
-import { format } from 'date-fns';
-import { enGB, nl } from 'date-fns/locale';
+import { format, isValid, parse, parseISO } from 'date-fns';
+import { de, enGB, fr, nl } from 'date-fns/locale';
 
-const useDateFunctions = (() => {
-  const { locale } = useI18n();
+const useDateFunctions = ((localeOverride  = null) => {
+  const locales = {
+    de,
+    en: enGB,
+    fr,
+    nl,
+  };
 
   const getDateFnsLocale = (() => {
-    if (locale.value === 'en') {
-      return enGB;
-    }
-    if (locale.value === 'nl') {
-      return nl;
-    }
-    return enGB;
+      if (localeOverride !== null) {
+        return locales[localeOverride];
+      }
+      return locales[useI18n().locale.value];
   });
 
   const formatIsoDate = ((dateItem) => {
@@ -21,7 +23,7 @@ const useDateFunctions = (() => {
     }
     let newDate = dateItem;
     if (!(dateItem instanceof Date)) {
-      newDate = new Date(dateItem);
+      newDate = parseDateString(dateItem);
     }
 
     return format(newDate, "yyyy-MM-dd'T'HH:mm:ssxxx");
@@ -31,15 +33,48 @@ const useDateFunctions = (() => {
     if (dateString === null) {
       return null;
     }
-    const dateObject = new Date(dateString);
+    const dateObject = parseDateString(dateString);
     return format(dateObject, dateFormat, { locale: getDateFnsLocale() });
   });
   const formatJsonDate = ((dateString) => formatJsonDateTime(dateString, 'dd-MM-yyyy'));
+
+  const parseDateString = ((dateString, format = null) => {
+
+    if (format !== null) {
+      const date = parse(dateString, format, new Date());
+      if (isValid(date)) {
+        return date;
+      }
+      throw new Error(`Unable to parse date string: "${dateString}" in format "${format}"`);
+    }
+
+    if (dateString.includes('T')) {
+      const date = parseISO(dateString);
+      if (isValid(date)) {
+        return date;
+      }
+    }
+    let date = parse(dateString, 'yyyy-MM-dd HH:mm:ss', new Date());
+    if (isValid(date)) {
+      return date;
+    }
+    date = parse(dateString, 'yyyy-MM-dd', new Date());
+    if (isValid(date)) {
+      return date;
+    }
+    date = parse(dateString, 'yyyy-MM-dd HH:mm', new Date());
+    if (isValid(date)) {
+      return date;
+    }
+
+    throw new Error(`Unable to parse date string: "${dateString}"`);
+  });
 
   return {
     formatIsoDate,
     formatJsonDate,
     formatJsonDateTime,
+    parseDateString,
   };
 });
 
