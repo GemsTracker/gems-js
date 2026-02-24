@@ -1,6 +1,9 @@
 <template>
-  <div class="form-group">
-    <div><gems-form-label :elementId="elementId" :options="options" /></div>
+  <div class="form-group multi-checkbox">
+    <div>
+      <gems-form-label :elementId="elementId" :options="options" />
+      <span v-if="'description' in options" class="help-block"> {{options.description}}</span>
+    </div>
     <div class="element-container">
       <div v-for="(formOption, index) in formOptions" :key="index" class="form-check" :class="{'checkbox-inline': inline}">
         <label class="form-check-label" >
@@ -11,7 +14,7 @@
       </div>
       <loading-screen v-if="loadingReferenceData" size="1.25rem" />
       <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
-      <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
+
     </div>
   </div>
 </template>
