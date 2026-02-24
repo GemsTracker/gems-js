@@ -6,10 +6,6 @@
         :search-structure="searchStructure"
         :loading="loadingData"
     ></data-table>
-    <table-pagination
-        v-model:page="page"
-        v-model:per-page="itemsPerPage"
-        :total-count="totalDataCount" />
   </div>
 </template>
 <script setup>
@@ -54,10 +50,6 @@ const model = modelRepository.getEndpointModel(props.resource, props.endpoint);
 
 const structure = ref({});
 
-const page = ref(1);
-
-const itemsPerPage = ref(props.perPage);
-
 const tableData = ref([]);
 
 const getEndpointStructure = (async () => {
@@ -90,23 +82,37 @@ const headers = computed(() => {
   return structure.value;
 });
 
-const totalDataCount = ref(null);
+const { getSearchFilter,
+  order,
+  page,
+  setPage,
+  itemsPerPage,
+  setItemsPerPage,
+  setFilterColumns,
+  searchData,
+  setRowClasses,
+  totalCount: totalDataCount,
+  setTotalCount,
+} = useDataTableInfo();
 
-const { order, updateOrder, setFilterColumns, searchData, setRowClasses } = useDataTableInfo();
+if (props.perPage) {
+  setItemsPerPage(props.perPage);
+}
 
 const loadingData = ref(false);
 
 const getData = (async () => {
   loadingData.value = true;
   tableData.value = [];
+  const filter = getSearchFilter();
   const { data: fetchedData, totalCount } = await model.getPageData(
-      searchData.value ?? {},
+      filter,
       page.value,
       itemsPerPage.value,
   )
   console.log('RECEIVED DATA', fetchedData);
   if (totalDataCount.value === null && totalCount !== null) {
-    totalDataCount.value = totalCount;
+    setTotalCount(totalCount);
   }
   if (Array.isArray(fetchedData)) {
     tableData.value = fetchedData.map(row => ({
@@ -115,10 +121,10 @@ const getData = (async () => {
     }));
   }
   if (fetchedData && fetchedData.length < itemsPerPage.value) {
-    totalDataCount.value = itemsPerPage.value * (page.value - 1) + fetchedData.length;
+    setTotalCount(itemsPerPage.value * (page.value - 1) + fetchedData.length);
   }
   if (fetchedData && fetchedData.length === 0 && page.value > 1) {
-    page.value = page.value-1;
+    setPage(page.value-1);
     getData();
   }
   loadingData.value = false;
@@ -133,11 +139,13 @@ if (props.rowClasses !== null) {
 
 const localStore = ((searchData) => {
   props.searchStructure.forEach((item) => {
-    if (item.elementOptions?.localStorage === true) {
+    if (item.elementOptions?.localStore === true) {
+      const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
+      const key = `${uri}-${item.name}`;
       if (item.name in searchData) {
-        const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_') ;
-        const key = `${uri}-${item.name}`;
-        useLocalStorage(key, searchData[uri]);
+        localStorage.setItem(key, searchData[item.name]);
+      } else {
+        localStorage.removeItem(key);
       }
     }
   });
@@ -153,6 +161,11 @@ watch(() => page.value, () => {
 });
 
 watch(() => searchData.value, () => {
+  getData();
+  localStore(searchData.value);
+});
+
+watch(() => order.value, () => {
   getData();
   localStore(searchData.value);
 });

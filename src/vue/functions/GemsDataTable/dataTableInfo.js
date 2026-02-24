@@ -4,6 +4,9 @@ const order = ref('');
 const filterColumns = ref({});
 const searchData = ref(null);
 const rowClasses = ref(null);
+const itemsPerPage = ref(20);
+const page = ref(1);
+const totalCount = ref(0);
 
 export function useDataTableInfo() {
   const updateOrder = (newOrder) => {
@@ -22,6 +25,14 @@ export function useDataTableInfo() {
       if ('default' in field) {
         initialValue = field.default;
       }
+      if (field.elementOptions?.localStore === true) {
+        const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
+        const key = `${uri}-${field.name}`;
+        const storedValue = localStorage.getItem(key);
+        if (storedValue !== null) {
+          initialValue = +storedValue;
+        }
+      }
 
       initialValues[field.name] = initialValue;
     });
@@ -29,9 +40,25 @@ export function useDataTableInfo() {
     return initialValues;
   }
 
+  const getSearchFilter = () => {
+    const filter = searchData.value ?? {};
+    if (order.value) {
+      filter['order'] = [order.value];
+    }
+    return filter;
+  };
+
   const setFilterColumns = (columns) => {
     filterColumns.value = columns;
     searchData.value = getInitialFormValues();
+  }
+
+  const setPage = (newPage) => {
+    page.value = newPage;
+  }
+
+  const setItemsPerPage = (newItemsPerPage) => {
+    itemsPerPage.value = newItemsPerPage;
   }
 
   const setRowClasses = (classes) => {
@@ -45,14 +72,25 @@ export function useDataTableInfo() {
     searchData.value = filteredData;
   }
 
+  const setTotalCount = (newTotalCount) => {
+    totalCount.value = newTotalCount;
+  }
+
   return {
+    getSearchFilter,
     order: readonly(order),
     updateOrder,
     filterColumns: readonly(filterColumns),
     setFilterColumns,
+    page: readonly(page),
+    setPage,
+    itemsPerPage: readonly(itemsPerPage),
+    setItemsPerPage,
     rowClasses: readonly(rowClasses),
     setRowClasses,
     searchData: readonly(searchData),
     setSearchData,
+    totalCount: readonly(totalCount),
+    setTotalCount,
   };
 }

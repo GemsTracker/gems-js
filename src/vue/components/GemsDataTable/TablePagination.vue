@@ -1,60 +1,56 @@
 <template>
-  <table class="table browser">
-    <tfoot>
-      <tr>
-        <td>
-          <div class="flex justify-between items-center">
-            <ul class="pagination pagination-sm">
-              <li class="page-item" :class="{disabled: isFirstPage}">
-                <span @click="setPage(1)" class="page-link">
-                  << First
-                </span>
-              </li>
-              <li class="page-item" :class="{disabled: isFirstPage}">
-                <span @click="setPage(1)" class="page-link">
-                  < Previous
-                </span>
-              </li>
-              <li
-                  v-for="(pageNumber) in pageNumberRange"
-                  @click="setPage(pageNumber)"
-                  :key="pageNumber"
-                  class="page-item page-number" :class="{active: pageNumber === page}">
-                <span @click="setPage(pageNumber)" class="page-link">
-                  {{ pageNumber }}
-                </span>
-              </li>
-              <li class="page-item" :class="{disabled: isLastPage}">
-                <span @click="setPage(page + 1)" class="page-link">
-                  > Next
-                </span>
-              </li>
-              <li v-if="totalCount !== null" class="page-item" :class="{disabled: isFirstPage}">
-                <span @click="setPage(totalPages)" class="page-link">
-                  >> Last
-                </span>
-              </li>
-            </ul>
+  <tr>
+    <td :colspan="colspan">
+      <div class="flex justify-between items-center">
+        <ul class="pagination pagination-sm">
+          <li class="page-item" :class="{disabled: isFirstPage}">
+            <span @click="setPage(1)" class="page-link">
+              << First
+            </span>
+          </li>
+          <li class="page-item" :class="{disabled: isFirstPage}">
+            <span @click="setPage(1)" class="page-link">
+              < Previous
+            </span>
+          </li>
+          <li
+              v-for="(pageNumber) in pageNumberRange"
+              @click="setPage(pageNumber)"
+              :key="pageNumber"
+              class="page-item page-number" :class="{active: pageNumber === page}">
+            <span @click="setPage(pageNumber)" class="page-link">
+              {{ pageNumber }}
+            </span>
+          </li>
+          <li class="page-item" :class="{disabled: isLastPage}">
+            <span @click="setPage(page + 1)" class="page-link">
+              > Next
+            </span>
+          </li>
+          <li v-if="totalCount !== null" class="page-item" :class="{disabled: isFirstPage}">
+            <span @click="setPage(totalPages)" class="page-link">
+              >> Last
+            </span>
+          </li>
+        </ul>
 
-            <div class="pagination-index flex">
-              <div class="per-page form-group">
-                <select v-model="selectedPerPage" class="">
-                  <option v-for="(item, index) in perPageOptions"
-                          :value="item"
-                          :key="index">
-                    {{ item }}
-                  </option>
-                </select>
-              </div>
-              <div v-if="totalCount !== 0" class="progression">
-                {{ itemStart }} - {{ itemEnd }} of {{ totalCount ?? '?'}}
-              </div>
-            </div>
+        <div class="pagination-index flex">
+          <div class="per-page form-group">
+            <select v-model="selectedPerPage" class="">
+              <option v-for="(item, index) in perPageOptions"
+                      :value="item"
+                      :key="index">
+                {{ item }}
+              </option>
+            </select>
           </div>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+          <div v-if="totalCount !== 0" class="progression">
+            {{ itemStart }} - {{ itemEnd }} of {{ totalCount ?? '?'}}
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
 </template>
 <script setup>
 import { computed, ref, watch } from 'vue';
@@ -73,6 +69,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  colspan: {
+    type: Number,
+    default: 1,
+  }
 });
 
 const emit = defineEmits(['update:page', 'update:perPage']);

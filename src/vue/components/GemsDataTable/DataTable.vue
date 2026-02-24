@@ -11,6 +11,13 @@
         </tr>
       </tbody>
       <data-table-body :headers="transformedHeaders" :data="data"/>
+      <tfoot>
+      <table-pagination
+          v-model:page="page"
+          v-model:per-page="perPage"
+          :total-count="totalCount"
+          :colspan="transformedHeaders.length"/>
+      </tfoot>
     </table>
   </div>
 </template>
@@ -21,6 +28,7 @@ import DataTableSearchForm from './DataTableSearchForm.vue';
 import {useDataTableInfo} from "gems-js/src/vue/functions/GemsDataTable/dataTableInfo";
 import { computed } from "vue";
 import LoadingScreen from "../Util/LoadingScreen.vue";
+import TablePagination from "./TablePagination.vue";
 
 const props = defineProps({
   headers: {
@@ -41,7 +49,32 @@ const props = defineProps({
   },
 });
 
-const { filterColumns } = useDataTableInfo();
+const {
+  filterColumns,
+  page: currentPage,
+    setPage,
+  itemsPerPage,
+    setItemsPerPage,
+  totalCount,
+} = useDataTableInfo();
+
+const page = computed({
+  get() {
+    return currentPage.value;
+  },
+  set(value) {
+    setPage(value);
+  },
+});
+
+const perPage = computed({
+  get() {
+    return itemsPerPage.value;
+  },
+  set(value) {
+    setItemsPerPage(value);
+  },
+});
 
 const hasSearchFields = computed(() => {
   return (typeof filterColumns === 'object' && Object.keys(filterColumns).length > 0);
