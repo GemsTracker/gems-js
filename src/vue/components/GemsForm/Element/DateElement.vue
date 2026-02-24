@@ -19,6 +19,7 @@ import { computed } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { formatISO9075 } from 'date-fns'
 
 import Datepicker from '../../Util/DatePicker.vue';
 import GemsFormLabel from '../Label.vue';
@@ -55,16 +56,33 @@ export default {
     const formDateObject = computed({
       get: () => {
         if (formValue.value !== null) {
+          if (formValue.value instanceof Date) {
+            return formValue.value;
+          }
           return new Date(formValue.value);
         }
         return null;
       },
       set: (value) => {
         if (value instanceof Date) {
+          if ('type' in props.options) {
+            if (props.options.type === 3) {
+              formValue.value = formatISO9075(value, {representation: 'date'});
+              return;
+            }
+            if (props.options.type === 4) {
+              formValue.value = formatIsoDate(value);
+              return;
+            }
+            if (props.options.type === 5) {
+              formValue.value = formatISO9075(value, {representation: 'time'});
+              return;
+            }
+          }
           formValue.value = formatIsoDate(value);
-        } else {
-          formValue.value = value;
+          return;
         }
+        formValue.value = value;
       },
     });
 
