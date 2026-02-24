@@ -181,8 +181,31 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     return null;
   });
 
+  const sortOptions = ((array, by = 'key', dir = 'asc') => {
+    if (Array.from(by)[0] === '-') {
+      by = by.slice(1);
+      dir = 'desc';
+    } else if(by.endsWith('desc')) {
+      by = by.slice(0, -5);
+      dir = 'desc';
+    } else if(by.endsWith('asc')) {
+      by = by.slice(0, -4);
+      dir = 'asc';
+    }
+
+    return [...array].sort((a, b) => {
+      let comparison;
+      if (typeof a[by] === 'number') {
+        comparison = a[by] - b[by];
+      } else {
+        comparison = a[by] > b[by] ? 1 : a[by] < b[by] ? -1 : 0;
+      }
+      return dir === 'asc' ? comparison : -comparison;
+    });
+  });
+
   const formOptions = computed(() => {
-    const options = [];
+    let options = [];
     if ('multiOptions' in elementOptions.value) {
       if (Array.isArray(elementOptions.value.multiOptions)) {
         elementOptions.value.multiOptions.forEach((optionRow) => {
@@ -209,6 +232,12 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     if ('multiOptionSettings' in elementOptions.value && referenceOptions.value !== null) {
       return referenceOptions.value;
     }
+
+    const sortType = elementOptions.value.multiOptionSettings?.order ?? null;
+    if (sortType !== null) {
+      options = sortOptions(options, sortType);
+    }
+
     return options;
   });
 
