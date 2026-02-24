@@ -3,10 +3,12 @@
   <tr class="bg-[var(--gems-table-head-background-color)] text-white border border-gray-200 md:border-none block md:table-row">
 
     <th v-for="(column, index) in headers"
-        class="p-2 text-left font-bold md:border md:border-gray-200 block md:table-cell">
+        class="p-2 text-left font-bold block md:table-cell font-normal">
       <div v-for="(subItem, itemIndex) in column"
            :key="`${index}_${itemIndex}`"
-           @click="changeOrder(subItem)">
+           @click="changeOrder(subItem)"
+           class="cursor-pointer"
+          :class="{underline: order === subItem.name || order === `-${subItem.name}`}">
         {{ subItem.label }}
         <span v-if="order === subItem.name || order === `-${subItem.name}`" class="inline-block text-xs">
           <svg
