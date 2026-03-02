@@ -13,7 +13,7 @@ const dataAttributesToProps = (baseElement) => {
         if (newValue === 'true') {
           newValue = true;
         } else if (newValue === 'false') {
-          newValue = true;
+          newValue = false;
         } else if (!isNaN(newValue)) {
           newValue = Number(newValue);
         } else {
