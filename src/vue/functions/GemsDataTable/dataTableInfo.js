@@ -3,6 +3,7 @@ import { ref, readonly } from 'vue';
 const order = ref('');
 const filterColumns = ref({});
 const searchData = ref(null);
+const initialSearchData = ref(null);
 const rowClasses = ref(null);
 const itemsPerPage = ref(20);
 const page = ref(1);
@@ -48,9 +49,14 @@ export function useDataTableInfo() {
     return filter;
   };
 
+  const resetSearchData = () => {
+    searchData.value = { ... initialSearchData.value };
+  }
+
   const setFilterColumns = (columns) => {
     filterColumns.value = columns;
-    searchData.value = getInitialFormValues();
+    initialSearchData.value = getInitialFormValues();
+    searchData.value = { ...initialSearchData.value };
   }
 
   const setPage = (newPage) => {
@@ -89,6 +95,7 @@ export function useDataTableInfo() {
     rowClasses: readonly(rowClasses),
     setRowClasses,
     searchData: readonly(searchData),
+    resetSearchData,
     setSearchData,
     totalCount: readonly(totalCount),
     setTotalCount,
