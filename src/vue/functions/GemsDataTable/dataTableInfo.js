@@ -30,7 +30,7 @@ export function useDataTableInfo() {
         const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
         const key = `${uri}-${field.name}`;
         const storedValue = localStorage.getItem(key);
-        if (storedValue !== null) {
+        if (storedValue !== null && !isNaN(storedValue)) {
           initialValue = +storedValue;
         }
       }
