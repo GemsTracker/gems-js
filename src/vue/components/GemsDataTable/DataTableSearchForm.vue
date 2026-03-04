@@ -50,7 +50,6 @@ watch(filterColumns, (val, oldVal) => {
   if (Object.keys(oldVal).length === 0) {
     formData.value = { ...searchData.value };
   }
-  console.log(Object.keys(oldVal).length);
 });
 
 provide('formData', formData);
@@ -58,5 +57,6 @@ provide('structure', filterColumns);
 provide('startData', {});
 provide('validation', validation);
 provide('serverValidation', ref({}));
+provide('formAction', search);
 
 </script>
