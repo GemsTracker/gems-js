@@ -8,7 +8,7 @@
         {{ t('Search') }}
       </button>
       <button @click="reset"
-        class="!ml-4 border rounded bg-[var(--secondary-color)] text-white p-1 px-2 hover:bg-[var(--primary-color)]"
+        class="reset-button !ml-4 border rounded bg-[var(--secondary-color)] text-white p-1 px-2 hover:bg-[var(--primary-color)]"
         >
         {{  t('Reset search') }}
       </button>
