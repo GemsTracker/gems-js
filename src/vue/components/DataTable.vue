@@ -160,6 +160,10 @@ watch(() => page.value, () => {
   getData();
 });
 
+watch(() => itemsPerPage.value, () => {
+  getData();
+});
+
 watch(() => searchData.value, () => {
   getData();
   localStore(searchData.value);
