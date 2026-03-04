@@ -2,15 +2,15 @@
   <div v-if="visible" class="form-group" :class="groupClass">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container max-w-full">
-      <vue-select v-model="testValue" :options="formOptions" label="value"
+      <vue-select v-if="!nativeSelect" v-model="testValue" :options="formOptions" label="value"
         :reduce="value => value.key" :style="'width: '+ selectWidth +'rem; max-width: 100%;'"
         :disabled="disabled" :placeholder="placeholder"/>
-      <!-- <select v-model="formValue">
-        <option :value="null"></option>
+      <select v-if="nativeSelect" v-model="formValue" :style="'width: '+ selectWidth +'rem; max-width: 100%;'" :disabled="disabled">
+        <option :value="null">{{placeholder}}</option>
         <option v-for="(option, index) in formOptions" :key="index" :value="option.key">
           {{option.value}}
         </option>
-      </select> -->
+      </select>
       <loading-screen v-if="loadingReferenceData" size="1.25rem" />
       <gems-form-validator-messages :validator="validator" :serverValidator="serverValidator" />
       <p v-if="'description' in options" class="help-block"> {{options.description}}</p>
@@ -77,6 +77,7 @@ const selectWidth = computed(() => {
 
 const placeholder = computed(() => props.options.elementOptions?.placeholder ?? '');
 const groupClass = computed(() => props.options.elementOptions?.groupClass ?? '');
+const nativeSelect = computed(() => props.options.elementOptions?.nativeSelect ??false);
 
 onMounted(() => {
   initSingleAnswerElement();

@@ -12,10 +12,8 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import DataTable from './GemsDataTable/DataTable.vue';
-import TablePagination from './GemsDataTable/TablePagination.vue';
 import useGetModelRepository from '../functions/modelRepository';
 import {useDataTableInfo} from '../functions/GemsDataTable/dataTableInfo';
-import { useLocalStorage } from "@vueuse/core";
 
 const props = defineProps({
   endpoint: {
@@ -142,7 +140,7 @@ const localStore = ((searchData) => {
     if (item.elementOptions?.localStore === true) {
       const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
       const key = `${uri}-${item.name}`;
-      if (item.name in searchData) {
+      if (item.name in searchData && searchData[item.name] !== null && !isNaN(searchData[item.name])) {
         localStorage.setItem(key, searchData[item.name]);
       } else {
         localStorage.removeItem(key);
