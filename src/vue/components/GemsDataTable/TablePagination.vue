@@ -27,7 +27,7 @@
               > Next
             </span>
           </li>
-          <li v-if="totalCount !== null" class="page-item" :class="{disabled: isFirstPage}">
+          <li v-if="totalCount !== null" class="page-item" :class="{disabled: isLastPage}">
             <span @click="setPage(totalPages)" class="page-link">
               >> Last
             </span>

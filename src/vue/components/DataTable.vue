@@ -109,6 +109,7 @@ const getData = (async () => {
       itemsPerPage.value,
   )
   console.log('RECEIVED DATA', fetchedData);
+  setTotalCount(null);
   if (totalDataCount.value === null && totalCount !== null) {
     setTotalCount(totalCount);
   }
