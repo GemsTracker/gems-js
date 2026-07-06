@@ -10,6 +10,9 @@ const page = ref(1);
 const totalCount = ref(0);
 
 export function useDataTableInfo() {
+
+  const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
+
   const updateOrder = (newOrder) => {
     order.value = newOrder;
   };
@@ -27,11 +30,17 @@ export function useDataTableInfo() {
         initialValue = field.default;
       }
       if (field.elementOptions?.localStore === true) {
-        const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
         const key = `${uri}-${field.name}`;
         const storedValue = localStorage.getItem(key);
-        if (storedValue !== null && !isNaN(storedValue)) {
-          initialValue = +storedValue;
+        if (storedValue !== null) {
+          initialValue = JSON.parse(storedValue);
+        }
+      }
+      if (field.elementOptions?.sessionStore === true) {
+        const key = `${uri}-${field.name}`;
+        const storedValue = sessionStorage.getItem(key);
+        if (storedValue !== null) {
+          initialValue = JSON.parse(storedValue);
         }
       }
 
@@ -65,6 +74,22 @@ export function useDataTableInfo() {
 
   const setItemsPerPage = (newItemsPerPage) => {
     itemsPerPage.value = newItemsPerPage;
+
+    const key = `${uri}-items-per-page`;
+    sessionStorage.setItem(key, JSON.stringify(newItemsPerPage));
+  }
+
+  const setInitialItemsPerPage = (newInitialItemsPerPage = null) => {
+    const storedItemsPerPage = sessionStorage.getItem(`${uri}-items-per-page`);
+
+    if (storedItemsPerPage !== null)  {
+      itemsPerPage.value = JSON.parse(storedItemsPerPage);
+      return;
+    }
+
+    if (newInitialItemsPerPage !== null)  {
+      itemsPerPage.value = newInitialItemsPerPage;
+    }
   }
 
   const setRowClasses = (classes) => {
@@ -92,6 +117,7 @@ export function useDataTableInfo() {
     setPage,
     itemsPerPage: readonly(itemsPerPage),
     setItemsPerPage,
+    setInitialItemsPerPage,
     rowClasses: readonly(rowClasses),
     setRowClasses,
     searchData: readonly(searchData),

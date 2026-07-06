@@ -30,7 +30,7 @@ const props = defineProps({
   },
   perPage: {
     type: Number,
-    default: 1,
+    default: 20,
   },
   rowClasses: {
     type: Object,
@@ -85,7 +85,7 @@ const { getSearchFilter,
   page,
   setPage,
   itemsPerPage,
-  setItemsPerPage,
+  setInitialItemsPerPage,
   setFilterColumns,
   searchData,
   setRowClasses,
@@ -93,9 +93,7 @@ const { getSearchFilter,
   setTotalCount,
 } = useDataTableInfo();
 
-if (props.perPage) {
-  setItemsPerPage(props.perPage);
-}
+setInitialItemsPerPage(props.perPage);
 
 const loadingData = ref(false);
 
@@ -103,11 +101,12 @@ const getData = (async () => {
   loadingData.value = true;
   tableData.value = [];
   const filter = getSearchFilter();
+
   const { data: fetchedData, totalCount } = await model.getPageData(
       filter,
       page.value,
       itemsPerPage.value,
-  )
+  );
   console.log('RECEIVED DATA', fetchedData);
   setTotalCount(null);
   if (totalDataCount.value === null && totalCount !== null) {
@@ -141,10 +140,19 @@ const localStore = ((searchData) => {
     if (item.elementOptions?.localStore === true) {
       const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
       const key = `${uri}-${item.name}`;
-      if (item.name in searchData && searchData[item.name] !== null && !isNaN(searchData[item.name])) {
-        localStorage.setItem(key, searchData[item.name]);
+      if (item.name in searchData && searchData[item.name] !== null) {
+        localStorage.setItem(key, JSON.stringify(searchData[item.name]));
       } else {
         localStorage.removeItem(key);
+      }
+    }
+    if (item.elementOptions?.sessionStore === true) {
+      const uri = window.location.pathname.replace(/^\/+/, '').replace(/[^a-zA-Z0-9]/g, '_');
+      const key = `${uri}-${item.name}`;
+      if (item.name in searchData && searchData[item.name] !== null) {
+        sessionStorage.setItem(key, JSON.stringify(searchData[item.name]));
+      } else {
+        sessionStorage.removeItem(key);
       }
     }
   });
