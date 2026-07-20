@@ -169,6 +169,12 @@ const startInterval = () => {
   intervalId.value = setInterval(checkPreview, previewPollInterval);
 }
 
+watch(props.tokenId, () => {
+  if (props.tokenId !== null) {
+    getPreview(props.tokenId, formValue.value);
+  }
+});
+
 onMounted(() => {
   startInterval();
 });
