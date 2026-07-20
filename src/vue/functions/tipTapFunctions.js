@@ -25,6 +25,14 @@ const useTipTapFunctions = ((editor) => {
     editor.value.chain().focus().insertContent(text).run();
   });
 
+  const insertVariable = ((nodeName, id) => {
+    editor.value.chain().focus().insertContent({ type: nodeName, attrs: { id } }).run();
+  });
+
+  const insertTwigVariable = ((id) => {
+    insertVariable('twigVariable', id);
+  });
+
   const setBold = (() => {
     editor.value.chain().focus().toggleBold().run();
   });
@@ -82,6 +90,8 @@ const useTipTapFunctions = ((editor) => {
     hasRedo,
     hasUndo,
     insertText,
+    insertTwigVariable,
+    insertVariable,
     setBold,
     setItalic,
     setLink,

@@ -1,7 +1,7 @@
 <template>
   <div class="dropdown">
     <button @click="dropDownOpen = !dropDownOpen"
-        v-if="items !== null && Object.keys(items).length"
+        v-if="itemList !== null && itemList.length"
         class="dropdown-button"
         type="button"
         :title="title">
@@ -9,17 +9,17 @@
     </button>
     <div class="dropdown-items" :class="{open: dropDownOpen}"
        ref="dropDownList" :style="dropDownListSize">
-      <div v-for="(value, key, index) in items" :key="index" class="dropdown-row"
-          @click="insertTextAndClose(key, value)">
-        <div class="dropdown-column dropdown-key">{{ key }}</div>
+      <div v-for="(item, index) in itemList" :key="index" class="dropdown-row"
+          @click="insertTextAndClose(item.name, item.value)">
+        <div class="dropdown-column dropdown-key">{{ item.name }}</div>
         <div class="dropdown-column dropdown-value"
-           v-html="value">
+           v-html="item.value">
         </div>
       </div>
     </div>
   </div>
 </template>
-<script>
+<script setup>
 import { computed, inject, ref } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
@@ -28,68 +28,77 @@ import { onClickOutside } from '@vueuse/core';
 import useTipTapFunctions from '../../../functions/tipTapFunctions';
 
 library.add(faCaretDown);
-export default {
-  props: {
-    items: {
-      type: Object,
-      default: null,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: Number,
-      default: 0,
-    },
-    title: {
-      type: String,
-      default: null,
-    },
-    insertType: {
-      type: String,
-      default: 'value',
-    },
+
+const props = defineProps({
+  items: {
+    type: [Object, Array],
+    default: null,
   },
-  components: {
-    FontAwesomeIcon,
+  label: {
+    type: String,
+    required: true,
   },
-  setup(props) {
-    const dropDownOpen = ref(false);
-    const dropDownList = ref(false);
-
-    const editor = inject('editor');
-
-    const dropDownListSize = computed(() => {
-      if (props.size !== 0) {
-        return `max-height: ${props.size}rem`;
-      }
-      return null;
-    });
-
-    const { insertText } = useTipTapFunctions(editor);
-
-    const insertTextAndClose = ((key, value) => {
-      dropDownOpen.value = false;
-      if (props.insertType === 'value') {
-        insertText(value);
-      } else {
-        insertText(key);
-      }
-    });
-
-    onClickOutside(dropDownList, () => {
-      dropDownOpen.value = false;
-    });
-
-    return {
-      dropDownList,
-      dropDownListSize,
-      dropDownOpen,
-      insertTextAndClose,
-    };
+  size: {
+    type: Number,
+    default: 0,
   },
-};
+  title: {
+    type: String,
+    default: null,
+  },
+  insertType: {
+    type: String,
+    default: 'value',
+  },
+});
+const dropDownOpen = ref(false);
+const dropDownList = ref(false);
+
+const editor = inject('editor');
+
+const dropDownListSize = computed(() => {
+  if (props.size !== 0) {
+    return `max-height: ${props.size}rem`;
+  }
+  return null;
+});
+
+const itemList = computed(() => {
+  if (Array.isArray(props.items)) {
+    return props.items;
+  }
+  const newList = [];
+  if (props.items === null) {
+    return null;
+  }
+  Object.keys(props.items).forEach(key => {
+    newList.push({
+      name: key,
+      value: props.items[key],
+    })
+  });
+  return newList;
+});
+
+const { insertText, insertTwigVariable } = useTipTapFunctions(editor);
+
+const insertTextAndClose = ((key, value) => {
+  dropDownOpen.value = false;
+  if (props.insertType === 'value') {
+    insertText(value);
+    return;
+  }
+  if (props.insertType === 'twig') {
+    insertTwigVariable(key);
+    return;
+  }
+  insertText(key);
+
+});
+
+onClickOutside(dropDownList, () => {
+  dropDownOpen.value = false;
+});
 </script>
 <style lang="scss" scoped>
 .dropdown {
