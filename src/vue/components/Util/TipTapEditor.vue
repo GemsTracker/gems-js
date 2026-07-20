@@ -29,22 +29,41 @@ const props = defineProps({
   preventEmit: {
     type: Boolean,
     default: false,
-  }
+  },
+  extensions: {
+    type: Array,
+    default: () => [],
+  },
+  parseContent: {
+    type: Function,
+    default: (value) => value,
+  },
+  serializeContent: {
+    type: Function,
+    default: (value) => value,
+  },
 });
 
 const emit = defineEmits(['update:modelValue']);
 
+let lastEmitted = props.modelValue;
+
 const editor = useEditor({
-  content: props.modelValue,
+  content: props.parseContent(props.modelValue),
   extensions: [
     StarterKit,
     Link.configure({
       openOnClick: false,
     }),
+    ...props.extensions,
   ],
   onUpdate: () => {
+    const html = editor.value.getHTML();
+
+    const value = props.serializeContent(html);
+    lastEmitted = value;
     if (!props.preventEmit) {
-      emit('update:modelValue', editor.value.getHTML());
+      emit('update:modelValue', value);
     }
   },
 });
@@ -52,8 +71,8 @@ const editor = useEditor({
 provide('editor', editor);
 
 watch(() => props.modelValue, (newValue) => {
-  if (newValue !== editor.value.getHTML()) {
-    editor.value?.commands.setContent(newValue, false);
+  if (newValue !== lastEmitted) {
+    editor.value?.commands.setContent(props.parseContent(newValue), false);
   }
 });
 

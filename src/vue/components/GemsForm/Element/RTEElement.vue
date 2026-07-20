@@ -2,7 +2,13 @@
   <div v-if="visible" class="form-group">
     <gems-form-label :elementId="elementId" :options="options" />
     <div class="element-container">
-      <tip-tap-editor v-model="formValue" :prevent-emit="isEditingSource">
+      <tip-tap-editor
+          v-model="formValue"
+          :prevent-emit="isEditingSource"
+          :extensions="extensions"
+          :parse-content="parseContent"
+          :serialize-content="serializeContent"
+      >
         <template #menu-buttons>
           <slot name="menu-buttons"></slot>
         </template>
@@ -36,6 +42,18 @@ const props = defineProps({
     type: Object,
     required: true,
     default: () => {},
+  },
+  extensions: {
+    type: Array,
+    default: () => [],
+  },
+  parseContent: {
+    type: Function,
+    default: (value) => value,
+  },
+  serializeContent: {
+    type: Function,
+    default: (value) => value,
   },
 });
 
