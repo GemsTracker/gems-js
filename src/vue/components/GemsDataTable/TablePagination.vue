@@ -54,7 +54,6 @@
 </template>
 <script setup>
 import { computed, ref, watch } from 'vue';
-import {end} from "@popperjs/core";
 
 const props = defineProps({
   page: {
