@@ -5,7 +5,7 @@ import {
   ref,
   watch,
 } from 'vue';
-import { camelCase } from "lodash";
+import camelCase from 'lodash-es/camelCase';
 import useGetModelRepository from './modelRepository';
 
 const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues) => {
