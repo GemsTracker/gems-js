@@ -9,7 +9,7 @@ const dataTableValueComponents = {
 };
 
 const addComponent = ((name, component) => {
-  console.log('xyz', name, component);
+  // console.log('dataTableValueComponents', name, component);
   dataTableValueComponents[name] = component;
 });
 

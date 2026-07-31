@@ -67,9 +67,9 @@ const useValidate = ((formData, validationRules) => {
 
     fieldValidations.forEach((validationRule) => {
       const { message, test } = validationRule;
-      console.log(validationRule);
+      // console.log(validationRule);
       if (test(value) === false) {
-        console.log('VALIDATION ERRORS');
+        // console.log('VALIDATION ERRORS');
         result.errors = true;
         result.messages.push(message);
       }

@@ -176,7 +176,7 @@ const pageNumberRange = computed(() => {
     range.push(i);
   }
 
-  console.log('RANGE!', start, end);
+  // console.log('RANGE!', start, end);
 
   return range;
 });

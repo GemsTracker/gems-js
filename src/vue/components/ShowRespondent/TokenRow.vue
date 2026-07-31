@@ -73,7 +73,7 @@ export default {
       if ('surveyUrl' in props.token) {
         url = props.token.surveyUrl;
       }
-      console.log('Forward to surevy', url);
+      // console.log('Forward to survey', url);
     });
 
     const { getTokenAnswerUrl, getTokenAskUrl, getTokenShowUrl } = useUrlHelper();

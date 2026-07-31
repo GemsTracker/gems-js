@@ -23,7 +23,7 @@ const useArrayObjectFunctions = (() => {
         } else if (fieldA === null || fieldA === undefined) {
           result = 1 * fieldsInfo[i].direction;
         } else if (fieldB === null || fieldB === undefined) {
-          console.log(b);
+          // console.log(b);
           result = -1 * fieldsInfo[i].direction;
         } else if (typeof fieldA === 'number' && typeof fieldB === 'number') {
           result = fieldsInfo[i].direction

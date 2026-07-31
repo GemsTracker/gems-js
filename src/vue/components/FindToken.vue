@@ -63,8 +63,8 @@ const searchToken = (async (tokenId) => {
     loading.value = false;
     return;
   }
-  console.log(token);
-  console.log(token.id);
+  // console.log(token);
+  // console.log(token.id);
 
   const tokenInfo = tokenRepository.getTokenInfo(token);
   const organizationId = token.managingOrganization.id;

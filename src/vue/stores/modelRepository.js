@@ -179,6 +179,7 @@ export default defineStore('modelRepository', {
       const apiCall = api.structure()
         .then((data) => {
           console.log(`Received STRUCTURE DATA for ${endpoint}`);
+          console.log(`Received STRUCTURE DATA for ${endpoint}`);
           console.log(data);
           this.modelData[modelName].structure = data;
           return data;

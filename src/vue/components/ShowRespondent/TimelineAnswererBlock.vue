@@ -6,7 +6,7 @@
       {{ answererLabel }}
     </h6>
     <div v-if="!opened" @click="toggleOpened" class="item-legenda row">
-      <template v-for="statusGroup, index in tokensByStatus" :key="index">
+      <template v-for="(statusGroup, index) in tokensByStatus" :key="index">
         <div v-if="'tokens' in answerer && answerer.tokens.length"
              :class="getStatusClass(statusGroup.status)" class="legenda-item col card">
           {{ statusGroup.tokens.length }}
@@ -14,7 +14,7 @@
       </template>
     </div>
     <div v-if="opened" class="token-items">
-      <timeline-token v-for="token, index in answerer.tokens" :key="index" :token="token">
+      <timeline-token v-for="(token, index) in answerer.tokens" :key="index" :token="token">
       </timeline-token>
     </div>
   </div>

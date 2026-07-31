@@ -16,6 +16,7 @@ const useTokenRepository = (() => {
     let roundOrder = null;
     let carePlan = null;
     let carePlanId = null;
+    let overviewUrl = null;
     let url = null;
     if ('info' in token) {
       Object.values(token.info).forEach((infoItem) => {
@@ -31,6 +32,9 @@ const useTokenRepository = (() => {
               carePlan = infoItem;
               carePlanId = infoItem.id;
               break;
+            case "overviewUrl":
+              overviewUrl = infoItem.value;
+              break;
             case 'url':
               url = infoItem.value;
               break;
@@ -44,6 +48,7 @@ const useTokenRepository = (() => {
     return {
       carePlan,
       carePlanId,
+      overviewUrl,
       roundDescription,
       roundOrder,
       url,
@@ -54,6 +59,7 @@ const useTokenRepository = (() => {
     const {
       carePlan,
       carePlanId,
+      overviewUrl,
       roundDescription,
       roundOrder,
       url,
@@ -65,6 +71,7 @@ const useTokenRepository = (() => {
     augmentedToken.answerer = (answerer && 'value' in answerer) ? answerer.value : null;
     augmentedToken.carePlan = carePlan;
     augmentedToken.carePlanId = carePlanId;
+    augmentedToken.overviewUrl = overviewUrl;
     augmentedToken.roundDescription = roundDescription;
     augmentedToken.roundOrder = roundOrder;
     augmentedToken.surveyUrl = url;
@@ -170,9 +177,10 @@ const useTokenRepository = (() => {
     const foundMoments = [];
     let currentOrder = null;
     let currentDescription = null;
+    let overviewUrl = null;
 
     Object.values(tokens).forEach((token) => {
-      const { roundOrder, roundDescription } = getTokenInfo(token);
+      const { roundOrder, roundDescription, overviewUrl } = getTokenInfo(token);
 
       if ((null === currentDescription) || (roundDescription !== currentDescription)) {
         currentDescription = roundDescription;
@@ -180,7 +188,7 @@ const useTokenRepository = (() => {
 
         if (!foundMoments.includes(currentOrder)) {
           foundMoments.push(currentOrder);
-          groupedTokens.push({ id: currentOrder, name: currentDescription, tokens: [] });
+          groupedTokens.push({ id: currentOrder, name: currentDescription, overviewUrl: overviewUrl, tokens: [] });
         }
 
       }

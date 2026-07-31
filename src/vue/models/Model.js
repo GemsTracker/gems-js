@@ -189,7 +189,7 @@ export default class Model {
       id: null,
       loadingHash: null,
     };
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
@@ -200,7 +200,7 @@ export default class Model {
     keys.forEach((filterKey) => {
       sortedFilter[filterKey] = filters[filterKey];
     });
-    console.log('LOADING HASH FILTER', sortedFilter);
+    // console.log('LOADING HASH FILTER', sortedFilter);
     return Model.hashString(JSON.stringify(sortedFilter));
   }
 

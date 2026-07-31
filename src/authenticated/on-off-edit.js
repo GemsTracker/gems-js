@@ -33,7 +33,7 @@ export default class OnOfEdit {
     if (element.hasAttribute('onoffeditfor')) {
       name = element.getAttribute('onoffeditfor');
     }
-    console.log(name);
+    // console.log(name);
     return name;
   }
 

@@ -27,7 +27,7 @@ export default class Menu {
         }
         event.preventDefault();
         let submenuList = event.target.nextElementSibling;
-        console.log(submenuList);
+        // console.log(submenuList);
         while (submenuList && !submenuList.classList.contains('menu-children')) {
           submenuList = submenuList.nextElementSibling;
         }

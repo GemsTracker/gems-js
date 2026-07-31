@@ -20,7 +20,7 @@ const useTrackRepository = (() => {
       per_page: 200,
     };
     const tracks = await trackModel.all(filter);
-    console.log(tracks);
+    // console.log(tracks);
 
     loading.value = false;
     return tracks.sort(sortFieldsFunction(['name']));

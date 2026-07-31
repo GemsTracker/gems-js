@@ -52,7 +52,7 @@ export default class Api {
   }
 
   insert(data) {
-    console.log(`INSERTING: ${this.endpoint}`, data);
+    // console.log(`INSERTING: ${this.endpoint}`, data);
     const { endpoint } = this;
     return this.client.post(`/${this.endpoint}`, data)
       .then((response) => response)
@@ -73,7 +73,7 @@ export default class Api {
     // console.log(this.mockEndpoints.indexOf(endpoint[0]));
 
     if (this.mockEndpoints.indexOf(endpoint[0]) === -1) {
-      console.log(`API CALL: ${this.url}/${this.endpoint}?${this.constructor.getTextFilters(filters)}`);
+      // console.log(`API CALL: ${this.url}/${this.endpoint}?${this.constructor.getTextFilters(filters)}`);
       return this.client.get(`/${this.endpoint}`, {
         params: filters,
       }).then((response) => {

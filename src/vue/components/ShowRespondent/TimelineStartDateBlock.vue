@@ -1,8 +1,9 @@
 <template>
   <div class="start-date-block">
     <h6 class="start-date">{{ displayDate }}</h6>
-    <template v-for="answerer, index in tokens" :key="index">
-      <timeline-answerer-block  v-if="'tokens' in answerer && answerer.tokens.length" :answerer="answerer" />
+    <template v-for="(answerer, index) in tokens" :key="index">
+      <timeline-answerer-block  v-if="'tokens' in answerer && answerer.tokens.length"
+                                :answerer="answerer" />
     </template>
   </div>
 </template>
