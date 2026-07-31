@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axios from 'axios';
 
 // import pickBy from 'lodash/pickBy';
 
@@ -73,14 +74,15 @@ export default class Api {
     // console.log(this.mockEndpoints.indexOf(endpoint[0]));
 
     if (this.mockEndpoints.indexOf(endpoint[0]) === -1) {
-      // console.log(`API CALL: ${this.url}/${this.endpoint}?${this.constructor.getTextFilters(filters)}`);
+      // console.log(
+      //  `API CALL: ${this.url}/${this.endpoint}?${this.constructor.getTextFilters(filters)}`);
       return this.client.get(`/${this.endpoint}`, {
         params: filters,
       }).then((response) => {
         if (response.status === 204) {
           return null;
         }
-        console.log(response.data);
+        // console.log(response.data);
         return response;
       }).catch((e) => {
         console.log(e.response);
