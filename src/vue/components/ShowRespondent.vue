@@ -6,7 +6,7 @@
     <div v-if="showDisplayPicker" class="display-picker text-end">
       <span v-for="(label, optionName, index) in displayOptions" :key="index">
         <a @click.prevent="currentDisplay = optionName"
-          href="" v-if="currentDisplay !== optionName">
+           href="" v-if="currentDisplay !== optionName">
           {{label}}
         </a>
         <span v-if="currentDisplay === optionName">{{label}}</span>
@@ -16,6 +16,13 @@
 
     <token-timeline v-if="currentDisplay === 'timeline'" />
     <round-tabs v-if="currentDisplay === 'roundTabs'"/>
+    <dialog closedby="any" id="inline-answers-dialog" modal style="margin: 30px auto; width: 90%;">
+      <div id="inline-answers-content">Loading ...</div>
+      <div class="button no_print">
+        <button class="actionlink btn btn-primary btn-default" commandfor="inline-answers-dialog" command="close">Close</button>
+        <button class="actionlink btn" @click="printDialog();">Print</button>
+      </div>
+    </dialog>
   </div>
 </template>
 <script>
@@ -104,9 +111,25 @@ export default {
       baseStore.setBaseUrl(baseUrl);
     }
 
+    const printDialog = () => {
+      const myframe = document.createElement('IFRAME');
+      myframe.domain = document.domain;
+      myframe.style.position = "absolute";
+      myframe.style.top = "-10000px";
+      document.body.appendChild(myframe);
+      myframe.contentDocument.write(document.getElementById('inline-answers-content').innerHTML) ;
+      setTimeout(function(){
+        myframe.focus();
+        myframe.contentWindow.print();
+        myframe.parentNode.removeChild(myframe) ;// remove frame
+      },3000); // wait for images to load inside iframe
+      window.focus();
+    }
+
     return {
       currentDisplay,
       displayOptions,
+      printDialog,
     };
   },
 };

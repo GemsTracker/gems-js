@@ -19,7 +19,7 @@ export default {
       type: Object,
       required: true,
     },
-  },
+  }, 
   components: {
     TimelineAnswererBlock,
   },

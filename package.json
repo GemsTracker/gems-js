@@ -20,10 +20,10 @@
     "@fortawesome/vue-fontawesome": "^3.1.2",
     "@popperjs/core": "^2.11.8",
     "@tiptap/core": "^3.27.1",
-    "@tiptap/pm": "^3.27.1",
-    "@tiptap/starter-kit": "^3.27.1",
     "@tiptap/extension-link": "^3.27.1",
     "@tiptap/extension-mention": "^3.27.1",
+    "@tiptap/pm": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "@tiptap/vue-3": "^3.27.1",
     "@vueuse/core": "^14.3.0",
     "air-datepicker": "^3.6.0",
@@ -41,8 +41,8 @@
     "vue3-simple-typeahead": "^1.0.11"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.7",
     "@eslint/js": "^9.36.0",
+    "@vitejs/plugin-vue": "^6.0.7",
     "eslint": "^9.36.0",
     "eslint-config-airbnb-extended": "^2.3.1",
     "eslint-plugin-import": "^2.32.0",
