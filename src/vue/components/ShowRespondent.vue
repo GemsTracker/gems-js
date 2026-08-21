@@ -19,13 +19,14 @@
     <dialog closedby="any" id="inline-answers-dialog" modal style="margin: 30px auto; width: 90%;">
       <div id="inline-answers-content">Loading ...</div>
       <div class="button no_print">
-        <button class="actionlink btn btn-primary btn-default" commandfor="inline-answers-dialog" command="close">Close</button>
-        <button class="actionlink btn" @click="printDialog();">Print</button>
+        <button class="actionlink btn btn-primary btn-default" commandfor="inline-answers-dialog" command="close">{{ t('Close') }}</button>
+        <button class="actionlink btn" @click="printDialog();">{{ t('Print') }}</button>
       </div>
     </dialog>
   </div>
 </template>
 <script>
+
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import useBasePropStorer from '../functions/basePropStorer';
@@ -92,6 +93,8 @@ export default {
     TokenTimeline,
   },
   setup(props) {
+    const { t } = useI18n();
+
     const displayOptions = {
       timeline: 'Timeline',
       roundTabs: 'Round tabs',
@@ -130,6 +133,7 @@ export default {
       currentDisplay,
       displayOptions,
       printDialog,
+      t,
     };
   },
 };

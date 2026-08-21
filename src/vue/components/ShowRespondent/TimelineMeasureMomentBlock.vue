@@ -2,10 +2,10 @@
   <div class="measure-moment object card">
     <h5>
       <div v-if="measureMoment.overviewUrl" data-v-baseline="" class="tooltip-container icon rightFloat"
-           data-bs-toggle="tooltip" data-bs-title="Samenvatting">
+           data-bs-toggle="tooltip" :data-bs-title="t('Summary')">
         <a @click="showDialog(measureMoment.overviewUrl)">
           <i class="fa fa-list-alt fa-fw" data-toggle="tooltip" data-placement="auto top"
-             data-html="1" title="" data-original-title="Summary"></i>
+             data-html="1" title="" :data-original-title="t('Summary')"></i>
         </a>
       </div>
       {{ measureMoment.name }}
@@ -22,6 +22,7 @@ import { ref } from 'vue'
 import { computed } from 'vue';
 import useTokenRepository from '../../functions/tokenRepository';
 import TimelineStartDateBlock from './TimelineStartDateBlock.vue';
+import {useI18n} from "vue-i18n";
 
 export default {
   props: {
@@ -38,6 +39,8 @@ export default {
     TimelineStartDateBlock,
   },
   setup(props) {
+    const { t } = useI18n();
+
     const { groupByDate } = useTokenRepository();
 
     const tokens = computed(() => groupByDate(props.measureMoment.tokens));
@@ -74,7 +77,7 @@ export default {
     }
 
     return {
-      tokens, showDialog,
+      tokens, showDialog, t,
     };
   },
 };
