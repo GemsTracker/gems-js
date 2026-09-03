@@ -48,6 +48,9 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
   });
 
   const sortFields = ((fields) => {
+    if (!Array.isArray(fields)) {
+      fields  = [fields];
+    }
     const fieldsInfo = fields.map((order) => {
       const fieldInfo = {
         field: order,
@@ -181,27 +184,8 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     return null;
   });
 
-  const sortOptions = ((array, by = 'key', dir = 'asc') => {
-    if (Array.from(by)[0] === '-') {
-      by = by.slice(1);
-      dir = 'desc';
-    } else if(by.endsWith('desc')) {
-      by = by.slice(0, -5);
-      dir = 'desc';
-    } else if(by.endsWith('asc')) {
-      by = by.slice(0, -4);
-      dir = 'asc';
-    }
-
-    return [...array].sort((a, b) => {
-      let comparison;
-      if (typeof a[by] === 'number') {
-        comparison = a[by] - b[by];
-      } else {
-        comparison = a[by] > b[by] ? 1 : a[by] < b[by] ? -1 : 0;
-      }
-      return dir === 'asc' ? comparison : -comparison;
-    });
+  const sortOptions = ((array, by = 'key') => {
+    return [...array].sort(sortFields(by));
   });
 
   const formOptions = computed(() => {
