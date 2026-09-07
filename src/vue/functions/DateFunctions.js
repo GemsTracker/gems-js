@@ -9,12 +9,13 @@ const useDateFunctions = ((localeOverride  = null) => {
     fr,
     nl,
   };
+  const { locale } = useI18n();
 
   const getDateFnsLocale = (() => {
       if (localeOverride !== null) {
         return locales[localeOverride];
       }
-      return locales[useI18n().locale.value];
+      return locales[locale.value];
   });
 
   const formatIsoDate = ((dateItem) => {
