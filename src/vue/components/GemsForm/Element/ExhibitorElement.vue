@@ -26,10 +26,10 @@ const props = defineProps({
 const { elementId, formValue, visible } = useGemsFormElementFunctions(props.options);
 
 const showValue = computed(() => {
-  if ('multiOptions' in props.options && formValue in props.options.multiOptions) {
-    return props.options.multiOptions[formValue];
+  if ('multiOptions' in props.options && formValue.value in props.options.multiOptions) {
+    return props.options.multiOptions[formValue.value];
   }
-  return formValue;
+  return formValue.value;
 });
 
 const displayRaw = computed(() => props.options.elementOptions?.raw === true);
