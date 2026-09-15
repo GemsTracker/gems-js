@@ -108,6 +108,9 @@ const variableWatch = () => {
       )
   );
 
+  // Initial variable fetch
+  getVariables(watchedObj.value);
+
   watch([watchedObj, previewTokenId], ([combined, tokenId]) => {
     getVariables({...combined, tokenId});
   });
