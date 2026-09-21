@@ -112,6 +112,10 @@ const checkPreview = async () => {
     return;
   }
 
+  if (formValue.value === '' || formValue.value === null) {
+    return;
+  }
+
   const snapshot = textUpdateIteration.value;
   lastSentUpdate = snapshot;
 
@@ -135,7 +139,7 @@ const checkPreview = async () => {
       console.log('preview error!', result.error.message);
       previewValidationMessage.value = result.error.message;
       if (result.error.type === 'twig_syntax_error') {
-        previewValidationMessage.value = `Twig syntax error: ${result.error.message} (line ${result.error.line})`;
+        previewValidationMessage.value = `${result.error.message} (line ${result.error.line})`;
       }
 
       previewValidationLine.value = result.error.line ?? null;
