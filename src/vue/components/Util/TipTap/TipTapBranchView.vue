@@ -7,7 +7,7 @@
           v-if="hasCondition"
           :model-value="node.attrs.condition"
           class="if-branch__cond"
-          :variables="[]"
+          :variables="variables"
           @update:model-value="updateAttributes({ condition: $event })"
       />
 
@@ -49,6 +49,10 @@ const props = defineProps({
     type: Function,
     required: true,
   },
+  extension: {
+    type: Object,
+    required: true
+  },
 });
 
 const KEYWORDS = {
@@ -56,6 +60,8 @@ const KEYWORDS = {
   elseifBranch: 'else if',
   elseBranch: 'else'
 };
+
+const variables = computed(() => props.extension.options.variables?.() ?? []);
 
 const keyword = computed(() => KEYWORDS[props.node.type.name] ?? '');
 const hasCondition = computed(() => props.node.type.name !== 'elseBranch');

@@ -47,5 +47,12 @@
   "Variables": "Variabelen",
   "Yes": "Ja",
   "Delete patient": "Pati\u00ebnt verwijderen",
-  "Undelete patient": "Herstel verwijderde pati\u00ebnt"
+  "Undelete patient": "Herstel verwijderde pati\u00ebnt",
+  "tiptap": {
+    "condition": {
+      "edit-manual": "Wijzig handmatig",
+      "value": "Waarde",
+      "variableOption": "-- Variabel --"
+    }
+  }
 }

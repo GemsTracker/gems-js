@@ -138,6 +138,9 @@ export const IfBranch = Node.create({
   name: 'ifBranch',
   content: BODY_CONTENT,
   isolating: true,
+  addOptions() {
+    return { variables: () => [] };
+  },
   addAttributes: conditionAttr,
   parseHTML() {
     return [{ tag: 'div[data-type="ifBranch"]' }];
@@ -151,6 +154,9 @@ export const ElseifBranch = Node.create({
   name: 'elseifBranch',
   content: BODY_CONTENT,
   isolating: true,
+  addOptions() {
+    return { variables: () => [] };
+  },
   addAttributes: conditionAttr,
   parseHTML() {
     return [{ tag: 'div[data-type="elseifBranch"]' }];

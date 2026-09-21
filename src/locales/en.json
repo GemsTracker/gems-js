@@ -47,5 +47,12 @@
   "Variables": "Variables",
   "Yes": "Yes",
   "Delete patient": "Delete patient",
-  "Undelete patient": "Undelete patient"
+  "Undelete patient": "Undelete patient",
+  "tiptap": {
+    "condition": {
+      "edit-manual": "Edit manual",
+      "value": "Value",
+      "variableOption": "-- Variable --"
+    }
+  } 
 }

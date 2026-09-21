@@ -33,7 +33,7 @@ import useGemsFormElementFunctions from '../../../functions/gemsFormElementFunct
 import { computed, onMounted } from 'vue';
 import useGemsFormMultiOptionFunctions from '../../../functions/gemsFormMultiOptionFunctions';
 import { createTwigVariable } from '../../../functions/TipTap/twigVariableExtension';
-import { ifBlockExtensionsWithViews } from '../../../functions/TipTap/ifBlockViews';
+import { createIfBlockExtensions } from '../../../functions/TipTap/ifBlockViews';
 import { twigFull } from '../../../functions/TipTap/twigTransforms';
 import TipTapCondition from '../../Util/TipTap/TipTapCondition.vue';
 
@@ -74,13 +74,13 @@ const currentExtensions = computed(() => {
 
   return [
     createTwigVariable(() => variableOptions.value),
-    ...ifBlockExtensionsWithViews,
+      ...createIfBlockExtensions(() => variableOptions.value),
   ];
 });
 
 const extensions = [
   createTwigVariable(() => variableOptions.value),
-  ...ifBlockExtensionsWithViews,
+  ...createIfBlockExtensions(() => variableOptions.value),
 ];
 const parseContent = (twig) => twigFull.toEditorHtml(twig);
 const serializeContent = (html) => twigFull.toStored(html);

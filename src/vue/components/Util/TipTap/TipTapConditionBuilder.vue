@@ -9,22 +9,40 @@
         </select>
         <span v-else class="cb-connector cb-connector--lead"></span>
 
-        <input
-            class="cb-var"
-            type="text"
-            list="cb-variables"
-            :value="row.variable"
-            placeholder="variable"
-            @input="patch(i, { variable: $event.target.value })"
-        />
+        <select v-if="variables.length" class="cb-var"
+                :value="row.variable"
+                @change="patch(i, {
+                  variable: $event.target.value,
+                  value: hasOption($event.target.value, row.value) ? row.value : '',
+                })">
+          <option value="" disabled>{{ t('tiptap.condition.variableOption')}}</option>
+          <option v-for="v in variables" :key="v.name" :value="v.name">{{ v.name }}</option>
+          <!-- preserve a stored value we don't recognise -->
+          <option v-if="row.variable && !isKnown(row.variable)" :value="row.variable">
+            {{ row.variable }} (unknown)
+          </option>
+        </select>
+
+        <!-- no variables configured / not loaded yet -->
+        <input v-else class="cb-var" type="text" :value="row.variable"
+               placeholder="variable" @input="patch(i, { variable: $event.target.value })" />
 
         <select class="cb-op" :value="row.operator" @change="patch(i, { operator: $event.target.value })">
           <option v-for="op in OPERATORS" :key="op" :value="op">{{ op }}</option>
         </select>
 
         <template v-if="!isUnary(row.operator)">
-          <input class="cb-val" type="text" list="cb-variables"
-                 :value="row.value" placeholder="value"
+          <select v-if="optionsFor(row.variable)" class="cb-val"
+                  :value="row.value"
+                  @change="patch(i, { value: $event.target.value })">
+            <option value="" disabled>{{ t('tiptap.condition.value') }}</option>
+            <option v-for="opt in optionsFor(row.variable)"
+                    :key="optionValue(opt)" :value="optionValue(opt)">
+              {{ optionLabel(opt) }}
+            </option>
+          </select>
+          <input v-else class="cb-val" type="text" list="cb-variables"
+                 :value="row.value" :placeholder="t('tiptap.condition.value')"
                  @input="patch(i, { value: $event.target.value })" />
         </template>
 
@@ -37,7 +55,7 @@
 
       <div class="cb-actions">
         <button type="button" @click="addRow">+</button>
-        <button type="button" class="cb-raw-toggle" @click="toRaw">edit raw</button>
+        <button type="button" class="cb-raw-toggle" @click="toRaw">{{ t('tiptap.condition.edit-manual')}}</button>
       </div>
     </template>
 
@@ -63,6 +81,7 @@ import {
   OPERATORS,
   VALUE_TYPES,
 } from '../../../functions/TipTap/condition';
+import {useI18n} from "vue-i18n";
 
 const props = defineProps({
   modelValue: {
@@ -77,6 +96,8 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
+const { t } = useI18n();
+
 const mode = ref('structured');
 const connector = ref('and');
 const rows = ref([]);
@@ -84,6 +105,17 @@ const raw = ref('');
 const rawParses = ref(true);
 
 let lastEmitted = null;
+
+const variableFor = (name) => props.variables.find((v) => v.name === name);
+
+const isKnown = (name) => !!variableFor(name);
+const optionsFor = (name) => {
+  const opts = variableFor(name)?.options;
+  return Array.isArray(opts) && opts.length ? opts : null;
+};
+const optionValue = (option) => (option && typeof option === 'object' ? option.name : option);
+const optionLabel = (option) => (option && typeof option === 'object' ? (option.label ?? option.value) : option);
+const hasOption = (name, value) => (optionsFor(name) ?? []).some((option) => String(optionValue(option)) === String(value));
 
 const loadFrom = (string) => {
   const parsed = parseCondition(string);

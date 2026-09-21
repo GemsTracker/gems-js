@@ -31,6 +31,15 @@ const ElseBranchWithView = ElseBranch.extend({
   },
 });
 
+export const createIfBlockExtensions = (getVariables = () => []) => {
+  return [
+      IfBlockWithView,
+      IfBranchWithView.configure({ variables: getVariables }),
+      ElseifBranchWithView.configure({ variables: getVariables }),
+      ElseBranchWithView,
+  ];
+}
+
 export const ifBlockExtensionsWithViews = [
   IfBlockWithView,
   IfBranchWithView,
