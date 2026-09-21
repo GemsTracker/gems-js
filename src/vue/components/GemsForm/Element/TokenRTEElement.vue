@@ -74,6 +74,12 @@ const getVariables = async (options) => {
   try {
 
     const filteredOptions = Object.entries(options).filter(([, value]) => value != null);
+
+    if (filteredOptions.length === 0) {
+      return;
+    }
+
+
     const params = new URLSearchParams(filteredOptions);
 
     const response = await fetch(`${variableUrl.value}?${params}`);
