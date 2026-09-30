@@ -107,6 +107,7 @@ onClickOutside(dropDownList, () => {
 .dropdown-items {
   position: absolute;
   min-width: 32rem;
+  max-width: 40rem;
   background: white;
   border: #aaa 1px solid;
   z-index: 999;
@@ -128,14 +129,20 @@ onClickOutside(dropDownList, () => {
   }
   .dropdown-column {
     &.dropdown-key {
-      flex-grow: 1;
+      flex: 1 0 auto;      // grow, but never shrink
       font-weight: bold;
+      white-space: nowrap;
     }
     &.dropdown-value {
+      flex: 0 1 auto;      // allowed to shrink
+      min-width: 0;        // the key fix for flexbox truncation
       margin-left: 1rem;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+    &.dropdown-value :deep(*) {
+      display: inline;
     }
   }
 }
