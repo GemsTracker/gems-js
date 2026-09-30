@@ -92,6 +92,8 @@ const modelRepository = getModelRepository();
 const formData = ref({});
 const initialFormValues = ref(null);
 
+const editId = ref(null);
+
 const structure = ref(null);
 
 const changes = ref(false);
@@ -145,14 +147,23 @@ const submit = (async () => {
   if (validation.value.$invalid === false) {
     const model = modelRepository.getEndpointModel(props.resource, props.endpoint);
     let response = null;
-    if (props.edit === false) {
+    if (editId.value === null) {
       response = await model.insert(formData.value);
     } else {
-      response = await model.updateById(props.edit, formData.value);
+      response = await model.updateById(editId.value, formData.value);
     }
     console.log(response);
     if (response !== null && 'status' in response) {
       if (response.status === 201) {
+
+        if ('newId' in response) {
+          // @TODO check for primary key in structure.. otherwise fall back to assuming ID as below
+          if (response.newId.length === 1 && 'id' in formData.value) {
+            editId.value = response.newId[0];
+            formData.value.id = response.newId[0];
+          }
+        }
+
         submitInfo.value = {
           icon: 'check',
           status: 'success',
@@ -198,6 +209,7 @@ const submit = (async () => {
 onMounted(() => {
   getEndpointStructure();
   if (props.edit !== false) {
+    editId.value = props.edit;
     getEditData(props.edit);
   }
 
