@@ -9,19 +9,17 @@
         </select>
         <span v-else class="cb-connector cb-connector--lead"></span>
 
-        <select v-if="variables.length" class="cb-var"
-                :value="row.variable"
-                @change="patch(i, {
-                  variable: $event.target.value,
-                  value: hasOption($event.target.value, row.value) ? row.value : '',
-                })">
-          <option value="" disabled>{{ t('tiptap.condition.variableOption')}}</option>
-          <option v-for="v in variables" :key="v.name" :value="v.name">{{ v.name }}</option>
-          <!-- preserve a stored value we don't recognise -->
-          <option v-if="row.variable && !isKnown(row.variable)" :value="row.variable">
-            {{ row.variable }} (unknown)
-          </option>
-        </select>
+        <RichSelect
+            v-if="variables.length"
+            class="cb-var"
+            :model-value="row.variable"
+            :options="variableOptions(row.variable)"
+            :placeholder="t('tiptap.condition.variableOption')"
+            @update:model-value="name => patch(i, {
+              variable: name,
+              value: hasOption(name, row.value) ? row.value : '',
+            })"
+                  />
 
         <!-- no variables configured / not loaded yet -->
         <input v-else class="cb-var" type="text" :value="row.variable"
@@ -32,15 +30,14 @@
         </select>
 
         <template v-if="!isUnary(row.operator)">
-          <select v-if="optionsFor(row.variable)" class="cb-val"
-                  :value="row.value"
-                  @change="patch(i, { value: $event.target.value })">
-            <option value="" disabled>{{ t('tiptap.condition.value') }}</option>
-            <option v-for="opt in optionsFor(row.variable)"
-                    :key="optionValue(opt)" :value="optionValue(opt)">
-              {{ optionLabel(opt) }}
-            </option>
-          </select>
+          <RichSelect
+              v-if="optionsFor(row.variable)"
+              class="cb-val"
+              :model-value="row.value"
+              :options="valueOptions(row.variable)"
+              :placeholder="t('tiptap.condition.value')"
+              @update:model-value="value => patch(i, { value })"
+          />
           <input v-else class="cb-val" type="text" list="cb-variables"
                  :value="row.value" :placeholder="t('tiptap.condition.value')"
                  @input="patch(i, { value: $event.target.value })" />
@@ -83,6 +80,8 @@ import {
 } from '../../../functions/TipTap/condition';
 import {useI18n} from "vue-i18n";
 
+import RichSelect from '../RichSelect.vue';
+
 const props = defineProps({
   modelValue: {
     type: String,
@@ -107,6 +106,20 @@ const rawParses = ref(true);
 let lastEmitted = null;
 
 const variableFor = (name) => props.variables.find((v) => v.name === name);
+
+const variableOptions = (current) => {
+  const list = props.variables.map((v) => ({ label: v.name, value: v.name }));
+  if (current && !isKnown(current)) {
+    list.push({ label: `${current} (unknown)`, value: current });
+  }
+  return list;
+};
+
+const valueOptions = (name) =>
+    (optionsFor(name) ?? []).map((o) => ({
+      label: String(optionLabel(o)),
+      value: String(optionValue(o)),
+    }));
 
 const isKnown = (name) => !!variableFor(name);
 const optionsFor = (name) => {
@@ -231,12 +244,45 @@ const toStructured = () => {
     font-style: italic;
   }
 
+  /* layout: the same for native fields and RichSelect */
   .cb-var, .cb-val {
-    flex: 0 1 9rem;
+    flex: 0 1 14rem;
+    min-width: 0;            /* allow shrinking instead of wrapping */
+    box-sizing: border-box;
+  }
+
+  /* native fallback fields (text inputs, plain selects) */
+  input.cb-var, input.cb-val,
+  select.cb-var, select.cb-val {
     padding: 0.1rem 0.35rem;
     border: 1px solid rgb(199 210 254);
     border-radius: 4px;
   }
+
+  /* RichSelect (vue-select): compact, one line, border on the toggle only */
+  .v-select {
+    --vs-font-size: 1em;
+    --vs-line-height: 1.3;
+    --vs-border-color: rgb(199 210 254);
+    --vs-border-radius: 4px;
+    --vs-actions-padding: 0 4px 0 0;
+    --vs-controls-size: 0.6;
+    font-size: inherit;
+  }
+  .v-select .vs__dropdown-toggle { padding: 0; background: white; }
+  .v-select .vs__selected-options { flex-wrap: nowrap; align-items: center; min-width: 0; padding: 0; }
+  .v-select .vs__selected {
+    display: block;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0.35rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .v-select .vs__search,
+  .v-select .vs__search:focus { margin: 0; padding: 0 0.35rem; }
+  .v-select .vs__open-indicator { width: 14px; }
 
   .cb-op, .cb-type {
     padding: 0.1rem 0.2rem;
