@@ -10,6 +10,7 @@ const useGemsFormElementFunctions = ((elementOptions) => {
 
   const formData = inject('formData');
   const startData = inject('startData');
+  const structure = inject('structure');
 
   const formValue = computed({
     get: () => {
@@ -187,6 +188,43 @@ const useGemsFormElementFunctions = ((elementOptions) => {
                 formData.value[fieldName] = valueSet;
               }
             }
+            previouslyChanged.value = true;
+          }
+        });
+      });
+    }
+    if ('otherFieldOptions' in elementOptions.onChange) {
+      Object.keys(elementOptions.onChange.otherFieldOptions).forEach((fieldName) => {
+        watch(formValue, (newValue/* , oldValue */) => {
+          if (startData.value !== null && (newValue !== startData.value[elementOptions.name]
+              || previouslyChanged.value === true)) {
+            if ('multiOptionSettings' in elementOptions.onChange.otherFieldOptions[fieldName]) {
+
+              if ('reference' in elementOptions.onChange.otherFieldOptions[fieldName].multiOptionSettings) {
+                structure.value[fieldName].multiOptionSettings.reference = elementOptions.onChange.otherFieldOptions[fieldName].multiOptionSettings.reference;
+              }
+
+              if ('referenceFilter' in elementOptions.onChange.otherFieldOptions[fieldName].multiOptionSettings) {
+                const result = JSON.parse(
+                    JSON.stringify(elementOptions.onChange.otherFieldOptions[fieldName].multiOptionSettings.referenceFilter).replaceAll(
+                        "{value}",
+                        JSON.stringify(String(formValue.value)).slice(1,-1)
+                    )
+                );
+
+                if (fieldName in structure.value) {
+                  if (!('multiOptionSettings' in structure.value[fieldName])) {
+                  }
+                  structure.value[fieldName].multiOptionSettings.referenceFilter = {
+                    ...result,
+                    ...structure.value[fieldName].multiOptionSettings.referenceFilter ?? {},
+
+                  };
+                }
+
+              }
+            }
+
             previouslyChanged.value = true;
           }
         });

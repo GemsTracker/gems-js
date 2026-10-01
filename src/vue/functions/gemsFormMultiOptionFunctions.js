@@ -338,9 +338,21 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     return null;
   });
 
+  const multiOptionReferenceFilter = computed(() => {
+    if ('multiOptionSettings' in elementOptions.value && 'referenceFilter' in elementOptions.value.multiOptionSettings) {
+      return elementOptions.value.multiOptionSettings.referenceFilter;
+    }
+    return null;
+  });
+
   watch(multiOptionReference, () => {
     if (multiOptionReference.value !== null) {
-      console.log('REFERENCE CHANGE!', elementOptions.value.name, elementOptions.value.multiOptionSettings.reference);
+      getAllReferenceData(elementOptions.value.multiOptionSettings);
+    }
+  });
+
+  watch(multiOptionReferenceFilter, () => {
+    if (multiOptionReference.value !== null) {
       getAllReferenceData(elementOptions.value.multiOptionSettings);
     }
   });
