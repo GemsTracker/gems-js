@@ -48,6 +48,7 @@
   "Yes": "Ja",
   "Delete patient": "Pati\u00ebnt verwijderen",
   "Undelete patient": "Herstel verwijderde pati\u00ebnt",
+  "Error fetching data": "Fout bij het ophalen van gegevens",
   "tiptap": {
     "condition": {
       "edit-manual": "Wijzig handmatig",

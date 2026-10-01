@@ -7,12 +7,16 @@ import {
 } from 'vue';
 import camelCase from 'lodash-es/camelCase';
 import useGetModelRepository from './modelRepository';
+import { useI18n } from 'vue-i18n';
 
 const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues) => {
+  const { t } = useI18n();
+
   const allReferenceData = ref(null);
   const loadingReferenceData = ref(false);
 
   const structure = inject('structure');
+  const serverValidation = inject('serverValidation');
 
   const { getModelRepository } = useGetModelRepository();
   const modelRepository = getModelRepository();
@@ -26,7 +30,23 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         options.reference,
       );
 
-      const data = await model.all({ per_page: 9999 });
+      let referenceFilter = { per_page: 9999};
+      if ('referenceFilter' in options) {
+        referenceFilter = { ...options.referenceFilter, ...referenceFilter };
+      }
+
+      const data = await model.all(referenceFilter).catch((e) => {
+        loadingReferenceData.value = false;
+        const errors = {
+        }
+        errors[elementOptions.value.name] = {
+          messages: [
+              t('Error fetching data'),
+          ],
+        };
+        serverValidation.value = errors;
+        return null;
+      });
       allReferenceData.value = data;
       // Use id field as keys if available
       if (Array.isArray(data)) {

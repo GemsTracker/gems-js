@@ -48,11 +48,12 @@
   "Yes": "Yes",
   "Delete patient": "Delete patient",
   "Undelete patient": "Undelete patient",
+  "Error fetching data": "Error fetching data",
   "tiptap": {
     "condition": {
       "edit-manual": "Edit manual",
       "value": "Value",
       "variableOption": "-- Variable --"
     }
-  } 
+  }
 }

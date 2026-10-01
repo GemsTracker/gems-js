@@ -86,7 +86,7 @@ export default class Api {
       }).catch((e) => {
         console.log(e.response);
         console.log(e);
-        return null;
+        throw e;
       });
     }
     // console.log('MOCK CALL for ' + this.endpoint);
