@@ -48,7 +48,7 @@
   "Yes": "Yes",
   "Delete patient": "Delete patient",
   "Undelete patient": "Undelete patient",
-  "Error fetching data": "Error fetching data",
+  "Error fetching data": "Error fetching data ({code})",
   "tiptap": {
     "condition": {
       "edit-manual": "Edit manual",

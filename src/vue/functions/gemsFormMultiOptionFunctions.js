@@ -39,9 +39,13 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         loadingReferenceData.value = false;
         const errors = {
         }
+        let code = '';
+        if (e.response) {
+          code = e.response;
+        }
         errors[elementOptions.value.name] = {
           messages: [
-              t('Error fetching data'),
+              t('Error fetching data', { code }),
           ],
         };
         serverValidation.value = errors;
