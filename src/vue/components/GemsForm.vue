@@ -15,7 +15,9 @@
       </span>
       <br />
       <!-- <div class="actionlink btn" @click="validate">validate</div><br /> -->
-      <div v-if="cancelUrl !== null" class="actionlink btn" @click="cancel">Cancel</div>
+      <div class="mt-2">
+        <button v-if="cancelUrl !== null" class="actionlink btn" @click="cancel">Cancel</button>
+      </div>
     </div>
     <loading-screen v-if="loading" />
     <slot name="footer" :form-data="formData" />
