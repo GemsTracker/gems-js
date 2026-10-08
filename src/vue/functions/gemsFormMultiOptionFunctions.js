@@ -254,7 +254,6 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
     for (const updateFieldName of Object.keys(updateFields)) {
       if ('multiOptionSettings' in updateFields[updateFieldName]) {
         const newSettings = {};
-
         if ('referenceData' in updateFields[updateFieldName].multiOptionSettings) {
           if (Array.isArray(newValue) && newValue.length === 0) {
             newSettings.multiOptionSettings = {
@@ -281,7 +280,6 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
         }
 
         if ('newSettings' in updateFields[updateFieldName].multiOptionSettings) {
-          console.log('TIME FOR NEW SETTINGS FOR ', updateFieldName);
           delete structure.value[updateFieldName].multiOptionSettings;
           await nextTick();
           Object.keys(updateFields[updateFieldName].multiOptionSettings.newSettings).forEach((newSettingName) => {
@@ -332,7 +330,7 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
   if ('multiOptionSettings' in elementOptions.value && 'onChange' in elementOptions.value.multiOptionSettings) {
     watch(formValue, (newValue) => {
       onChange(newValue);
-    });
+    }, { immediate: true });
   }
 
   const multiOptionReference = computed(() => {

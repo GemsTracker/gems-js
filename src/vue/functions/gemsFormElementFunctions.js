@@ -196,8 +196,6 @@ const useGemsFormElementFunctions = ((elementOptions) => {
     if ('otherFieldOptions' in elementOptions.onChange) {
       Object.keys(elementOptions.onChange.otherFieldOptions).forEach((fieldName) => {
         watch(formValue, (newValue/* , oldValue */) => {
-          if (startData.value !== null && (newValue !== startData.value[elementOptions.name]
-              || previouslyChanged.value === true)) {
             if ('multiOptionSettings' in elementOptions.onChange.otherFieldOptions[fieldName]) {
 
               if ('reference' in elementOptions.onChange.otherFieldOptions[fieldName].multiOptionSettings) {
@@ -223,11 +221,11 @@ const useGemsFormElementFunctions = ((elementOptions) => {
                 }
 
               }
-            }
+            //}
 
-            previouslyChanged.value = true;
+            //previouslyChanged.value = true;
           }
-        });
+        }, { immediate: true });
       });
     }
   }
