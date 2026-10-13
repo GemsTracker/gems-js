@@ -330,7 +330,7 @@ const useGemsFormMultiOptionFunctions = ((elementOptions, formValue, formValues)
   if ('multiOptionSettings' in elementOptions.value && 'onChange' in elementOptions.value.multiOptionSettings) {
     watch(formValue, (newValue) => {
       onChange(newValue);
-    }, { immediate: true });
+    });
   }
 
   const multiOptionReference = computed(() => {
